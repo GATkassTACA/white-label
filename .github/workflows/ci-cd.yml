@@ -120,7 +120,7 @@ jobs:
     - name: Login to Docker Hub
       uses: docker/login-action@v3
       with:
-        username: ${{ secrets.DOCKER_USERNAME }}
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build and push Docker image
@@ -149,6 +149,16 @@ jobs:
       run: |
         echo "🚀 Azure deployment is handled by main_white-label-chat-km.yml workflow"
         echo "This workflow completes the CI/CD pipeline"
+
+    # Old deployment methods - disabled for Azure deployment
+    # - name: Deploy to Railway
+    #   if: false
+    #   run: echo "Railway deployment disabled"
+
+    # - name: Deploy to Heroku  
+    #   if: false
+    #   run: echo "Heroku deployment disabled"
+    #   heroku_email: ${{ secrets.HEROKU_EMAIL }}
 
     - name: Notify deployment success
       if: success()
