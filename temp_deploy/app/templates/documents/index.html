@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Scanner - PDF Data Extraction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .upload-area {
+            border: 3px dashed #dee2e6;
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .upload-area:hover {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        .upload-area.dragover {
+            border-color: #28a745;
+            background: #e8f5e8;
+        }
+        .processing {
+            display: none;
+        }
+        .results-container {
+            display: none;
+            margin-top: 2rem;
+        }
+        .method-selector {
+            margin: 1rem 0;
+        }
+        .extraction-result {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 1rem 0;
+        }
+        .page-content {
+            max-height: 300px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+        }
+        .metadata-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+        }
+        .stats-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 8px;
+        }
+        .table-preview {
+            max-height: 200px;
+            overflow: auto;
+            margin: 0.5rem 0;
+        }
+        .confidence-bar {
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #dc3545 0%, #ffc107 50%, #28a745 100%);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2><i class="fas fa-file-pdf text-danger"></i> Document Scanner</h2>
+                        <p class="text-muted">Extract and analyze data from PDF documents</p>
+                    </div>
+                    <div>
+                        <a href="{{ url_for('chat.index') }}" class="btn btn-outline-secondary me-2">
+                            <i class="fas fa-home"></i> Back to Chat
+                        </a>
+                        <a href="{{ url_for('documents.processing_history') }}" class="btn btn-outline-info">
+                            <i class="fas fa-history"></i> History
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Upload Section -->
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <!-- Extraction Method Selector -->
+                        <div class="method-selector">
+                            <label class="form-label">Extraction Method:</label>
+                            <div class="btn-group" role="group">
+                                <input type="radio" class="btn-check" name="method" id="auto" value="auto" checked>
+                                <label class="btn btn-outline-primary" for="auto">Auto</label>
+                                
+                                <input type="radio" class="btn-check" name="method" id="pdfplumber" value="pdfplumber">
+                                <label class="btn btn-outline-primary" for="pdfplumber">Advanced</label>
+                                
+                                <input type="radio" class="btn-check" name="method" id="pypdf2" value="pypdf2">
+                                <label class="btn btn-outline-primary" for="pypdf2">Fast</label>
+                                
+                                <input type="radio" class="btn-check" name="method" id="ocr" value="ocr">
+                                <label class="btn btn-outline-primary" for="ocr">OCR</label>
+                            </div>
+                            <small class="form-text text-muted d-block mt-1">
+                                Auto: Best method automatically chosen | Advanced: Best for tables | Fast: Quick text extraction | OCR: For scanned documents
+                            </small>
+                        </div>
+
+                        <!-- Upload Area -->
+                        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                            <div id="uploadPrompt">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                                <h4>Drop PDF file here or click to upload</h4>
+                                <p class="text-muted">Supports PDF files up to 10MB</p>
+                                <button type="button" class="btn btn-primary">
+                                    <i class="fas fa-file-upload"></i> Choose File
+                                </button>
+                            </div>
+                            <div id="uploadInfo" style="display: none;">
+                                <i class="fas fa-file-pdf fa-2x text-danger mb-2"></i>
+                                <div id="fileName"></div>
+                                <div id="fileSize" class="text-muted"></div>
+                            </div>
+                        </div>
+                        
+                        <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+                        
+                        <!-- Processing Status -->
+                        <div id="processingStatus" class="processing text-center mt-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Processing...</span>
+                            </div>
+                            <h5 class="mt-3">Processing Document...</h5>
+                            <p class="text-muted">Extracting text and analyzing content</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-container" id="resultsContainer">
+            <div class="row">
+                <!-- Metadata and Statistics -->
+                <div class="col-lg-4">
+                    <div class="card metadata-card mb-3">
+                        <div class="card-body">
+                            <h5><i class="fas fa-info-circle"></i> Document Info</h5>
+                            <div id="documentMetadata">
+                                <!-- Metadata will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card stats-card">
+                        <div class="card-body">
+                            <h5><i class="fas fa-chart-bar"></i> Statistics</h5>
+                            <div id="documentStats">
+                                <!-- Statistics will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content and Analysis -->
+                <div class="col-lg-8">
+                    <div class="card extraction-result">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs" id="resultTabs" role="tablist">
+                                <li class="nav-item">
+                                    <button class="nav-link active" id="content-tab" data-bs-toggle="tab" 
+                                            data-bs-target="#content" type="button" role="tab">
+                                        <i class="fas fa-file-text"></i> Extracted Text
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" id="tables-tab" data-bs-toggle="tab" 
+                                            data-bs-target="#tables" type="button" role="tab">
+                                        <i class="fas fa-table"></i> Tables
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" id="analysis-tab" data-bs-toggle="tab" 
+                                            data-bs-target="#analysis" type="button" role="tab">
+                                        <i class="fas fa-brain"></i> Analysis
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" id="raw-tab" data-bs-toggle="tab" 
+                                            data-bs-target="#raw" type="button" role="tab">
+                                        <i class="fas fa-code"></i> Raw Data
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content" id="resultTabContent">
+                                <!-- Extracted Text Tab -->
+                                <div class="tab-pane fade show active" id="content" role="tabpanel">
+                                    <div id="extractedContent">
+                                        <!-- Content will be populated here -->
+                                    </div>
+                                </div>
+                                
+                                <!-- Tables Tab -->
+                                <div class="tab-pane fade" id="tables" role="tabpanel">
+                                    <div id="extractedTables">
+                                        <!-- Tables will be populated here -->
+                                    </div>
+                                </div>
+                                
+                                <!-- Analysis Tab -->
+                                <div class="tab-pane fade" id="analysis" role="tabpanel">
+                                    <div id="contentAnalysis">
+                                        <!-- Analysis will be populated here -->
+                                    </div>
+                                </div>
+                                
+                                <!-- Raw Data Tab -->
+                                <div class="tab-pane fade" id="raw" role="tabpanel">
+                                    <pre id="rawData" style="max-height: 400px; overflow-y: auto;"></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const processingStatus = document.getElementById('processingStatus');
+        const resultsContainer = document.getElementById('resultsContainer');
+
+        // File upload handling
+        fileInput.addEventListener('change', handleFile);
+
+        // Drag and drop handling
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                handleFile();
+            }
+        });
+
+        function handleFile() {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            // Update upload area
+            document.getElementById('uploadPrompt').style.display = 'none';
+            document.getElementById('uploadInfo').style.display = 'block';
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = formatFileSize(file.size);
+
+            // Process the file
+            processDocument(file);
+        }
+
+        function processDocument(file) {
+            const formData = new FormData();
+            formData.append('document', file);
+            
+            // Get selected extraction method
+            const method = document.querySelector('input[name="method"]:checked').value;
+            formData.append('method', method);
+
+            // Show processing status
+            resultsContainer.style.display = 'none';
+            processingStatus.style.display = 'block';
+
+            fetch('/documents/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                processingStatus.style.display = 'none';
+                
+                if (data.success) {
+                    displayResults(data);
+                } else {
+                    displayError(data.error);
+                }
+            })
+            .catch(error => {
+                processingStatus.style.display = 'none';
+                displayError('Processing failed: ' + error.message);
+            });
+        }
+
+        function displayResults(data) {
+            // Show results container
+            resultsContainer.style.display = 'block';
+
+            // Populate metadata
+            populateMetadata(data);
+            
+            // Populate statistics
+            populateStatistics(data);
+            
+            // Populate content
+            populateContent(data);
+            
+            // Populate tables
+            populateTables(data);
+            
+            // Populate analysis
+            populateAnalysis(data);
+            
+            // Populate raw data
+            document.getElementById('rawData').textContent = JSON.stringify(data, null, 2);
+        }
+
+        function populateMetadata(data) {
+            const metadata = data.metadata || {};
+            const html = `
+                <div class="mb-2">
+                    <strong>Filename:</strong> ${data.filename || 'Unknown'}
+                </div>
+                <div class="mb-2">
+                    <strong>Pages:</strong> ${metadata.num_pages || 0}
+                </div>
+                <div class="mb-2">
+                    <strong>Method:</strong> ${data.best_method || metadata.extraction_method || 'Unknown'}
+                </div>
+                <div class="mb-2">
+                    <strong>File Size:</strong> ${formatFileSize(data.file_size || 0)}
+                </div>
+                ${metadata.title ? `<div class="mb-2"><strong>Title:</strong> ${metadata.title}</div>` : ''}
+                ${metadata.author ? `<div class="mb-2"><strong>Author:</strong> ${metadata.author}</div>` : ''}
+            `;
+            document.getElementById('documentMetadata').innerHTML = html;
+        }
+
+        function populateStatistics(data) {
+            const analysis = data.analysis || {};
+            const stats = analysis.statistics || {};
+            const insights = analysis.content_insights || {};
+            
+            const html = `
+                <div class="mb-2">
+                    <strong>Characters:</strong> ${(stats.total_characters || 0).toLocaleString()}
+                </div>
+                <div class="mb-2">
+                    <strong>Words:</strong> ${(stats.total_words || 0).toLocaleString()}
+                </div>
+                <div class="mb-2">
+                    <strong>Tables:</strong> ${data.total_tables || 0}
+                </div>
+                <div class="mb-2">
+                    <strong>Document Type:</strong> ${insights.document_length || 'Unknown'}
+                </div>
+                ${data.avg_confidence ? `
+                <div class="mb-2">
+                    <strong>OCR Confidence:</strong>
+                    <div class="confidence-bar mt-1">
+                        <div class="confidence-fill" style="width: ${data.avg_confidence}%"></div>
+                    </div>
+                    <small>${data.avg_confidence.toFixed(1)}%</small>
+                </div>
+                ` : ''}
+            `;
+            document.getElementById('documentStats').innerHTML = html;
+        }
+
+        function populateContent(data) {
+            const content = data.content || [];
+            let html = '';
+            
+            content.forEach((page, index) => {
+                const pageText = page.text || '';
+                const hasError = page.error;
+                
+                html += `
+                <div class="mb-3">
+                    <h6>
+                        <i class="fas fa-file-alt"></i> Page ${page.page || index + 1}
+                        ${hasError ? '<span class="badge bg-danger ms-2">Error</span>' : ''}
+                        ${page.ocr_confidence ? `<span class="badge bg-info ms-2">${page.ocr_confidence}% confidence</span>` : ''}
+                    </h6>
+                    <div class="page-content">
+                        ${hasError ? `<div class="text-danger">Error: ${page.error}</div>` : 
+                          (pageText ? pageText.replace(/\n/g, '<br>') : '<em class="text-muted">No text found</em>')}
+                    </div>
+                </div>`;
+            });
+            
+            document.getElementById('extractedContent').innerHTML = html || '<p class="text-muted">No content extracted</p>';
+        }
+
+        function populateTables(data) {
+            const tables = data.tables || [];
+            let html = '';
+            
+            if (tables.length === 0) {
+                html = '<p class="text-muted">No tables found in the document</p>';
+            } else {
+                tables.forEach((table, index) => {
+                    html += `
+                    <div class="mb-4">
+                        <h6><i class="fas fa-table"></i> Table ${index + 1} (Page ${table.page})</h6>
+                        <p class="text-muted">${table.rows} rows × ${table.columns} columns</p>
+                        <div class="table-preview">
+                            <table class="table table-sm table-bordered">
+                    `;
+                    
+                    if (table.data && table.data.length > 0) {
+                        table.data.slice(0, 10).forEach((row, rowIndex) => {
+                            html += '<tr>';
+                            if (row && Array.isArray(row)) {
+                                row.forEach(cell => {
+                                    html += `<td>${cell || ''}</td>`;
+                                });
+                            }
+                            html += '</tr>';
+                        });
+                        
+                        if (table.data.length > 10) {
+                            html += `<tr><td colspan="${table.columns}" class="text-center text-muted">... ${table.data.length - 10} more rows</td></tr>`;
+                        }
+                    }
+                    
+                    html += '</table></div></div>';
+                });
+            }
+            
+            document.getElementById('extractedTables').innerHTML = html;
+        }
+
+        function populateAnalysis(data) {
+            const analysis = data.analysis || {};
+            const insights = analysis.content_insights || {};
+            const keywords = insights.top_keywords || [];
+            
+            let html = `
+            <div class="row">
+                <div class="col-md-6">
+                    <h6><i class="fas fa-key"></i> Top Keywords</h6>
+                    <div class="mb-3">
+            `;
+            
+            if (keywords.length > 0) {
+                keywords.slice(0, 10).forEach(([word, count]) => {
+                    html += `<span class="badge bg-primary me-1 mb-1">${word} (${count})</span>`;
+                });
+            } else {
+                html += '<p class="text-muted">No keywords extracted</p>';
+            }
+            
+            html += `
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h6><i class="fas fa-info-circle"></i> Document Insights</h6>
+                    <ul class="list-unstyled">
+                        <li><strong>Length:</strong> ${insights.document_length || 'Unknown'}</li>
+                        <li><strong>Has Tables:</strong> ${insights.has_tables ? 'Yes' : 'No'}</li>
+                        <li><strong>Table Count:</strong> ${insights.table_count || 0}</li>
+                    </ul>
+                </div>
+            </div>
+            `;
+            
+            document.getElementById('contentAnalysis').innerHTML = html;
+        }
+
+        function displayError(message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.querySelector('.container').insertBefore(alertDiv, document.querySelector('.row'));
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Reset upload area when clicking
+        function resetUpload() {
+            document.getElementById('uploadPrompt').style.display = 'block';
+            document.getElementById('uploadInfo').style.display = 'none';
+            fileInput.value = '';
+            resultsContainer.style.display = 'none';
+            processingStatus.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

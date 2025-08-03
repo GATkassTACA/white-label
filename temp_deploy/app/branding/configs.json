@@ -1,0 +1,80 @@
+{
+  "scarlettai": {
+    "company_name": "ScarlettAI",
+    "primary_color": "#e84393",
+    "secondary_color": "#fd79a8",
+    "logo_url": "static/images/scarlettai-logo.svg",
+    "welcome_message": "Welcome to ScarlettAI Chat!",
+    "chat_placeholder": "Type your message to ScarlettAI...",
+    "footer_text": "Powered by ScarlettAI Technology",
+    "features": {
+      "real_time_messaging": true,
+      "file_sharing": true,
+      "voice_calls": false,
+      "video_calls": false,
+      "custom_themes": true
+    },
+    "limits": {
+      "max_rooms": 10,
+      "max_users_per_room": 50,
+      "message_history_days": 30
+    },
+    "styling": {
+      "font_family": "Inter, sans-serif",
+      "border_radius": "8px",
+      "box_shadow": "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
+    }
+  },
+  "pharmahub": {
+    "company_name": "PharmaHub",
+    "primary_color": "#0984e3",
+    "secondary_color": "#74b9ff",
+    "logo_url": "static/images/pharmahub-logo.svg",
+    "welcome_message": "Chat with PharmaHub's assistant",
+    "chat_placeholder": "Ask PharmaHub anything...",
+    "footer_text": "PharmaHub - Your Trusted Healthcare Partner",
+    "features": {
+      "real_time_messaging": true,
+      "file_sharing": true,
+      "voice_calls": true,
+      "video_calls": false,
+      "custom_themes": true
+    },
+    "limits": {
+      "max_rooms": 20,
+      "max_users_per_room": 100,
+      "message_history_days": 90
+    },
+    "styling": {
+      "font_family": "Roboto, sans-serif",
+      "border_radius": "6px",
+      "box_shadow": "0 2px 4px rgba(0, 0, 0, 0.1)"
+    }
+  },
+  "default": {
+    "company_name": "ChatHub Pro",
+    "primary_color": "#2563eb",
+    "secondary_color": "#64748b",
+    "logo_url": "/static/images/logo.png",
+    "welcome_message": "Welcome to ChatHub Pro!",
+    "chat_placeholder": "Type your message...",
+    "footer_text": "Powered by White Label Chat",
+    "features": {
+      "real_time_messaging": true,
+      "file_sharing": true,
+      "voice_calls": false,
+      "video_calls": false,
+      "custom_themes": true
+    },
+    "limits": {
+      "max_rooms": 10,
+      "max_users_per_room": 50,
+      "message_history_days": 30
+    },
+    "styling": {
+      "font_family": "Inter, sans-serif",
+      "border_radius": "8px",
+      "box_shadow": "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
+    }
+  }
+}
