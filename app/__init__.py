@@ -22,6 +22,14 @@ def create_app():
         from config import DevelopmentConfig
         app.config.from_object(DevelopmentConfig)
     
+    # Initialize database
+    from models import db
+    db.init_app(app)
+    
+    # Create database tables
+    with app.app_context():
+        db.create_all()
+    
     socketio = SocketIO(app, cors_allowed_origins="*")
     
     # Register blueprints

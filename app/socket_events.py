@@ -1,9 +1,10 @@
 from flask_socketio import emit, join_room, leave_room
 from flask import request
-from datetime import datetime
+from datetime import datetime, timezone
+from models import db, User, Message, Room, Client, Analytics
 import uuid
 
-# Store active users and rooms in memory (in production, use Redis or database)
+# Store active users and rooms in memory (for session management)
 active_users = {}
 room_users = {}
 
@@ -13,22 +14,50 @@ def register_socket_events(socketio):
     @socketio.on('connect')
     def on_connect():
         """Handle user connection"""
+        # Create or get guest user
         user_id = str(uuid.uuid4())
         username = f"User_{user_id[:8]}"
         
-        active_users[request.sid] = {
-            'user_id': user_id,
-            'username': username,
-            'connected_at': datetime.now()
-        }
+        # Create guest user in database
+        user = User(
+            id=user_id,
+            username=username,
+            is_guest=True,
+            is_active=True,
+            last_seen=datetime.now(timezone.utc)
+        )
         
-        emit('user_connected', {
-            'user_id': user_id,
-            'username': username,
-            'message': f'{username} connected to the chat'
-        })
-        
-        print(f"User {username} connected with session {request.sid}")
+        try:
+            db.session.add(user)
+            db.session.commit()
+            
+            # Store in memory for session
+            active_users[request.sid] = {
+                'user_id': user_id,
+                'username': username,
+                'connected_at': datetime.now(timezone.utc)
+            }
+            
+            emit('user_connected', {
+                'user_id': user_id,
+                'username': username,
+                'message': f'{username} connected to the chat'
+            })
+            
+            # Track analytics
+            analytics = Analytics(
+                metric_type='user_connected',
+                user_id=user_id,
+                extra_data={'session_id': request.sid}
+            )
+            db.session.add(analytics)
+            db.session.commit()
+            
+            print(f"User {username} connected with session {request.sid}")
+            
+        except Exception as e:
+            print(f"Error creating user: {e}")
+            db.session.rollback()
     
     @socketio.on('disconnect')
     def on_disconnect():
@@ -104,23 +133,72 @@ def register_socket_events(socketio):
         if request.sid in active_users:
             user_info = active_users[request.sid]
             username = user_info['username']
-            message = data.get('message', '')
-            room_id = data.get('room_id', 'general')
+            user_id = user_info['user_id']
+            message_content = data.get('message', '')
+            room_id_name = data.get('room_id', 'general')
             
-            if message.strip():
-                message_data = {
-                    'user_id': user_info['user_id'],
-                    'username': username,
-                    'message': message,
-                    'timestamp': datetime.now().isoformat(),
-                    'room_id': room_id
-                }
-                
-                # Broadcast to room (or all users if no room specified)
-                if room_id and room_id != 'general':
-                    emit('receive_message', message_data, room=room_id)
-                else:
-                    emit('receive_message', message_data, broadcast=True)
+            if message_content.strip():
+                try:
+                    # Get or create room
+                    room = Room.query.filter_by(name=room_id_name).first()
+                    if not room:
+                        room = Room(
+                            name=room_id_name,
+                            description=f"Auto-created room: {room_id_name}",
+                            is_private=False,
+                            max_users=50
+                        )
+                        db.session.add(room)
+                        db.session.commit()
+                    
+                    # Get user from database
+                    user = User.query.get(user_id)
+                    if not user:
+                        print(f"User {user_id} not found in database")
+                        return
+                    
+                    # Create message in database
+                    message = Message(
+                        content=message_content,
+                        message_type='text',
+                        user_id=user_id,
+                        room_id=room.id,
+                        extra_data={'session_id': request.sid}
+                    )
+                    
+                    db.session.add(message)
+                    db.session.commit()
+                    
+                    # Prepare message data for broadcast
+                    message_data = {
+                        'id': message.id,
+                        'user_id': user_id,
+                        'username': username,
+                        'message': message_content,
+                        'timestamp': message.created_at.isoformat(),
+                        'room_id': room_id_name,
+                        'message_type': 'text'
+                    }
+                    
+                    # Broadcast to room (or all users if general room)
+                    if room_id_name and room_id_name != 'general':
+                        emit('receive_message', message_data, room=room_id_name)
+                    else:
+                        emit('receive_message', message_data, broadcast=True)
+                    
+                    # Track analytics
+                    analytics = Analytics(
+                        metric_type='message_sent',
+                        user_id=user_id,
+                        room_id=room.id,
+                        extra_data={'message_length': len(message_content)}
+                    )
+                    db.session.add(analytics)
+                    db.session.commit()
+                    
+                except Exception as e:
+                    print(f"Error saving message: {e}")
+                    db.session.rollback()
     
     @socketio.on('typing')
     def on_typing(data):
