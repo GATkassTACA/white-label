@@ -24,14 +24,14 @@ Currently configured clients:
 - **URL**: `http://localhost:5000/scarlettai`
 - **API**: `http://localhost:5000/api/branding/scarlettai`
 - **Primary Color**: #e84393 (Pink)
-- **Features**: Real-time messaging, file sharing, custom themes
+- **Features**: Real-time messaging, file sharing, custom themes, **PDF document scanning**
 - **Limits**: 10 rooms, 50 users per room, 30-day message history
 
 ### PharmaHub  
 - **URL**: `http://localhost:5000/pharmahub`
 - **API**: `http://localhost:5000/api/branding/pharmahub`
 - **Primary Color**: #0984e3 (Blue)
-- **Features**: Real-time messaging, file sharing, voice calls, custom themes
+- **Features**: Real-time messaging, file sharing, voice calls, custom themes, **PDF document scanning**
 - **Limits**: 20 rooms, 100 users per room, 90-day message history
 
 ## API Endpoints
@@ -71,6 +71,30 @@ Examples:
 - `http://localhost:5000/scarlettai`
 - `http://localhost:5000/pharmahub`
 
+## Document Scanning Feature
+
+The platform now includes a comprehensive PDF document scanning feature available at `/documents`:
+
+### Features
+- **Multi-method PDF processing**: PyPDF2, pdfplumber, and OCR with Tesseract
+- **Drag & drop upload interface** with real-time feedback
+- **Content analysis**: Text extraction, word counts, keyword analysis
+- **Processing history**: Track all document processing attempts
+- **File validation**: 10MB limit, PDF format validation
+- **Automatic fallback**: If one extraction method fails, others are tried
+
+### URLs
+- `/documents/` - Main document scanner interface
+- `/documents/history` - View processing history
+- `/documents/api/process` - API endpoint for document processing
+
+### Supported File Types
+- PDF documents (up to 10MB)
+- Multiple extraction methods ensure high success rate
+
+### Integration
+The document scanning feature is available to all clients and can be accessed from any branded interface.
+
 ## Configuration Format
 
 Each client configuration includes:
@@ -108,9 +132,38 @@ Each client configuration includes:
 
 ## Adding New Clients
 
+### Option 1: Using the Branding Wizard (Recommended)
+
+1. Navigate to `/wizard` in your browser
+2. Fill out the branding wizard form:
+   - **Client ID**: Unique identifier (letters, numbers, underscores only)
+   - **Company Name**: Display name for the client
+   - **Colors**: Primary and secondary brand colors
+   - **Logo**: Upload logo file (PNG, JPG, GIF, SVG)
+   - **Messages**: Welcome message, chat placeholder, footer text
+   - **Features**: Enable/disable file sharing, voice/video calls
+   - **Limits**: Configure room limits, user limits, message history
+   - **Styling**: Choose fonts and visual styling options
+3. Click "Create Branding" to generate the client configuration
+4. You'll be redirected to the new client's branded chat interface
+
+### Option 2: Manual Configuration
+
 1. Add a new client configuration to `app/branding/configs.json`
 2. Create logo files in `static/images/`
 3. Test the configuration at `/{client_name}`
+
+## Branding Wizard Features
+
+The wizard provides:
+- **Live Preview**: See changes in real-time as you configure
+- **Client ID Validation**: Ensures unique client identifiers
+- **Logo Upload**: Automatic handling of logo files
+- **Feature Toggles**: Easy enable/disable of platform features
+- **Advanced Styling**: Professional styling options
+- **Form Validation**: Prevents invalid configurations
+
+Access the wizard at: `http://localhost:5000/wizard`
 
 ## Logo Files
 

@@ -24,6 +24,12 @@ def create_app():
     from app.routes.chat import chat_bp
     app.register_blueprint(chat_bp)
     
+    from app.routes.wizard import bp as wizard_bp
+    app.register_blueprint(wizard_bp)
+    
+    from app.routes.documents import documents_bp
+    app.register_blueprint(documents_bp)
+    
     # Register socket events
     from app.socket_events import register_socket_events
     register_socket_events(socketio)

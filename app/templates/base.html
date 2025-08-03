@@ -70,12 +70,36 @@
             margin-top: 0.5rem;
             cursor: pointer;
         }
+        
+        .nav-menu {
+            background: white;
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid #eee;
+            text-align: right;
+        }
+        
+        .nav-menu a {
+            color: var(--primary-color);
+            text-decoration: none;
+            margin: 0 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .nav-menu a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <img src="{{ branding.logo_url }}" alt="Logo" class="logo">
         <h1>{{ branding.company_name }}</h1>
+    </div>
+    
+    <div class="nav-menu">
+        <a href="{{ url_for('chat.index') }}">🏠 Home</a>
+        <a href="{{ url_for('wizard.create_brand') }}">✨ Create New Brand</a>
+        <a href="{{ url_for('chat.get_clients') }}">📋 All Clients</a>
     </div>
     
     <div class="chat-container">
