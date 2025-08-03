@@ -157,7 +157,6 @@ jobs:
     # - name: Deploy to Heroku  
     #   if: false
     #   run: echo "Heroku deployment disabled"
-    #   heroku_email: ${{ secrets.HEROKU_EMAIL }}
 
     - name: Notify deployment success
       if: success()
