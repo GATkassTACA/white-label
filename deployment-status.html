@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure Deployment Status</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .status-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid #007acc;
+        }
+        .success { border-left-color: #28a745; }
+        .warning { border-left-color: #ffc107; }
+        .info { border-left-color: #17a2b8; }
+        .spinning {
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .test-button {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #005999;
+        }
+        .test-result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        .success-result { background: #d4edda; color: #155724; }
+        .error-result { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Azure Deployment Status Checker</h1>
+        <p>Use this page to check your Azure deployment status and test your application once it's live.</p>
+
+        <div class="status-card info">
+            <h3><span class="spinning">⏳</span> Deployment in Progress</h3>
+            <p>Your Azure deployment is currently running. This typically takes 5-15 minutes.</p>
+            <p><strong>What's happening:</strong></p>
+            <ul>
+                <li>Creating Azure resources (App Service, Database, Redis)</li>
+                <li>Configuring networking and security</li>
+                <li>Setting up SSL certificates</li>
+                <li>Deploying your application code</li>
+                <li>Initializing health checks</li>
+            </ul>
+        </div>
+
+        <div class="status-card warning">
+            <h3>📋 Next Steps (Do After Deployment Completes)</h3>
+            <p>Once deployment finishes, you'll need to:</p>
+            <ol>
+                <li><strong>Get your App URL:</strong> Check Azure Portal for your app service URL</li>
+                <li><strong>Configure Environment Variables:</strong> Set database connections, Redis, and secrets</li>
+                <li><strong>Initialize Database:</strong> Create tables and set up initial data</li>
+                <li><strong>Test Health Endpoints:</strong> Verify your app is running correctly</li>
+            </ol>
+        </div>
+
+        <div class="status-card">
+            <h3>🧪 Test Your Deployment</h3>
+            <p>Once deployment completes, enter your Azure App Service URL to test:</p>
+            <input type="text" id="appUrl" placeholder="https://your-app-name.azurewebsites.net" 
+                   style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;">
+            
+            <div>
+                <button class="test-button" onclick="testHealth()">Test Health Check</button>
+                <button class="test-button" onclick="testFrontend()">Test Frontend</button>
+                <button class="test-button" onclick="testAPI()">Test API</button>
+            </div>
+            
+            <div id="testResults"></div>
+        </div>
+
+        <div class="status-card success">
+            <h3>✅ Deployment Completion Checklist</h3>
+            <p>Mark these off as you complete them:</p>
+            <label><input type="checkbox"> Deployment finished successfully</label><br>
+            <label><input type="checkbox"> App Service URL is accessible</label><br>
+            <label><input type="checkbox"> Health check endpoint works</label><br>
+            <label><input type="checkbox"> Database connection configured</label><br>
+            <label><input type="checkbox"> Redis cache configured</label><br>
+            <label><input type="checkbox"> SSL certificate active</label><br>
+            <label><input type="checkbox"> Frontend loads correctly</label><br>
+            <label><input type="checkbox"> Authentication system works</label><br>
+        </div>
+
+        <div class="status-card info">
+            <h3>📖 Documentation Links</h3>
+            <ul>
+                <li><a href="AZURE_DEPLOYMENT_GUIDE.md">Azure Deployment Guide</a></li>
+                <li><a href="AZURE_POST_DEPLOYMENT.md">Post-Deployment Configuration</a></li>
+                <li><a href="PRODUCTION_GUIDE.md">Production Setup Guide</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        async function testEndpoint(url, description) {
+            const resultDiv = document.getElementById('testResults');
+            resultDiv.innerHTML += `<div>Testing ${description}...</div>`;
+            
+            try {
+                const response = await fetch(url, { 
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                const status = response.ok ? 'SUCCESS' : 'ERROR';
+                const statusClass = response.ok ? 'success-result' : 'error-result';
+                
+                resultDiv.innerHTML += `
+                    <div class="test-result ${statusClass}">
+                        ${description}: ${status} (${response.status})
+                        ${response.ok ? '✅' : '❌'}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML += `
+                    <div class="test-result error-result">
+                        ${description}: ERROR - ${error.message} ❌
+                    </div>
+                `;
+            }
+        }
+
+        function getAppUrl() {
+            const url = document.getElementById('appUrl').value.trim();
+            if (!url) {
+                alert('Please enter your Azure App Service URL');
+                return null;
+            }
+            return url.endsWith('/') ? url.slice(0, -1) : url;
+        }
+
+        async function testHealth() {
+            const baseUrl = getAppUrl();
+            if (!baseUrl) return;
+            
+            document.getElementById('testResults').innerHTML = '<h4>Health Check Test Results:</h4>';
+            await testEndpoint(`${baseUrl}/api/health`, 'Health Check');
+        }
+
+        async function testFrontend() {
+            const baseUrl = getAppUrl();
+            if (!baseUrl) return;
+            
+            document.getElementById('testResults').innerHTML = '<h4>Frontend Test Results:</h4>';
+            await testEndpoint(`${baseUrl}/app/`, 'Frontend Application');
+        }
+
+        async function testAPI() {
+            const baseUrl = getAppUrl();
+            if (!baseUrl) return;
+            
+            document.getElementById('testResults').innerHTML = '<h4>API Test Results:</h4>';
+            await testEndpoint(`${baseUrl}/api/`, 'API Root');
+            await testEndpoint(`${baseUrl}/api/ready`, 'Readiness Check');
+            await testEndpoint(`${baseUrl}/api/live`, 'Liveness Check');
+        }
+
+        // Auto-refresh page every 30 seconds if deployment is in progress
+        let refreshInterval = setInterval(() => {
+            if (document.querySelector('.spinning')) {
+                console.log('Deployment still in progress, refreshing status...');
+                // In a real implementation, you'd check actual deployment status here
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
