@@ -1,0 +1,94 @@
+from flask import Blueprint, render_template, send_from_directory, make_response
+import os
+
+frontend_bp = Blueprint('frontend', __name__)
+
+@frontend_bp.route('/')
+def index():
+    """Serve the main frontend with proper CSP headers"""
+    try:
+        # Read the secure HTML file
+        frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend')
+        with open(os.path.join(frontend_dir, 'index-secure.html'), 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        response = make_response(content)
+        response.headers['Content-Type'] = 'text/html; charset=utf-8'
+        
+        # Add security headers
+        response.headers['Content-Security-Policy'] = (
+            "default-src 'self'; "
+            "script-src 'self' https://unpkg.com https://cdn.socket.io https://cdn.tailwindcss.com 'unsafe-eval'; "
+            "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; "
+            "connect-src 'self' http://localhost:5000 ws://localhost:5000; "
+            "img-src 'self' data: https:; "
+            "font-src 'self' https:;"
+        )
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'DENY'
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        
+        return response
+    except FileNotFoundError:
+        return "Frontend not found", 404
+
+@frontend_bp.route('/auth.html')
+def auth():
+    """Serve the authentication page"""
+    try:
+        frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend')
+        with open(os.path.join(frontend_dir, 'auth.html'), 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        response = make_response(content)
+        response.headers['Content-Type'] = 'text/html; charset=utf-8'
+        
+        # Add security headers for auth page
+        response.headers['Content-Security-Policy'] = (
+            "default-src 'self'; "
+            "script-src 'self' https://unpkg.com https://cdn.tailwindcss.com 'unsafe-eval' 'unsafe-inline'; "
+            "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; "
+            "connect-src 'self' http://localhost:5000; "
+            "img-src 'self' data: https:; "
+            "font-src 'self' https:;"
+        )
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'DENY'
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        
+        return response
+    except FileNotFoundError:
+        return "Auth page not found", 404
+
+@frontend_bp.route('/js/<path:filename>')
+def serve_js(filename):
+    """Serve JavaScript files with proper headers"""
+    frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend')
+    js_dir = os.path.join(frontend_dir, 'js')
+    
+    response = make_response(send_from_directory(js_dir, filename))
+    response.headers['Content-Type'] = 'application/javascript; charset=utf-8'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    
+    return response
+
+@frontend_bp.route('/css/<path:filename>')
+def serve_css(filename):
+    """Serve CSS files with proper headers"""
+    frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend')
+    css_dir = os.path.join(frontend_dir, 'css')
+    
+    response = make_response(send_from_directory(css_dir, filename))
+    response.headers['Content-Type'] = 'text/css; charset=utf-8'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    
+    return response
+
+@frontend_bp.route('/static/<path:filename>')
+def serve_static(filename):
+    """Serve static assets"""
+    frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend')
+    static_dir = os.path.join(frontend_dir, 'static')
+    
+    return send_from_directory(static_dir, filename)

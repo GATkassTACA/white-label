@@ -26,6 +26,10 @@ def create_app():
     # Initialize JWT
     jwt = JWTManager(app)
     
+    # Initialize security middleware
+    from app.middleware.security import init_security_middleware
+    init_security_middleware(app)
+    
     # JWT error handlers
     @jwt.expired_token_loader
     def expired_token_callback(jwt_header, jwt_payload):
@@ -51,16 +55,19 @@ def create_app():
     
     # Register blueprints
     from app.routes.chat import chat_bp
-    app.register_blueprint(chat_bp)
+    app.register_blueprint(chat_bp, url_prefix='/api')
     
     from app.routes.wizard import bp as wizard_bp
-    app.register_blueprint(wizard_bp)
+    app.register_blueprint(wizard_bp, url_prefix='/api')
     
     from app.routes.documents import documents_bp
-    app.register_blueprint(documents_bp)
+    app.register_blueprint(documents_bp, url_prefix='/api')
     
     from app.routes.auth import auth_bp
     app.register_blueprint(auth_bp)
+    
+    from app.routes.frontend import frontend_bp
+    app.register_blueprint(frontend_bp)
     
     # Register socket events
     from app.socket_events import register_socket_events
