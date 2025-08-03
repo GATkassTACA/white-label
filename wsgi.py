@@ -45,4 +45,6 @@ except Exception as e:
 # The Gunicorn server will handle the WSGI interface
 if __name__ == "__main__":
     print("Starting in development mode...")
-    app.run(host='0.0.0.0', port=8000, debug=False)
+    port = int(os.environ.get('PORT', 8000))
+    print(f"Using port: {port}")
+    app.run(host='0.0.0.0', port=port, debug=False)
