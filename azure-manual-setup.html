@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure Manual Setup Guide</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid #007acc;
+        }
+        .success { border-left-color: #28a745; }
+        .warning { border-left-color: #ffc107; }
+        .info { border-left-color: #17a2b8; }
+        .code-block {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+            white-space: pre-wrap;
+        }
+        .checklist {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .checklist input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .url-input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .btn {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #005999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Azure Manual Setup - Step by Step</h1>
+        
+        <div class="step info">
+            <h3>📋 Setup Progress Tracker</h3>
+            <div class="checklist">
+                <label><input type="checkbox" id="cleanup"> 1. Cleaned up failed deployment</label><br>
+                <label><input type="checkbox" id="rg"> 2. Created new resource group: white-label-rg-v2</label><br>
+                <label><input type="checkbox" id="app"> 3. Created App Service: white-label-chat-km</label><br>
+                <label><input type="checkbox" id="db"> 4. Created PostgreSQL: white-label-db-km</label><br>
+                <label><input type="checkbox" id="redis"> 5. Created Redis: white-label-redis-km</label><br>
+                <label><input type="checkbox" id="insights"> 6. Created Application Insights</label><br>
+                <label><input type="checkbox" id="config"> 7. Added basic App Service configuration</label><br>
+            </div>
+        </div>
+
+        <div class="step warning">
+            <h3>🔗 Get Your Connection Strings</h3>
+            <p>Once all resources are created, collect these details from Azure Portal:</p>
+            
+            <h4>App Service URL:</h4>
+            <input type="text" class="url-input" id="appUrl" placeholder="https://white-label-chat-km.azurewebsites.net">
+            
+            <h4>Database Details:</h4>
+            <p>Go to PostgreSQL → Connection strings → Copy the connection string</p>
+            <textarea class="url-input" id="dbUrl" rows="3" placeholder="postgresql://dbadmin:YOUR_PASSWORD@white-label-db-km.postgres.database.azure.com:5432/postgres?sslmode=require"></textarea>
+            
+            <h4>Redis Details:</h4>
+            <p>Go to Redis → Access keys → Copy Primary connection string</p>
+            <textarea class="url-input" id="redisUrl" rows="3" placeholder="redis://:PRIMARY_KEY@white-label-redis-km.redis.cache.windows.net:6380/0?ssl_cert_reqs=required"></textarea>
+            
+            <h4>Application Insights Key:</h4>
+            <p>Go to Application Insights → Overview → Copy Instrumentation Key</p>
+            <input type="text" class="url-input" id="insightsKey" placeholder="your-instrumentation-key">
+        </div>
+
+        <div class="step success">
+            <h3>⚙️ Final App Service Configuration</h3>
+            <p>Add these additional settings to App Service → Configuration → Application settings:</p>
+            <div class="code-block" id="finalConfig">
+SECRET_KEY=[generate-32-char-key]
+DATABASE_URL=[your-database-connection-string]
+REDIS_URL=[your-redis-connection-string]
+APPINSIGHTS_INSTRUMENTATIONKEY=[your-insights-key]
+            </div>
+            <button class="btn" onclick="generateConfig()">Generate Complete Configuration</button>
+        </div>
+
+        <div class="step info">
+            <h3>🗄️ Database Setup</h3>
+            <p>After configuration, initialize your database:</p>
+            <ol>
+                <li>Go to App Service → Development Tools → SSH</li>
+                <li>Click "Go →"</li>
+                <li>Run this command:</li>
+            </ol>
+            <div class="code-block">python -c "from app import create_app; from app.extensions import db; app=create_app(); app.app_context().push(); db.create_all(); print('Database initialized!')"</div>
+        </div>
+
+        <div class="step success">
+            <h3>🧪 Test Your Deployment</h3>
+            <button class="btn" onclick="testApp()">Test App</button>
+            <button class="btn" onclick="testHealth()">Test Health</button>
+            <button class="btn" onclick="openApp()">Open App</button>
+            <div id="testResults"></div>
+        </div>
+
+        <div class="step info">
+            <h3>📖 Next Steps</h3>
+            <ul>
+                <li>Deploy your code via Git or GitHub Actions</li>
+                <li>Set up custom domain (optional)</li>
+                <li>Configure email provider (SendGrid)</li>
+                <li>Set up monitoring alerts</li>
+                <li>Test all functionality</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function generateConfig() {
+            const appUrl = document.getElementById('appUrl').value;
+            const dbUrl = document.getElementById('dbUrl').value;
+            const redisUrl = document.getElementById('redisUrl').value;
+            const insightsKey = document.getElementById('insightsKey').value;
+            
+            const secretKey = generateSecretKey();
+            
+            const config = `SECRET_KEY=${secretKey}
+DATABASE_URL=${dbUrl}
+REDIS_URL=${redisUrl}
+APPINSIGHTS_INSTRUMENTATIONKEY=${insightsKey}`;
+            
+            document.getElementById('finalConfig').textContent = config;
+        }
+
+        function generateSecretKey() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+            let result = '';
+            for (let i = 0; i < 32; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        async function testApp() {
+            const appUrl = document.getElementById('appUrl').value;
+            if (!appUrl) {
+                alert('Please enter your App Service URL first');
+                return;
+            }
+            
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = '<h4>Testing App...</h4>';
+            
+            try {
+                const response = await fetch(`${appUrl}/app/`);
+                const status = response.ok ? 'SUCCESS' : 'ERROR';
+                resultsDiv.innerHTML += `<p>Frontend Test: ${status} (${response.status})</p>`;
+            } catch (error) {
+                resultsDiv.innerHTML += `<p>Frontend Test: ERROR - ${error.message}</p>`;
+            }
+        }
+
+        async function testHealth() {
+            const appUrl = document.getElementById('appUrl').value;
+            if (!appUrl) {
+                alert('Please enter your App Service URL first');
+                return;
+            }
+            
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = '<h4>Testing Health...</h4>';
+            
+            try {
+                const response = await fetch(`${appUrl}/api/health`);
+                const status = response.ok ? 'SUCCESS' : 'NEEDS CONFIG';
+                resultsDiv.innerHTML += `<p>Health Check: ${status} (${response.status})</p>`;
+            } catch (error) {
+                resultsDiv.innerHTML += `<p>Health Check: ERROR - ${error.message}</p>`;
+            }
+        }
+
+        function openApp() {
+            const appUrl = document.getElementById('appUrl').value;
+            if (!appUrl) {
+                alert('Please enter your App Service URL first');
+                return;
+            }
+            window.open(appUrl, '_blank');
+        }
+
+        // Auto-save progress
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                localStorage.setItem(this.id, this.checked);
+            });
+            
+            // Restore saved state
+            const saved = localStorage.getItem(checkbox.id);
+            if (saved === 'true') {
+                checkbox.checked = true;
+            }
+        });
+    </script>
+</body>
+</html>
