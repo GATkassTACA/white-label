@@ -80,6 +80,12 @@ class TestingConfig(Config):
     MAX_USERS_PER_ROOM = 5  # Smaller for testing
     MESSAGE_HISTORY_LIMIT = 10
     SECRET_KEY = 'test-secret-key-for-testing'
+    JWT_SECRET_KEY = 'test-jwt-secret-key'
+    
+    # Fast token expiry for testing
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=15)
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(hours=1)
+    SESSION_COOKIE_SECURE = False
 
 class ProductionConfig(Config):
     """Production configuration"""

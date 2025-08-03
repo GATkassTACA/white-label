@@ -74,25 +74,36 @@ def create_sample_data():
     db.session.add_all([client1, client2, default_client])
     db.session.commit()
     
-    # Create sample users
+    # Create sample users with new authentication fields
+    from werkzeug.security import generate_password_hash
+    
     admin_user = User(
         username="admin",
         email="admin@example.com",
-        is_guest=False,
-        is_active=True
+        password_hash=generate_password_hash("Admin123!"),
+        full_name="System Administrator",
+        user_type="admin",
+        is_active=True,
+        email_verified=True,
+        client_id=default_client.id
     )
     
     demo_user = User(
         username="demo_user",
         email="demo@example.com",
-        is_guest=False,
-        is_active=True
+        password_hash=generate_password_hash("Demo123!"),
+        full_name="Demo User",
+        user_type="registered",
+        is_active=True,
+        email_verified=True,
+        client_id=default_client.id
     )
     
     guest_user = User(
         username="Guest_001",
-        is_guest=True,
-        is_active=True
+        user_type="guest",
+        is_active=True,
+        client_id=default_client.id
     )
     
     db.session.add_all([admin_user, demo_user, guest_user])
