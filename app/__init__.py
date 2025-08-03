@@ -67,7 +67,10 @@ def create_app():
     app.register_blueprint(auth_bp)
     
     from app.routes.frontend import frontend_bp
-    app.register_blueprint(frontend_bp)
+    app.register_blueprint(frontend_bp, url_prefix='/app')
+    
+    from app.routes.health import health_bp
+    app.register_blueprint(health_bp)
     
     # Register socket events
     from app.socket_events import register_socket_events

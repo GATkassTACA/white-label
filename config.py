@@ -96,17 +96,47 @@ class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 
         'postgresql://user:password@localhost/white_label_chat')
     
+    # Enhanced database settings for production
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        'pool_size': 10,
+        'pool_recycle': -1,
+        'pool_pre_ping': True,
+        'pool_timeout': 20
+    }
+    
     # Get secret key from environment in production
     SECRET_KEY = os.environ.get('SECRET_KEY')
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
     
     if not SECRET_KEY and os.environ.get('FLASK_ENV') == 'production':
         raise ValueError("SECRET_KEY environment variable must be set in production")
+    if not JWT_SECRET_KEY and os.environ.get('FLASK_ENV') == 'production':
+        raise ValueError("JWT_SECRET_KEY environment variable must be set in production")
     
     # Production-specific settings
     PREFERRED_URL_SCHEME = 'https'
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = 'Lax'
+    
+    # Enhanced rate limiting for production
+    RATE_LIMIT_MESSAGES_PER_MINUTE = 30
+    RATE_LIMIT_CONNECTIONS_PER_IP = 10
+    
+    # Redis configuration for sessions and caching
+    REDIS_URL = os.environ.get('REDIS_URL')
+    
+    # Logging configuration
+    LOG_LEVEL = 'INFO'
+    
+    # Security headers
+    SECURITY_HEADERS = {
+        'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'DENY',
+        'X-XSS-Protection': '1; mode=block',
+        'Referrer-Policy': 'strict-origin-when-cross-origin'
+    }
 
 # Configuration dictionary
 config = {

@@ -7,9 +7,16 @@ frontend_bp = Blueprint('frontend', __name__)
 def index():
     """Serve the main frontend with proper CSP headers"""
     try:
-        # Read the secure HTML file
-        frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend')
-        with open(os.path.join(frontend_dir, 'index-secure.html'), 'r', encoding='utf-8') as f:
+        # Get the root directory of the project (go up two levels from app/routes)
+        import os
+        root_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        frontend_dir = os.path.join(root_dir, 'frontend')
+        file_path = os.path.join(frontend_dir, 'index-secure.html')
+        
+        if not os.path.exists(file_path):
+            return f"Frontend file not found at: {file_path}", 404
+            
+        with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
         
         response = make_response(content)
@@ -20,7 +27,7 @@ def index():
             "default-src 'self'; "
             "script-src 'self' https://unpkg.com https://cdn.socket.io https://cdn.tailwindcss.com 'unsafe-eval'; "
             "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; "
-            "connect-src 'self' http://localhost:5000 ws://localhost:5000; "
+            "connect-src 'self' http://localhost:5001 ws://localhost:5001; "
             "img-src 'self' data: https:; "
             "font-src 'self' https:;"
         )
@@ -30,14 +37,15 @@ def index():
         response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
         
         return response
-    except FileNotFoundError:
-        return "Frontend not found", 404
+    except Exception as e:
+        return f"Error loading frontend: {str(e)}", 500
 
 @frontend_bp.route('/auth.html')
 def auth():
     """Serve the authentication page"""
     try:
-        frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend')
+        root_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        frontend_dir = os.path.join(root_dir, 'frontend')
         with open(os.path.join(frontend_dir, 'auth.html'), 'r', encoding='utf-8') as f:
             content = f.read()
         
@@ -64,7 +72,8 @@ def auth():
 @frontend_bp.route('/js/<path:filename>')
 def serve_js(filename):
     """Serve JavaScript files with proper headers"""
-    frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend')
+    root_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    frontend_dir = os.path.join(root_dir, 'frontend')
     js_dir = os.path.join(frontend_dir, 'js')
     
     response = make_response(send_from_directory(js_dir, filename))
@@ -76,7 +85,8 @@ def serve_js(filename):
 @frontend_bp.route('/css/<path:filename>')
 def serve_css(filename):
     """Serve CSS files with proper headers"""
-    frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend')
+    root_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    frontend_dir = os.path.join(root_dir, 'frontend')
     css_dir = os.path.join(frontend_dir, 'css')
     
     response = make_response(send_from_directory(css_dir, filename))
@@ -88,7 +98,8 @@ def serve_css(filename):
 @frontend_bp.route('/static/<path:filename>')
 def serve_static(filename):
     """Serve static assets"""
-    frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend')
+    root_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    frontend_dir = os.path.join(root_dir, 'frontend')
     static_dir = os.path.join(frontend_dir, 'static')
     
     return send_from_directory(static_dir, filename)
