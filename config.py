@@ -5,6 +5,12 @@ class Config:
     """Base configuration class"""
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
     
+    # JWT Configuration
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'jwt-secret-change-in-production'
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
+    JWT_ALGORITHM = 'HS256'
+    
     # Flask-SocketIO settings
     SOCKETIO_ASYNC_MODE = 'threading'
     SOCKETIO_CORS_ALLOWED_ORIGINS = "*"
@@ -18,6 +24,18 @@ class Config:
     # Rate limiting
     RATE_LIMIT_MESSAGES_PER_MINUTE = 60
     RATE_LIMIT_CONNECTIONS_PER_IP = 5
+    
+    # Authentication settings
+    PASSWORD_MIN_LENGTH = 8
+    PASSWORD_REQUIRE_UPPERCASE = True
+    PASSWORD_REQUIRE_LOWERCASE = True
+    PASSWORD_REQUIRE_DIGITS = True
+    PASSWORD_REQUIRE_SPECIAL = True
+    
+    # Security settings
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
     
     # Branding
     DEFAULT_BRANDING_CONFIG = {
@@ -44,6 +62,10 @@ class DevelopmentConfig(Config):
     # Relaxed settings for development
     RATE_LIMIT_MESSAGES_PER_MINUTE = 200
     RATE_LIMIT_CONNECTIONS_PER_IP = 20
+    
+    # Development JWT settings
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)  # Longer for development
+    SESSION_COOKIE_SECURE = False  # Allow HTTP in development
 
 class TestingConfig(Config):
     """Testing configuration"""

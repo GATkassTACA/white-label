@@ -15,11 +15,26 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=True)
     password_hash = db.Column(db.String(255), nullable=True)  # Nullable for guest users
-    is_guest = db.Column(db.Boolean, default=True)
+    full_name = db.Column(db.String(200), nullable=True)
+    
+    # User type: 'guest', 'registered', 'admin'
+    user_type = db.Column(db.String(20), default='guest')
     is_active = db.Column(db.Boolean, default=True)
+    
+    # Authentication fields
+    last_login = db.Column(db.DateTime, nullable=True)
+    password_reset_token = db.Column(db.String(255), nullable=True)
+    password_reset_expires = db.Column(db.DateTime, nullable=True)
+    email_verified = db.Column(db.Boolean, default=False)
+    email_verification_token = db.Column(db.String(255), nullable=True)
+    
+    # Client association for multi-tenancy
+    client_id = db.Column(db.String(36), db.ForeignKey('clients.id'), nullable=True)
     
     # Timestamps
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), 
+                          onupdate=lambda: datetime.now(timezone.utc))
     last_seen = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     
     # Relationships
@@ -28,16 +43,42 @@ class User(db.Model):
     def __repr__(self):
         return f'<User {self.username}>'
     
-    def to_dict(self):
-        return {
+    @property
+    def is_guest(self):
+        """Backward compatibility property"""
+        return self.user_type == 'guest'
+    
+    @property
+    def is_admin(self):
+        """Check if user is admin"""
+        return self.user_type == 'admin'
+    
+    def to_dict(self, include_sensitive=False):
+        data = {
             'id': self.id,
             'username': self.username,
             'email': self.email,
-            'is_guest': self.is_guest,
+            'full_name': self.full_name,
+            'user_type': self.user_type,
             'is_active': self.is_active,
+            'is_guest': self.is_guest,
+            'is_admin': self.is_admin,
+            'email_verified': self.email_verified,
+            'client_id': self.client_id,
             'created_at': self.created_at.isoformat() if self.created_at else None,
-            'last_seen': self.last_seen.isoformat() if self.last_seen else None
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
+            'last_seen': self.last_seen.isoformat() if self.last_seen else None,
+            'last_login': self.last_login.isoformat() if self.last_login else None
         }
+        
+        if include_sensitive:
+            data.update({
+                'password_reset_token': self.password_reset_token,
+                'password_reset_expires': self.password_reset_expires.isoformat() if self.password_reset_expires else None,
+                'email_verification_token': self.email_verification_token
+            })
+        
+        return data
 
 class Client(db.Model):
     """Client model for white-label configurations."""
