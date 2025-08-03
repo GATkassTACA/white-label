@@ -21,6 +21,13 @@ os.environ['FLASK_ENV'] = 'production'
 os.environ.setdefault('SECRET_KEY', 'azure-production-secret-key-change-me')
 os.environ.setdefault('JWT_SECRET_KEY', 'azure-jwt-secret-key-change-me')
 
+# Set database URL if not already configured
+if not os.environ.get('DATABASE_URL'):
+    os.environ['DATABASE_URL'] = 'postgresql://dbadmin:Unicorn1982@white-label-db-km.postgres.database.azure.com:5432/postgres?sslmode=require'
+    print("Set fallback DATABASE_URL")
+
+print(f"DATABASE_URL configured: {bool(os.environ.get('DATABASE_URL'))}")
+
 try:
     print("Attempting to import create_app...")
     from app import create_app
