@@ -3,18 +3,31 @@ WSGI entry point for production deployment
 """
 import os
 import sys
-from app import create_app
-from dotenv import load_dotenv
+import traceback
+from flask import Flask, jsonify
 
-# Load environment variables
-load_dotenv()
+# Add current directory to Python path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-# Set production environment if not specified
-if not os.environ.get('FLASK_ENV'):
-    os.environ['FLASK_ENV'] = 'production'
+print("Starting WSGI application...")
+print(f"Python path: {sys.path}")
+print(f"Current working directory: {os.getcwd()}")
+print(f"Directory contents: {os.listdir('.')}")
+
+# Set production environment
+os.environ['FLASK_ENV'] = 'production'
+
+# Set basic configuration for Azure
+os.environ.setdefault('SECRET_KEY', 'azure-production-secret-key-change-me')
+os.environ.setdefault('JWT_SECRET_KEY', 'azure-jwt-secret-key-change-me')
 
 try:
+    print("Attempting to import create_app...")
+    from app import create_app
+    print("Successfully imported create_app")
+    
     # Create the Flask app and SocketIO instance
+    print("Creating Flask application...")
     flask_app, socketio = create_app()
     
     # For Azure App Service, expose the Flask app directly
@@ -27,19 +40,26 @@ try:
     
 except Exception as e:
     print(f"Error creating WSGI app: {e}")
-    import traceback
     traceback.print_exc()
+    
     # Create a minimal Flask app as fallback
-    from flask import Flask
+    print("Creating fallback Flask app...")
     app = Flask(__name__)
     
     @app.route('/')
     def hello():
-        return f"WSGI Error: {str(e)}"
+        return f"""
+        <h1>🚨 WSGI Loading Error</h1>
+        <p><strong>Error:</strong> {str(e)}</p>
+        <p><strong>Python Path:</strong> {sys.path}</p>
+        <p><strong>Working Directory:</strong> {os.getcwd()}</p>
+        <p><strong>Directory Contents:</strong> {os.listdir('.')}</p>
+        <p><a href="/api/health">Health Check</a></p>
+        """
     
     @app.route('/api/health')
     def health():
-        return {"status": "error", "message": str(e)}
+        return jsonify({"status": "error", "message": str(e), "python_path": sys.path, "cwd": os.getcwd()})
 
 # For Azure App Service, we expose the app directly
 # The Gunicorn server will handle the WSGI interface
