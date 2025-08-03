@@ -152,6 +152,25 @@ try:
         </ul>
         """
     
+    # Static file routes
+    @app.route('/css/<path:filename>')
+    def serve_css(filename):
+        """Serve CSS files from frontend/css directory"""
+        try:
+            frontend_dir = os.path.join(os.path.dirname(__file__), 'frontend')
+            return send_from_directory(os.path.join(frontend_dir, 'css'), filename, mimetype='text/css')
+        except Exception as e:
+            return f"CSS file not found: {filename}", 404
+    
+    @app.route('/js/<path:filename>')
+    def serve_js(filename):
+        """Serve JavaScript files from frontend/js directory"""
+        try:
+            frontend_dir = os.path.join(os.path.dirname(__file__), 'frontend')
+            return send_from_directory(os.path.join(frontend_dir, 'js'), filename, mimetype='application/javascript')
+        except Exception as e:
+            return f"JS file not found: {filename}", 404
+    
     # Socket.IO events
     @socketio.on('connect')
     def handle_connect():
