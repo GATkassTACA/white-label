@@ -21,7 +21,7 @@ if "%1"=="models" (
     C:/Users/kmoun/OneDrive/Documents/GitHub/white-label/.venv/Scripts/python.exe -m pytest tests/test_models.py tests/test_auth.py --cov=app --cov=models --cov=services --cov-report=html
 ) else (
     echo Running all available tests...
-    C:/Users/kmoun/OneDrive/Documents/GitHub/white-label/.venv/Scripts/python.exe -m pytest tests/test_models.py tests/test_auth.py -v
+    C:/Users/kmoun/OneDrive/Documents/GitHub/white-label/.venv/Scripts/python.exe -m pytest tests/ -v
 )
 
 echo.
