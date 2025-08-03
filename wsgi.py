@@ -47,4 +47,4 @@ if __name__ == "__main__":
     print("Starting in development mode...")
     port = int(os.environ.get('PORT', 8000))
     print(f"Using port: {port}")
-    app.run(host='0.0.0.0', port=port, debug=False)
+    flask_app.run(host='0.0.0.0', port=port, debug=False)
