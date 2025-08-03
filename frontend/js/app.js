@@ -13,6 +13,15 @@ function App() {
         setTimeout(() => setIsLoading(false), 1000);
     }, []);
 
+    // API base URL - automatically detects environment
+    const getApiBaseUrl = () => {
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            return 'http://localhost:5000';
+        }
+        // For Azure deployment, use the same domain as the frontend
+        return window.location.origin;
+    };
+
     const checkAuthentication = async () => {
         const token = localStorage.getItem('access_token');
         const storedUser = localStorage.getItem('user');
@@ -20,7 +29,7 @@ function App() {
         if (token && storedUser) {
             try {
                 // Verify token is still valid
-                const response = await fetch('http://localhost:5000/api/auth/verify-token', {
+                const response = await fetch(`${getApiBaseUrl()}/api/auth/verify-token`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -160,7 +169,7 @@ function App() {
         React.createElement(Navigation),
         renderPage(),
         React.createElement('footer', { className: 'text-center text-white mt-12 opacity-70' },
-            React.createElement('p', null, '✨ Modern React Frontend - Connected to Flask Backend on localhost:5000')
+            React.createElement('p', null, `✨ Modern React Frontend - Connected to Flask Backend on ${getApiBaseUrl()}`)
         )
     );
 }
