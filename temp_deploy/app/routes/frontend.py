@@ -22,12 +22,21 @@ def index():
         response = make_response(content)
         response.headers['Content-Type'] = 'text/html; charset=utf-8'
         
-        # Add security headers
+        # Add security headers with environment-aware CSP
+        from flask import request
+        host = request.host
+        
+        # Determine the allowed connection sources based on environment
+        if host.endswith('.azurewebsites.net'):
+            connect_src = f"'self' https://{host} wss://{host}"
+        else:
+            connect_src = "'self' http://localhost:5000 ws://localhost:5000"
+        
         response.headers['Content-Security-Policy'] = (
             "default-src 'self'; "
             "script-src 'self' https://unpkg.com https://cdn.socket.io https://cdn.tailwindcss.com 'unsafe-eval'; "
             "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; "
-            "connect-src 'self' http://localhost:5000 ws://localhost:5000; "
+            f"connect-src {connect_src}; "
             "img-src 'self' data: https:; "
             "font-src 'self' https:;"
         )
