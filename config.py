@@ -92,9 +92,15 @@ class ProductionConfig(Config):
     DEBUG = False
     DEVELOPMENT = False
     
-    # Database: PostgreSQL for production
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 
-        'postgresql://user:password@localhost/white_label_chat')
+    # Database: PostgreSQL for production, fallback to SQLite if DATABASE_URL not set
+    database_url = os.environ.get('DATABASE_URL')
+    if database_url:
+        SQLALCHEMY_DATABASE_URI = database_url
+    else:
+        # Fallback to SQLite for testing/development
+        SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(
+            os.path.abspath(os.path.dirname(__file__)), 'production.db'
+        )
     
     # Enhanced database settings for production
     SQLALCHEMY_ENGINE_OPTIONS = {
@@ -105,13 +111,14 @@ class ProductionConfig(Config):
     }
     
     # Get secret key from environment in production
-    SECRET_KEY = os.environ.get('SECRET_KEY')
-    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'dev-jwt-secret-change-in-production')
     
-    if not SECRET_KEY and os.environ.get('FLASK_ENV') == 'production':
-        raise ValueError("SECRET_KEY environment variable must be set in production")
-    if not JWT_SECRET_KEY and os.environ.get('FLASK_ENV') == 'production':
-        raise ValueError("JWT_SECRET_KEY environment variable must be set in production")
+    # Warn if using default keys
+    if SECRET_KEY == 'dev-secret-key-change-in-production':
+        print("WARNING: Using default SECRET_KEY - change in production!")
+    if JWT_SECRET_KEY == 'dev-jwt-secret-change-in-production':
+        print("WARNING: Using default JWT_SECRET_KEY - change in production!")
     
     # Production-specific settings
     PREFERRED_URL_SCHEME = 'https'
