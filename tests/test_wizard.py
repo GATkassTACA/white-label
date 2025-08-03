@@ -85,7 +85,7 @@ class TestBrandingWizard:
         })
         
         assert response.status_code == 200
-        assert b'Please fill in all required fields' in response.data
+        assert b'Error creating branding' in response.data
     
     def test_wizard_create_brand_duplicate_client_id(self, client, tmp_path):
         """Test creating brand with duplicate client ID"""

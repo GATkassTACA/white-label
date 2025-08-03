@@ -173,8 +173,16 @@ class TestDocumentRoutes:
             'metadata': {}
         }
         
-        data = {'file': (io.BytesIO(b'fake pdf content'), 'test.pdf')}
-        response = client.post('/documents/api/process', data=data, content_type='multipart/form-data')
+        import base64
+        fake_pdf = b'fake pdf content'
+        encoded_pdf = base64.b64encode(fake_pdf).decode('utf-8')
+        
+        data = {
+            'file_data': encoded_pdf,
+            'filename': 'test.pdf',
+            'method': 'auto'
+        }
+        response = client.post('/documents/api/process', json=data)
         assert response.status_code == 200
         result = response.get_json()
         assert result['success'] is True
@@ -182,32 +190,41 @@ class TestDocumentRoutes:
         assert result['method'] == 'PyPDF2'
 
 class TestDocumentProcessorIntegration:
-    @patch('services.document_processor.DocumentProcessor.extract_text_pypdf2')
-    @patch('services.document_processor.DocumentProcessor.extract_text_pdfplumber')
-    @patch('services.document_processor.DocumentProcessor.extract_text_ocr')
-    def test_extract_document_data_fallback(self, mock_ocr, mock_pdfplumber, mock_pypdf2, document_processor):
+    def test_extract_document_data_fallback(self, document_processor):
         """Test document processing with method fallback"""
-        # PyPDF2 fails
-        mock_pypdf2.return_value = {'success': False, 'error': 'PyPDF2 failed'}
-        
-        # pdfplumber succeeds
-        mock_pdfplumber.return_value = {
-            'success': True,
-            'text': 'Success with pdfplumber',
-            'method': 'pdfplumber',
-            'pages': 2,
-            'total_chars': 100
-        }
-        
-        result = document_processor.extract_document_data(b'fake pdf data', 'test.pdf')
-        
-        assert result['success'] is True
-        assert result['text'] == 'Success with pdfplumber'
-        assert result['method'] == 'pdfplumber'
-        assert result['pages'] == 2
-        assert result['best_method'] == 'pdfplumber'
-        # Should not call OCR since pdfplumber succeeded
-        mock_ocr.assert_not_called()
+        # Test the fallback logic with a mock
+        with patch.object(document_processor, 'validate_file') as mock_validate, \
+             patch.object(document_processor, 'extract_text_pdfplumber') as mock_pdfplumber, \
+             patch.object(document_processor, 'extract_text_pypdf2') as mock_pypdf2, \
+             patch.object(document_processor, 'extract_text_ocr') as mock_ocr, \
+             patch('services.document_processor.pdfplumber', True), \
+             patch('services.document_processor.PyPDF2', True), \
+             patch('services.document_processor.pytesseract', True):
+            
+            # File validation succeeds
+            mock_validate.return_value = (True, "File is valid")
+            
+            # PyPDF2 fails
+            mock_pypdf2.return_value = {'success': False, 'error': 'PyPDF2 failed'}
+            
+            # pdfplumber succeeds
+            mock_pdfplumber.return_value = {
+                'success': True,
+                'text': 'Success with pdfplumber',
+                'method': 'pdfplumber',
+                'pages': 2,
+                'total_chars': 100
+            }
+            
+            result = document_processor.extract_document_data(b'fake pdf data', 'test.pdf')
+            
+            assert result['success'] is True
+            assert result['text'] == 'Success with pdfplumber'
+            assert result['method'] == 'pdfplumber'
+            assert result['pages'] == 2
+            assert result['best_method'] == 'pdfplumber'
+            # Should not call OCR since pdfplumber succeeded
+            mock_ocr.assert_not_called()
     
     def test_analyze_document_content(self, document_processor):
         """Test document content analysis"""
