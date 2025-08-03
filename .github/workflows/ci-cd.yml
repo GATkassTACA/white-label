@@ -145,24 +145,19 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # Old deployment methods - disabled for Azure deployment
-    # - name: Deploy to Railway
-    #   if: false
-    #   run: echo "Railway deployment disabled"
-
-    # - name: Deploy to Heroku  
-    #   if: false
-    #   run: echo "Heroku deployment disabled"
-        heroku_email: ${{ secrets.HEROKU_EMAIL }}
+    - name: Deploy notification
+      run: |
+        echo "🚀 Azure deployment is handled by main_white-label-chat-km.yml workflow"
+        echo "This workflow completes the CI/CD pipeline"
 
     - name: Notify deployment success
       if: success()
       run: |
-        echo "🎉 Deployment successful!"
-        # Add Slack/Discord notification here if needed
+        echo "🎉 CI/CD Pipeline completed successfully!"
+        echo "Check Azure deployment workflow for production deployment status"
 
     - name: Notify deployment failure
       if: failure()
       run: |
-        echo "❌ Deployment failed!"
+        echo "❌ CI/CD Pipeline failed!"
         # Add alert notification here if needed
