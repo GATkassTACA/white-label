@@ -1,0 +1,290 @@
+<step title="Incoming Request" date="2025-08-03T21:42:07.501" instance="e2467e" url="/api/publish?type=zip&amp;clean=True" method="POST" type="request" pid="772,1,18" Accept="*/*" Host="white-label-chat-km-cxhkhjd0aecsf9ah.scm.centralus-01.azurewebsites.net" User-Agent="AZURECLI/2.75.0 (MSI)" Accept-Encoding="gzip, deflate" Authorization="Bas..." Cache-Control="no-cache" Content-Type="application/octet-stream" Cookie="ARRAffinity=e2467e47d35990645d1677416288076d773dc49712609e83213855e07b4fc62f; ARRAffinitySameSite=e2467e47d35990645d1677416288076d773dc49712609e83213855e07b4fc62f" Content-Length="6011628" x-ms-client-request-id="addf45f9-70b2-11f0-9e14-9c67d682987a" x-ms-artifact-checksum="5554f262e9bd50c234c315813ca02ba5614a3258f31be8012a7a4c830f587e67" X-ARR-LOG-ID="addf45f9-70b2-11f0-9e14-9c67d682987a" CLIENT-IP="167.248.114.72:57450" X-SITE-DEPLOYMENT-ID="white-label-chat-km" WAS-DEFAULT-HOSTNAME="white-label-chat-km-cxhkhjd0aecsf9ah.scm.centralus-01.azurewebsites.net" X-Forwarded-Proto="https" X-AppService-Proto="https" X-Forwarded-TlsVersion="1.3" X-WAWS-Unencoded-URL="/api/publish?type=zip&amp;clean=True" X-Client-IP="167.248.114.72" X-Client-Port="57450" >
+  <step title="OneDeploy" date="2025-08-03T21:42:07.871" >
+    <step title="None repository commit" date="2025-08-03T21:42:07.905" >
+      <step title="Commit id: 578c07e6-999a-4541-8885-652aa98ce73b" date="2025-08-03T21:42:07.908" Message="N/A" AuthorName="N/A" AuthorEmail="N/A" /><!-- duration: 9ms -->
+    </step><!-- duration: 18ms -->
+    <step title="Starting PushDeployAsync" date="2025-08-03T21:42:07.926" /><!-- duration: 4ms -->
+    <step title="Writing artifact to /tmp/zipdeploy/2de2724d-fd27-411d-a80a-c5356e7cfa8e.zip" date="2025-08-03T21:42:07.962" >
+      <step title="Writing multipart request body to /tmp/zipdeploy/2de2724d-fd27-411d-a80a-c5356e7cfa8e.zip" date="2025-08-03T21:42:07.976" /><!-- duration: 3ms -->
+    </step><!-- duration: 386ms -->
+    <step title="Attempting to fetch target branch HEAD" date="2025-08-03T21:42:08.456" /><!-- duration: 6ms -->
+    <step title="Acquiring Deployment Lock" date="2025-08-03T21:42:08.481" /><!-- duration: 3ms -->
+    <step title="Acquired Deployment Lock" date="2025-08-03T21:42:08.599" /><!-- duration: 8ms -->
+    <step title="Performing fetch based deployment" date="2025-08-03T21:42:08.629" >
+      <step title="Creating temporary deployment" date="2025-08-03T21:42:08.642" /><!-- duration: 183ms -->
+      <step title="Releasing Deployment Lock" date="2025-08-03T21:42:10.169" /><!-- duration: 18ms -->
+      <step title="Cleaning up temp folders from previous zip deployments and extracting pushed zip file /tmp/zipdeploy/2de2724d-fd27-411d-a80a-c5356e7cfa8e.zip (5.73 MB) to /tmp/zipdeploy/extracted" date="2025-08-03T21:42:10.237" >
+        <step title="ChmodRecursive Process exited with total time taken in ms: 114" date="2025-08-03T21:42:11.309" /><!-- duration: 24ms -->
+      </step><!-- duration: 1100ms -->
+      <step title="None repository commit" date="2025-08-03T21:42:11.356" >
+        <step title="Commit id: 578c07e6-999a-4541-8885-652aa98ce73b" date="2025-08-03T21:42:11.361" Message="OneDeploy" AuthorName="N/A" AuthorEmail="N/A" /><!-- duration: 5ms -->
+      </step><!-- duration: 14ms -->
+      <step title="Deployment timer started" date="2025-08-03T21:42:13.397" >
+        <step title="DeploymentManager.Deploy(id:578c07e6-999a-4541-8885-652aa98ce73b)" date="2025-08-03T21:42:13.417" >
+          <step title="Collecting changeset information" date="2025-08-03T21:42:13.486" /><!-- duration: 184ms -->
+          <step title="Updating submodules" date="2025-08-03T21:42:13.696" /><!-- duration: 1275ms -->
+          <step title="Determining deployment builder" date="2025-08-03T21:42:15.384" >
+            <step title="Builder is OryxBuilder" date="2025-08-03T21:42:15.442" /><!-- duration: 11ms -->
+          </step><!-- duration: 97ms -->
+          <step title="PreDeployment: context.CleanOutputPath False" date="2025-08-03T21:42:15.561" >
+            <step title="PreDeployment: context.OutputPath /home/site/wwwroot" date="2025-08-03T21:42:15.755" >
+              <step title="Building" date="2025-08-03T21:42:16.005" >
+                <step title="Executing external process" date="2025-08-03T21:42:16.721" type="process" path="bash" arguments="-c &quot;oryx build /tmp/zipdeploy/extracted -o /home/site/wwwroot --platform python --platform-version 3.11 -p virtualenv_name=antenv --log-file /tmp/build-debug.log  -i /tmp/8ddd2d69cfb6e88 --compress-destination-dir | tee /tmp/oryx-build.log ; exit $PIPESTATUS &quot;" >
+                  <step title="Cpu: gzip(1018,9.810s)+sh(1017,0.000s)+tar(1016,1.230s)+build.sh(852,0.070s)+oryx(827,6.530s)+tee(828,0.020s)+bash(826,0.000s)=total(17.650s)" date="2025-08-03T21:45:28.727" /><!-- duration: 12ms -->
+                  <step title="bash: no io activity for 60s, prev-cpu=-1.000s, current-cpu=17.650s" date="2025-08-03T21:45:28.776" /><!-- duration: 32ms -->
+                  <step title="Process dump" date="2025-08-03T21:45:57.298" exitCode="1" type="processOutput" /><!-- duration: 26ms -->
+                </step><!-- duration: 220643ms -->
+                <step title="Error occurred" date="2025-08-03T21:45:57.587" type="error" text="tar: ./frontend/node_modules/esbuild/lib/downloaded-@esbuild-win32-x64-esbuild.exe: file changed as we read it
+tar: ./frontend/node_modules/esbuild/lib/main.js: File removed before we read it
+tar: ./frontend/node_modules/esbuild/lib/main.d.ts: File removed before we read it
+tar: ./frontend/node_modules/esbuild/lib: file changed as we read it
+tar: ./frontend/node_modules/esbuild/package.json: File removed before we read it
+tar: ./frontend/node_modules/esbuild/bin: File removed before we read it
+tar: ./frontend/node_modules/esbuild/LICENSE.md: File removed before we read it
+tar: ./frontend/node_modules/esbuild/install.js: File removed before we read it
+tar: ./frontend/node_modules/esbuild: file changed as we read it
+tar: ./frontend/node_modules/.bin: File removed before we read it
+tar: ./frontend/node_modules/@rollup: File removed before we read it
+tar: ./frontend/node_modules/.package-lock.json: File removed before we read it
+tar: ./frontend/node_modules/rollup: File removed before we read it
+tar: ./frontend/node_modules/source-map-js: File removed before we read it
+tar: ./frontend/node_modules/fdir: File removed before we read it
+tar: ./frontend/node_modules/picocolors: File removed before we read it
+tar: ./frontend/node_modules/@esbuild: File removed before we read it
+tar: ./frontend/node_modules: file changed as we read it
+tar: ./frontend/package.json: File removed before we read it
+tar: ./frontend/test_integration.html: File removed before we read it
+tar: ./frontend/index-secure.html: File removed before we read it
+tar: ./frontend/auth.html: File removed before we read it
+tar: ./frontend/css: File removed before we read it
+tar: ./frontend/js: File removed before we read it
+tar: ./frontend/tsconfig.node.json: File removed before we read it
+tar: ./frontend/src: File removed before we read it
+tar: ./frontend/package-lock.json: File removed before we read it
+tar: ./frontend: file changed as we read it
+tar: .: file changed as we read it
+/bin/bash -c &quot;oryx build /tmp/zipdeploy/extracted -o /home/site/wwwroot --platform python --platform-version 3.11 -p virtualenv_name=antenv --log-file /tmp/build-debug.log  -i /tmp/8ddd2d69cfb6e88 --compress-destination-dir | tee /tmp/oryx-build.log ; exit $PIPESTATUS &quot;" stackTrace="   at Kudu.Core.Infrastructure.Executable.ExecuteInternal(ITracer tracer, Func`2 onWriteOutput, Func`2 onWriteError, CancellationToken token, Encoding encoding, String arguments, Object[] args) in /tmp/KuduLite/Kudu.Core/Infrastructure/Executable.cs:line 239
+   at Kudu.Core.Infrastructure.Executable.ExecuteWithProgressWriter(ILogger logger, ITracer tracer, CancellationToken token, String arguments, Object[] args) in /tmp/KuduLite/Kudu.Core/Infrastructure/Executable.cs:line 118
+   at Kudu.Core.Deployment.Generator.ExternalCommandBuilder.RunCommand(DeploymentContext context, String command, Boolean ignoreManifest, CancellationToken token, String message) in /tmp/KuduLite/Kudu.Core/Deployment/Generator/ExternalCommandBuilder.cs:line 122" /><!-- duration: 39ms -->
+                <step title="Error occurred" date="2025-08-03T21:45:57.743" type="error" text="tar: ./frontend/node_modules/esbuild/lib/downloaded-@esbuild-win32-x64-esbuild.exe: file changed as we read it
+tar: ./frontend/node_modules/esbuild/lib/main.js: File removed before we read it
+tar: ./frontend/node_modules/esbuild/lib/main.d.ts: File removed before we read it
+tar: ./frontend/node_modules/esbuild/lib: file changed as we read it
+tar: ./frontend/node_modules/esbuild/package.json: File removed before we read it
+tar: ./frontend/node_modules/esbuild/bin: File removed before we read it
+tar: ./frontend/node_modules/esbuild/LICENSE.md: File removed before we read it
+tar: ./frontend/node_modules/esbuild/install.js: File removed before we read it
+tar: ./frontend/node_modules/esbuild: file changed as we read it
+tar: ./frontend/node_modules/.bin: File removed before we read it
+tar: ./frontend/node_modules/@rollup: File removed before we read it
+tar: ./frontend/node_modules/.package-lock.json: File removed before we read it
+tar: ./frontend/node_modules/rollup: File removed before we read it
+tar: ./frontend/node_modules/source-map-js: File removed before we read it
+tar: ./frontend/node_modules/fdir: File removed before we read it
+tar: ./frontend/node_modules/picocolors: File removed before we read it
+tar: ./frontend/node_modules/@esbuild: File removed before we read it
+tar: ./frontend/node_modules: file changed as we read it
+tar: ./frontend/package.json: File removed before we read it
+tar: ./frontend/test_integration.html: File removed before we read it
+tar: ./frontend/index-secure.html: File removed before we read it
+tar: ./frontend/auth.html: File removed before we read it
+tar: ./frontend/css: File removed before we read it
+tar: ./frontend/js: File removed before we read it
+tar: ./frontend/tsconfig.node.json: File removed before we read it
+tar: ./frontend/src: File removed before we read it
+tar: ./frontend/package-lock.json: File removed before we read it
+tar: ./frontend: file changed as we read it
+tar: .: file changed as we read it
+/bin/bash -c &quot;oryx build /tmp/zipdeploy/extracted -o /home/site/wwwroot --platform python --platform-version 3.11 -p virtualenv_name=antenv --log-file /tmp/build-debug.log  -i /tmp/8ddd2d69cfb6e88 --compress-destination-dir | tee /tmp/oryx-build.log ; exit $PIPESTATUS &quot;" stackTrace="   at Kudu.Core.Infrastructure.Executable.ExecuteInternal(ITracer tracer, Func`2 onWriteOutput, Func`2 onWriteError, CancellationToken token, Encoding encoding, String arguments, Object[] args) in /tmp/KuduLite/Kudu.Core/Infrastructure/Executable.cs:line 239
+   at Kudu.Core.Infrastructure.Executable.ExecuteWithProgressWriter(ILogger logger, ITracer tracer, CancellationToken token, String arguments, Object[] args) in /tmp/KuduLite/Kudu.Core/Infrastructure/Executable.cs:line 118
+   at Kudu.Core.Deployment.Generator.ExternalCommandBuilder.RunCommand(DeploymentContext context, String command, Boolean ignoreManifest, CancellationToken token, String message) in /tmp/KuduLite/Kudu.Core/Deployment/Generator/ExternalCommandBuilder.cs:line 122
+   at Kudu.Core.Deployment.Generator.OryxBuilder.RunBuildCommand(IOryxArguments args, DeploymentContext context, CancellationToken token) in /tmp/KuduLite/Kudu.Core/Deployment/Generator/OryxBuilder.cs:line 282
+   at Kudu.Core.Deployment.Generator.OryxBuilder.Build(DeploymentContext context, CancellationToken token) in /tmp/KuduLite/Kudu.Core/Deployment/Generator/OryxBuilder.cs:line 123
+   at Kudu.Core.Deployment.DeploymentManager.Build(ChangeSet changeSet, ITracer tracer, IDisposable deployStep, IRepository repository, DeploymentInfoBase deploymentInfo, DeploymentAnalytics deploymentAnalytics, Boolean fullBuildByDefault, CancellationToken cancellationToken) in /tmp/KuduLite/Kudu.Core/Deployment/DeploymentManager.cs:line 771" /><!-- duration: 11ms -->
+                <step title="Using PythonDeploymentLogParser" date="2025-08-03T21:45:58.339" /><!-- duration: 9ms -->
+                <step title="Purge deployment items" date="2025-08-03T21:46:01.214" >
+                  <step title="Remove temp-313d, Pending, received at 08/03/2025 21:44:37" date="2025-08-03T21:46:01.380" /><!-- duration: 18ms -->
+                  <step title="Remove temp-1d43, Pending, received at 08/03/2025 21:42:08" date="2025-08-03T21:46:01.610" /><!-- duration: 10ms -->
+                  <step title="Remove 578c07e6-, Failed, received at 08/03/2025 21:42:13" date="2025-08-03T21:46:01.809" /><!-- duration: 27ms -->
+                  <step title="Remove a7cd2d7f-, Failed, received at 08/03/2025 21:38:29" date="2025-08-03T21:46:02.040" /><!-- duration: 9ms -->
+                  <step title="Remove temp-d305, Failed, received at 08/03/2025 21:38:23" date="2025-08-03T21:46:02.195" /><!-- duration: 9ms -->
+                </step><!-- duration: 1041ms -->
+              </step><!-- duration: 226278ms -->
+            </step><!-- duration: 226616ms -->
+            <step title="Error occurred" date="2025-08-03T21:46:02.381" type="error" text="tar: ./frontend/node_modules/esbuild/lib/downloaded-@esbuild-win32-x64-esbuild.exe: file changed as we read it
+tar: ./frontend/node_modules/esbuild/lib/main.js: File removed before we read it
+tar: ./frontend/node_modules/esbuild/lib/main.d.ts: File removed before we read it
+tar: ./frontend/node_modules/esbuild/lib: file changed as we read it
+tar: ./frontend/node_modules/esbuild/package.json: File removed before we read it
+tar: ./frontend/node_modules/esbuild/bin: File removed before we read it
+tar: ./frontend/node_modules/esbuild/LICENSE.md: File removed before we read it
+tar: ./frontend/node_modules/esbuild/install.js: File removed before we read it
+tar: ./frontend/node_modules/esbuild: file changed as we read it
+tar: ./frontend/node_modules/.bin: File removed before we read it
+tar: ./frontend/node_modules/@rollup: File removed before we read it
+tar: ./frontend/node_modules/.package-lock.json: File removed before we read it
+tar: ./frontend/node_modules/rollup: File removed before we read it
+tar: ./frontend/node_modules/source-map-js: File removed before we read it
+tar: ./frontend/node_modules/fdir: File removed before we read it
+tar: ./frontend/node_modules/picocolors: File removed before we read it
+tar: ./frontend/node_modules/@esbuild: File removed before we read it
+tar: ./frontend/node_modules: file changed as we read it
+tar: ./frontend/package.json: File removed before we read it
+tar: ./frontend/test_integration.html: File removed before we read it
+tar: ./frontend/index-secure.html: File removed before we read it
+tar: ./frontend/auth.html: File removed before we read it
+tar: ./frontend/css: File removed before we read it
+tar: ./frontend/js: File removed before we read it
+tar: ./frontend/tsconfig.node.json: File removed before we read it
+tar: ./frontend/src: File removed before we read it
+tar: ./frontend/package-lock.json: File removed before we read it
+tar: ./frontend: file changed as we read it
+tar: .: file changed as we read it
+/bin/bash -c &quot;oryx build /tmp/zipdeploy/extracted -o /home/site/wwwroot --platform python --platform-version 3.11 -p virtualenv_name=antenv --log-file /tmp/build-debug.log  -i /tmp/8ddd2d69cfb6e88 --compress-destination-dir | tee /tmp/oryx-build.log ; exit $PIPESTATUS &quot;" stackTrace="   at Kudu.Core.Infrastructure.Executable.ExecuteInternal(ITracer tracer, Func`2 onWriteOutput, Func`2 onWriteError, CancellationToken token, Encoding encoding, String arguments, Object[] args) in /tmp/KuduLite/Kudu.Core/Infrastructure/Executable.cs:line 239
+   at Kudu.Core.Infrastructure.Executable.ExecuteWithProgressWriter(ILogger logger, ITracer tracer, CancellationToken token, String arguments, Object[] args) in /tmp/KuduLite/Kudu.Core/Infrastructure/Executable.cs:line 118
+   at Kudu.Core.Deployment.Generator.ExternalCommandBuilder.RunCommand(DeploymentContext context, String command, Boolean ignoreManifest, CancellationToken token, String message) in /tmp/KuduLite/Kudu.Core/Deployment/Generator/ExternalCommandBuilder.cs:line 122
+   at Kudu.Core.Deployment.Generator.OryxBuilder.RunBuildCommand(IOryxArguments args, DeploymentContext context, CancellationToken token) in /tmp/KuduLite/Kudu.Core/Deployment/Generator/OryxBuilder.cs:line 282
+   at Kudu.Core.Deployment.Generator.OryxBuilder.Build(DeploymentContext context, CancellationToken token) in /tmp/KuduLite/Kudu.Core/Deployment/Generator/OryxBuilder.cs:line 123
+   at Kudu.Core.Deployment.DeploymentManager.Build(ChangeSet changeSet, ITracer tracer, IDisposable deployStep, IRepository repository, DeploymentInfoBase deploymentInfo, DeploymentAnalytics deploymentAnalytics, Boolean fullBuildByDefault, CancellationToken cancellationToken) in /tmp/KuduLite/Kudu.Core/Deployment/DeploymentManager.cs:line 771
+   at Kudu.Core.Deployment.DeploymentManager.Build(ChangeSet changeSet, ITracer tracer, IDisposable deployStep, IRepository repository, DeploymentInfoBase deploymentInfo, DeploymentAnalytics deploymentAnalytics, Boolean fullBuildByDefault, CancellationToken cancellationToken) in /tmp/KuduLite/Kudu.Core/Deployment/DeploymentManager.cs:line 840" /><!-- duration: 27ms -->
+            <step title="Cleaning up temp files" date="2025-08-03T21:46:03.662" /><!-- duration: 4075ms -->
+            <step title="Cleaning up temp files" date="2025-08-03T21:46:07.763" /><!-- duration: 534ms -->
+            <step title="Error occurred" date="2025-08-03T21:46:08.385" type="error" text="tar: ./frontend/node_modules/esbuild/lib/downloaded-@esbuild-win32-x64-esbuild.exe: file changed as we read it
+tar: ./frontend/node_modules/esbuild/lib/main.js: File removed before we read it
+tar: ./frontend/node_modules/esbuild/lib/main.d.ts: File removed before we read it
+tar: ./frontend/node_modules/esbuild/lib: file changed as we read it
+tar: ./frontend/node_modules/esbuild/package.json: File removed before we read it
+tar: ./frontend/node_modules/esbuild/bin: File removed before we read it
+tar: ./frontend/node_modules/esbuild/LICENSE.md: File removed before we read it
+tar: ./frontend/node_modules/esbuild/install.js: File removed before we read it
+tar: ./frontend/node_modules/esbuild: file changed as we read it
+tar: ./frontend/node_modules/.bin: File removed before we read it
+tar: ./frontend/node_modules/@rollup: File removed before we read it
+tar: ./frontend/node_modules/.package-lock.json: File removed before we read it
+tar: ./frontend/node_modules/rollup: File removed before we read it
+tar: ./frontend/node_modules/source-map-js: File removed before we read it
+tar: ./frontend/node_modules/fdir: File removed before we read it
+tar: ./frontend/node_modules/picocolors: File removed before we read it
+tar: ./frontend/node_modules/@esbuild: File removed before we read it
+tar: ./frontend/node_modules: file changed as we read it
+tar: ./frontend/package.json: File removed before we read it
+tar: ./frontend/test_integration.html: File removed before we read it
+tar: ./frontend/index-secure.html: File removed before we read it
+tar: ./frontend/auth.html: File removed before we read it
+tar: ./frontend/css: File removed before we read it
+tar: ./frontend/js: File removed before we read it
+tar: ./frontend/tsconfig.node.json: File removed before we read it
+tar: ./frontend/src: File removed before we read it
+tar: ./frontend/package-lock.json: File removed before we read it
+tar: ./frontend: file changed as we read it
+tar: .: file changed as we read it
+/bin/bash -c &quot;oryx build /tmp/zipdeploy/extracted -o /home/site/wwwroot --platform python --platform-version 3.11 -p virtualenv_name=antenv --log-file /tmp/build-debug.log  -i /tmp/8ddd2d69cfb6e88 --compress-destination-dir | tee /tmp/oryx-build.log ; exit $PIPESTATUS &quot;" stackTrace="   at Kudu.Core.Infrastructure.Executable.ExecuteInternal(ITracer tracer, Func`2 onWriteOutput, Func`2 onWriteError, CancellationToken token, Encoding encoding, String arguments, Object[] args) in /tmp/KuduLite/Kudu.Core/Infrastructure/Executable.cs:line 239
+   at Kudu.Core.Infrastructure.Executable.ExecuteWithProgressWriter(ILogger logger, ITracer tracer, CancellationToken token, String arguments, Object[] args) in /tmp/KuduLite/Kudu.Core/Infrastructure/Executable.cs:line 118
+   at Kudu.Core.Deployment.Generator.ExternalCommandBuilder.RunCommand(DeploymentContext context, String command, Boolean ignoreManifest, CancellationToken token, String message) in /tmp/KuduLite/Kudu.Core/Deployment/Generator/ExternalCommandBuilder.cs:line 122
+   at Kudu.Core.Deployment.Generator.OryxBuilder.RunBuildCommand(IOryxArguments args, DeploymentContext context, CancellationToken token) in /tmp/KuduLite/Kudu.Core/Deployment/Generator/OryxBuilder.cs:line 282
+   at Kudu.Core.Deployment.Generator.OryxBuilder.Build(DeploymentContext context, CancellationToken token) in /tmp/KuduLite/Kudu.Core/Deployment/Generator/OryxBuilder.cs:line 123
+   at Kudu.Core.Deployment.DeploymentManager.Build(ChangeSet changeSet, ITracer tracer, IDisposable deployStep, IRepository repository, DeploymentInfoBase deploymentInfo, DeploymentAnalytics deploymentAnalytics, Boolean fullBuildByDefault, CancellationToken cancellationToken) in /tmp/KuduLite/Kudu.Core/Deployment/DeploymentManager.cs:line 771
+   at Kudu.Core.Deployment.DeploymentManager.Build(ChangeSet changeSet, ITracer tracer, IDisposable deployStep, IRepository repository, DeploymentInfoBase deploymentInfo, DeploymentAnalytics deploymentAnalytics, Boolean fullBuildByDefault, CancellationToken cancellationToken) in /tmp/KuduLite/Kudu.Core/Deployment/DeploymentManager.cs:line 840
+   at Kudu.Core.Deployment.DeploymentManager.DeployAsync(IRepository repository, ChangeSet changeSet, String deployer, Boolean clean, DeploymentInfoBase deploymentInfo, Boolean needFileUpdate, Boolean fullBuildByDefault) in /tmp/KuduLite/Kudu.Core/Deployment/DeploymentManager.cs:line 266" /><!-- duration: 13ms -->
+          </step><!-- duration: 232896ms -->
+          <step title="Reloading status file with latest updates" date="2025-08-03T21:46:08.551" /><!-- duration: 12ms -->
+          <step title="Error occurred" date="2025-08-03T21:46:08.572" type="error" text="tar: ./frontend/node_modules/esbuild/lib/downloaded-@esbuild-win32-x64-esbuild.exe: file changed as we read it
+tar: ./frontend/node_modules/esbuild/lib/main.js: File removed before we read it
+tar: ./frontend/node_modules/esbuild/lib/main.d.ts: File removed before we read it
+tar: ./frontend/node_modules/esbuild/lib: file changed as we read it
+tar: ./frontend/node_modules/esbuild/package.json: File removed before we read it
+tar: ./frontend/node_modules/esbuild/bin: File removed before we read it
+tar: ./frontend/node_modules/esbuild/LICENSE.md: File removed before we read it
+tar: ./frontend/node_modules/esbuild/install.js: File removed before we read it
+tar: ./frontend/node_modules/esbuild: file changed as we read it
+tar: ./frontend/node_modules/.bin: File removed before we read it
+tar: ./frontend/node_modules/@rollup: File removed before we read it
+tar: ./frontend/node_modules/.package-lock.json: File removed before we read it
+tar: ./frontend/node_modules/rollup: File removed before we read it
+tar: ./frontend/node_modules/source-map-js: File removed before we read it
+tar: ./frontend/node_modules/fdir: File removed before we read it
+tar: ./frontend/node_modules/picocolors: File removed before we read it
+tar: ./frontend/node_modules/@esbuild: File removed before we read it
+tar: ./frontend/node_modules: file changed as we read it
+tar: ./frontend/package.json: File removed before we read it
+tar: ./frontend/test_integration.html: File removed before we read it
+tar: ./frontend/index-secure.html: File removed before we read it
+tar: ./frontend/auth.html: File removed before we read it
+tar: ./frontend/css: File removed before we read it
+tar: ./frontend/js: File removed before we read it
+tar: ./frontend/tsconfig.node.json: File removed before we read it
+tar: ./frontend/src: File removed before we read it
+tar: ./frontend/package-lock.json: File removed before we read it
+tar: ./frontend: file changed as we read it
+tar: .: file changed as we read it
+/bin/bash -c &quot;oryx build /tmp/zipdeploy/extracted -o /home/site/wwwroot --platform python --platform-version 3.11 -p virtualenv_name=antenv --log-file /tmp/build-debug.log  -i /tmp/8ddd2d69cfb6e88 --compress-destination-dir | tee /tmp/oryx-build.log ; exit $PIPESTATUS &quot;" stackTrace="   at Kudu.Core.Infrastructure.Executable.ExecuteInternal(ITracer tracer, Func`2 onWriteOutput, Func`2 onWriteError, CancellationToken token, Encoding encoding, String arguments, Object[] args) in /tmp/KuduLite/Kudu.Core/Infrastructure/Executable.cs:line 239
+   at Kudu.Core.Infrastructure.Executable.ExecuteWithProgressWriter(ILogger logger, ITracer tracer, CancellationToken token, String arguments, Object[] args) in /tmp/KuduLite/Kudu.Core/Infrastructure/Executable.cs:line 118
+   at Kudu.Core.Deployment.Generator.ExternalCommandBuilder.RunCommand(DeploymentContext context, String command, Boolean ignoreManifest, CancellationToken token, String message) in /tmp/KuduLite/Kudu.Core/Deployment/Generator/ExternalCommandBuilder.cs:line 122
+   at Kudu.Core.Deployment.Generator.OryxBuilder.RunBuildCommand(IOryxArguments args, DeploymentContext context, CancellationToken token) in /tmp/KuduLite/Kudu.Core/Deployment/Generator/OryxBuilder.cs:line 282
+   at Kudu.Core.Deployment.Generator.OryxBuilder.Build(DeploymentContext context, CancellationToken token) in /tmp/KuduLite/Kudu.Core/Deployment/Generator/OryxBuilder.cs:line 123
+   at Kudu.Core.Deployment.DeploymentManager.Build(ChangeSet changeSet, ITracer tracer, IDisposable deployStep, IRepository repository, DeploymentInfoBase deploymentInfo, DeploymentAnalytics deploymentAnalytics, Boolean fullBuildByDefault, CancellationToken cancellationToken) in /tmp/KuduLite/Kudu.Core/Deployment/DeploymentManager.cs:line 771
+   at Kudu.Core.Deployment.DeploymentManager.Build(ChangeSet changeSet, ITracer tracer, IDisposable deployStep, IRepository repository, DeploymentInfoBase deploymentInfo, DeploymentAnalytics deploymentAnalytics, Boolean fullBuildByDefault, CancellationToken cancellationToken) in /tmp/KuduLite/Kudu.Core/Deployment/DeploymentManager.cs:line 840
+   at Kudu.Core.Deployment.DeploymentManager.DeployAsync(IRepository repository, ChangeSet changeSet, String deployer, Boolean clean, DeploymentInfoBase deploymentInfo, Boolean needFileUpdate, Boolean fullBuildByDefault) in /tmp/KuduLite/Kudu.Core/Deployment/DeploymentManager.cs:line 266" /><!-- duration: 19ms -->
+          <step title="Could not find status file to mark the deployment failed" date="2025-08-03T21:46:08.844" /><!-- duration: 20ms -->
+        </step><!-- duration: 235456ms -->
+      </step><!-- duration: 235536ms -->
+      <step title="Error occurred" date="2025-08-03T21:46:09.167" type="error" text="Deployment failed" stackTrace="   at Kudu.Core.Deployment.DeploymentManager.DeployAsync(IRepository repository, ChangeSet changeSet, String deployer, Boolean clean, DeploymentInfoBase deploymentInfo, Boolean needFileUpdate, Boolean fullBuildByDefault) in /tmp/KuduLite/Kudu.Core/Deployment/DeploymentManager.cs:line 307
+   at Kudu.Core.Deployment.FetchDeploymentManager.PerformDeployment(DeploymentInfoBase deploymentInfo, IDisposable tempDeployment, ChangeSet tempChangeSet, DeployStatusApiResult updateStatusObj) in /tmp/KuduLite/Kudu.Core/Deployment/FetchDeploymentManager.cs:line 230
+   at Kudu.Core.Deployment.FetchDeploymentManager.&lt;&gt;c__DisplayClass17_0.&lt;&lt;FetchDeploy&gt;b__0&gt;d.MoveNext() in /tmp/KuduLite/Kudu.Core/Deployment/FetchDeploymentManager.cs:line 131
+--- End of stack trace from previous location ---
+   at Kudu.Core.Deployment.FetchDeploymentManager.FetchDeploy(DeploymentInfoBase deployInfo, Boolean asyncRequested, Uri requestUri, String targetBranch) in /tmp/KuduLite/Kudu.Core/Deployment/FetchDeploymentManager.cs:line 124
+   at Kudu.Services.Deployment.PushDeploymentController.PushDeployAsync(ArtifactDeploymentInfo deploymentInfo, Boolean isAsync, HttpContext context, JObject requestJson) in /tmp/KuduLite/Kudu.Services/Deployment/PushDeploymentController.cs:line 791
+   at Kudu.Services.Deployment.PushDeploymentController.OneDeploy(String type, Boolean async, String path, Nullable`1 restart, Nullable`1 clean, Boolean ignoreStack, Boolean trackDeploymentProgress, Boolean trackStatus, Boolean reset) in /tmp/KuduLite/Kudu.Services/Deployment/PushDeploymentController.cs:line 624
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.&lt;InvokeActionMethodAsync&gt;g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.&lt;InvokeNextActionFilterAsync&gt;g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State&amp; next, Scope&amp; scope, Object&amp; state, Boolean&amp; isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.&lt;InvokeInnerFilterAsync&gt;g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.&lt;InvokeNextResourceFilter&gt;g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State&amp; next, Scope&amp; scope, Object&amp; state, Boolean&amp; isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.&lt;InvokeFilterPipelineAsync&gt;g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.&lt;InvokeAsync&gt;g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.&lt;InvokeAsync&gt;g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Builder.RouterMiddleware.Invoke(HttpContext httpContext)
+   at Kudu.Services.Web.Tracing.TraceMiddleware.Invoke(HttpContext context) in /tmp/KuduLite/Kudu.Services.Web/Tracing/TraceMiddleware.cs:line 101" innerText="tar: ./frontend/node_modules/esbuild/lib/downloaded-@esbuild-win32-x64-esbuild.exe: file changed as we read it
+tar: ./frontend/node_modules/esbuild/lib/main.js: File removed before we read it
+tar: ./frontend/node_modules/esbuild/lib/main.d.ts: File removed before we read it
+tar: ./frontend/node_modules/esbuild/lib: file changed as we read it
+tar: ./frontend/node_modules/esbuild/package.json: File removed before we read it
+tar: ./frontend/node_modules/esbuild/bin: File removed before we read it
+tar: ./frontend/node_modules/esbuild/LICENSE.md: File removed before we read it
+tar: ./frontend/node_modules/esbuild/install.js: File removed before we read it
+tar: ./frontend/node_modules/esbuild: file changed as we read it
+tar: ./frontend/node_modules/.bin: File removed before we read it
+tar: ./frontend/node_modules/@rollup: File removed before we read it
+tar: ./frontend/node_modules/.package-lock.json: File removed before we read it
+tar: ./frontend/node_modules/rollup: File removed before we read it
+tar: ./frontend/node_modules/source-map-js: File removed before we read it
+tar: ./frontend/node_modules/fdir: File removed before we read it
+tar: ./frontend/node_modules/picocolors: File removed before we read it
+tar: ./frontend/node_modules/@esbuild: File removed before we read it
+tar: ./frontend/node_modules: file changed as we read it
+tar: ./frontend/package.json: File removed before we read it
+tar: ./frontend/test_integration.html: File removed before we read it
+tar: ./frontend/index-secure.html: File removed before we read it
+tar: ./frontend/auth.html: File removed before we read it
+tar: ./frontend/css: File removed before we read it
+tar: ./frontend/js: File removed before we read it
+tar: ./frontend/tsconfig.node.json: File removed before we read it
+tar: ./frontend/src: File removed before we read it
+tar: ./frontend/package-lock.json: File removed before we read it
+tar: ./frontend: file changed as we read it
+tar: .: file changed as we read it
+/bin/bash -c &quot;oryx build /tmp/zipdeploy/extracted -o /home/site/wwwroot --platform python --platform-version 3.11 -p virtualenv_name=antenv --log-file /tmp/build-debug.log  -i /tmp/8ddd2d69cfb6e88 --compress-destination-dir | tee /tmp/oryx-build.log ; exit $PIPESTATUS &quot;" innerStackTrace="   at Kudu.Core.Infrastructure.Executable.ExecuteInternal(ITracer tracer, Func`2 onWriteOutput, Func`2 onWriteError, CancellationToken token, Encoding encoding, String arguments, Object[] args) in /tmp/KuduLite/Kudu.Core/Infrastructure/Executable.cs:line 239
+   at Kudu.Core.Infrastructure.Executable.ExecuteWithProgressWriter(ILogger logger, ITracer tracer, CancellationToken token, String arguments, Object[] args) in /tmp/KuduLite/Kudu.Core/Infrastructure/Executable.cs:line 118
+   at Kudu.Core.Deployment.Generator.ExternalCommandBuilder.RunCommand(DeploymentContext context, String command, Boolean ignoreManifest, CancellationToken token, String message) in /tmp/KuduLite/Kudu.Core/Deployment/Generator/ExternalCommandBuilder.cs:line 122
+   at Kudu.Core.Deployment.Generator.OryxBuilder.RunBuildCommand(IOryxArguments args, DeploymentContext context, CancellationToken token) in /tmp/KuduLite/Kudu.Core/Deployment/Generator/OryxBuilder.cs:line 282
+   at Kudu.Core.Deployment.Generator.OryxBuilder.Build(DeploymentContext context, CancellationToken token) in /tmp/KuduLite/Kudu.Core/Deployment/Generator/OryxBuilder.cs:line 123
+   at Kudu.Core.Deployment.DeploymentManager.Build(ChangeSet changeSet, ITracer tracer, IDisposable deployStep, IRepository repository, DeploymentInfoBase deploymentInfo, DeploymentAnalytics deploymentAnalytics, Boolean fullBuildByDefault, CancellationToken cancellationToken) in /tmp/KuduLite/Kudu.Core/Deployment/DeploymentManager.cs:line 771
+   at Kudu.Core.Deployment.DeploymentManager.Build(ChangeSet changeSet, ITracer tracer, IDisposable deployStep, IRepository repository, DeploymentInfoBase deploymentInfo, DeploymentAnalytics deploymentAnalytics, Boolean fullBuildByDefault, CancellationToken cancellationToken) in /tmp/KuduLite/Kudu.Core/Deployment/DeploymentManager.cs:line 840
+   at Kudu.Core.Deployment.DeploymentManager.DeployAsync(IRepository repository, ChangeSet changeSet, String deployer, Boolean clean, DeploymentInfoBase deploymentInfo, Boolean needFileUpdate, Boolean fullBuildByDefault) in /tmp/KuduLite/Kudu.Core/Deployment/DeploymentManager.cs:line 266" /><!-- duration: 28ms -->
+      <step title="Incoming Request" date="2025-08-03T21:46:09.391" url="/Error?type=zip&amp;clean=True" method="POST" type="request" pid="772,1,16" Accept="*/*" Host="white-label-chat-km-cxhkhjd0aecsf9ah.scm.centralus-01.azurewebsites.net" User-Agent="AZURECLI/2.75.0 (MSI)" Accept-Encoding="gzip, deflate" Authorization="Bas..." Cache-Control="no-cache" Content-Type="application/octet-stream" Cookie="ARRAffinity=e2467e47d35990645d1677416288076d773dc49712609e83213855e07b4fc62f; ARRAffinitySameSite=e2467e47d35990645d1677416288076d773dc49712609e83213855e07b4fc62f" Content-Length="6011628" x-ms-client-request-id="addf45f9-70b2-11f0-9e14-9c67d682987a" x-ms-artifact-checksum="5554f262e9bd50c234c315813ca02ba5614a3258f31be8012a7a4c830f587e67" X-ARR-LOG-ID="addf45f9-70b2-11f0-9e14-9c67d682987a" CLIENT-IP="167.248.114.72:57450" X-SITE-DEPLOYMENT-ID="white-label-chat-km" WAS-DEFAULT-HOSTNAME="white-label-chat-km-cxhkhjd0aecsf9ah.scm.centralus-01.azurewebsites.net" X-Forwarded-Proto="https" X-AppService-Proto="https" X-Forwarded-TlsVersion="1.3" X-WAWS-Unencoded-URL="/api/publish?type=zip&amp;clean=True" X-Client-IP="167.248.114.72" X-Client-Port="57450" >
+        <step title="Outgoing response" date="2025-08-03T21:46:09.701" type="response" statusCode="400" statusText="BadRequest" /><!-- duration: 22ms -->
+      </step><!-- duration: 341ms -->
