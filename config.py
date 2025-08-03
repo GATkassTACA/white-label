@@ -27,11 +27,19 @@ class Config:
         "logo_url": "/static/images/default-logo.png",
         "welcome_message": "Welcome to our chat platform!"
     }
+    
+    # Database configuration
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_RECORD_QUERIES = True
 
 class DevelopmentConfig(Config):
     """Development configuration"""
     DEBUG = True
     DEVELOPMENT = True
+    
+    # Database: SQLite for easy development
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 
+        'sqlite:///' + os.path.join(os.path.abspath(os.path.dirname(__file__)), 'dev_database.db'))
     
     # Relaxed settings for development
     RATE_LIMIT_MESSAGES_PER_MINUTE = 200
@@ -41,6 +49,9 @@ class TestingConfig(Config):
     """Testing configuration"""
     TESTING = True
     DEBUG = True
+    
+    # Database: In-memory SQLite for testing
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
     
     # Test-specific settings
     WTF_CSRF_ENABLED = False
@@ -52,6 +63,10 @@ class ProductionConfig(Config):
     """Production configuration"""
     DEBUG = False
     DEVELOPMENT = False
+    
+    # Database: PostgreSQL for production
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 
+        'postgresql://user:password@localhost/white_label_chat')
     
     # Get secret key from environment in production
     SECRET_KEY = os.environ.get('SECRET_KEY')
