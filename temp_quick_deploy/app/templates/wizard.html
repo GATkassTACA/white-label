@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branding Wizard - White Label Chat SaaS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .wizard-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .step-indicator {
+            margin-bottom: 2rem;
+        }
+        .step-indicator .step {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+            background: #e9ecef;
+            border-radius: 20px;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .step-indicator .step.active {
+            background: #007bff;
+            color: white;
+        }
+        .form-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .form-section h5 {
+            color: #007bff;
+            margin-bottom: 1rem;
+        }
+        .preview-box {
+            padding: 1rem;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            background: #f8f9fa;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .color-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: inline-block;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+        .validation-feedback {
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        .validation-feedback.valid {
+            color: #28a745;
+        }
+        .validation-feedback.invalid {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="wizard-container">
+            <!-- Header -->
+            <div class="text-center mb-4">
+                <h2><i class="fas fa-magic text-primary"></i> Branding Wizard</h2>
+                <p class="text-muted">Create a custom branded chat experience for your client</p>
+            </div>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Wizard Form -->
+            <form method="POST" enctype="multipart/form-data" id="wizardForm">
+                <!-- Basic Information Section -->
+                <div class="form-section">
+                    <h5><i class="fas fa-info-circle"></i> Basic Information</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="client_id" class="form-label">Client ID *</label>
+                            <input type="text" class="form-control" id="client_id" name="client_id" required
+                                   placeholder="e.g., acme_corp" pattern="[a-zA-Z0-9_]+"
+                                   title="Only letters, numbers, and underscores allowed">
+                            <div class="validation-feedback" id="client-id-feedback"></div>
+                            <small class="form-text text-muted">Unique identifier for the client (lowercase, no spaces)</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="company_name" class="form-label">Company Name *</label>
+                            <input type="text" class="form-control" id="company_name" name="company_name" required
+                                   placeholder="e.g., Acme Corporation">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Branding Section -->
+                <div class="form-section">
+                    <h5><i class="fas fa-palette"></i> Visual Branding</h5>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="primary_color" class="form-label">Primary Color *</label>
+                            <div class="input-group">
+                                <input type="color" class="form-control form-control-color" id="primary_color" 
+                                       name="primary_color" value="#007bff" required>
+                                <input type="text" class="form-control" id="primary_color_text" 
+                                       placeholder="#007bff" maxlength="7">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="secondary_color" class="form-label">Secondary Color</label>
+                            <div class="input-group">
+                                <input type="color" class="form-control form-control-color" id="secondary_color" 
+                                       name="secondary_color" value="#6c757d">
+                                <input type="text" class="form-control" id="secondary_color_text" 
+                                       placeholder="#6c757d" maxlength="7">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="logo" class="form-label">Logo Upload</label>
+                            <input type="file" class="form-control" id="logo" name="logo" 
+                                   accept=".png,.jpg,.jpeg,.gif,.svg">
+                            <small class="form-text text-muted">PNG, JPG, GIF, or SVG (max 2MB)</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Messages Section -->
+                <div class="form-section">
+                    <h5><i class="fas fa-comments"></i> Messages & Text</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="welcome_message" class="form-label">Welcome Message *</label>
+                            <textarea class="form-control" id="welcome_message" name="welcome_message" rows="2" required
+                                      placeholder="Welcome to our chat platform!"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="chat_placeholder" class="form-label">Chat Input Placeholder</label>
+                            <input type="text" class="form-control" id="chat_placeholder" name="chat_placeholder"
+                                   placeholder="Type your message...">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <label for="footer_text" class="form-label">Footer Text</label>
+                            <input type="text" class="form-control" id="footer_text" name="footer_text"
+                                   placeholder="Powered by [Company Name]">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features Section -->
+                <div class="form-section">
+                    <h5><i class="fas fa-cogs"></i> Features & Capabilities</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="file_sharing" name="file_sharing" checked>
+                                <label class="form-check-label" for="file_sharing">
+                                    <i class="fas fa-file-upload text-primary"></i> File Sharing
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="voice_calls" name="voice_calls">
+                                <label class="form-check-label" for="voice_calls">
+                                    <i class="fas fa-phone text-success"></i> Voice Calls
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="video_calls" name="video_calls">
+                                <label class="form-check-label" for="video_calls">
+                                    <i class="fas fa-video text-info"></i> Video Calls
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Limits Section -->
+                <div class="form-section">
+                    <h5><i class="fas fa-sliders-h"></i> Limits & Configuration</h5>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="max_rooms" class="form-label">Max Rooms</label>
+                            <input type="number" class="form-control" id="max_rooms" name="max_rooms" 
+                                   value="10" min="1" max="100">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="max_users_per_room" class="form-label">Max Users per Room</label>
+                            <input type="number" class="form-control" id="max_users_per_room" name="max_users_per_room" 
+                                   value="50" min="1" max="500">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="message_history_days" class="form-label">Message History (Days)</label>
+                            <input type="number" class="form-control" id="message_history_days" name="message_history_days" 
+                                   value="30" min="1" max="365">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Styling Section -->
+                <div class="form-section">
+                    <h5><i class="fas fa-paint-brush"></i> Advanced Styling</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="font_family" class="form-label">Font Family</label>
+                            <select class="form-control" id="font_family" name="font_family">
+                                <option value="Inter, sans-serif">Inter (Modern)</option>
+                                <option value="Roboto, sans-serif">Roboto (Clean)</option>
+                                <option value="Open Sans, sans-serif">Open Sans (Friendly)</option>
+                                <option value="Poppins, sans-serif">Poppins (Rounded)</option>
+                                <option value="Montserrat, sans-serif">Montserrat (Bold)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="border_radius" class="form-label">Border Radius</label>
+                            <select class="form-control" id="border_radius" name="border_radius">
+                                <option value="4px">4px (Sharp)</option>
+                                <option value="8px" selected>8px (Moderate)</option>
+                                <option value="12px">12px (Rounded)</option>
+                                <option value="20px">20px (Very Rounded)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Preview -->
+                <div class="preview-box">
+                    <h6><i class="fas fa-eye"></i> Live Preview</h6>
+                    <div id="preview-content">
+                        <div style="padding: 1rem; border-radius: 8px; background: white; margin: 1rem 0;">
+                            <div style="border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+                                <strong id="preview-company">Company Name</strong>
+                                <span class="color-preview" id="preview-color" style="background: #007bff;"></span>
+                            </div>
+                            <p id="preview-welcome" class="mb-2">Welcome message will appear here</p>
+                            <input type="text" class="form-control" id="preview-placeholder" 
+                                   placeholder="Chat placeholder..." readonly style="background: #f8f9fa;">
+                            <small class="text-muted mt-2 d-block" id="preview-footer">Footer text</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="text-center mt-4">
+                    <button type="button" class="btn btn-outline-primary me-2" onclick="previewBranding()">
+                        <i class="fas fa-eye"></i> Preview
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-magic"></i> Create Branding
+                    </button>
+                    <a href="{{ url_for('chat.index') }}" class="btn btn-outline-secondary ms-2">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Color picker synchronization
+        document.getElementById('primary_color').addEventListener('change', function() {
+            document.getElementById('primary_color_text').value = this.value;
+            updatePreview();
+        });
+        
+        document.getElementById('primary_color_text').addEventListener('input', function() {
+            if (this.value.match(/^#[0-9A-F]{6}$/i)) {
+                document.getElementById('primary_color').value = this.value;
+                updatePreview();
+            }
+        });
+        
+        document.getElementById('secondary_color').addEventListener('change', function() {
+            document.getElementById('secondary_color_text').value = this.value;
+        });
+        
+        document.getElementById('secondary_color_text').addEventListener('input', function() {
+            if (this.value.match(/^#[0-9A-F]{6}$/i)) {
+                document.getElementById('secondary_color').value = this.value;
+            }
+        });
+
+        // Real-time preview update
+        function updatePreview() {
+            document.getElementById('preview-company').textContent = 
+                document.getElementById('company_name').value || 'Company Name';
+            document.getElementById('preview-welcome').textContent = 
+                document.getElementById('welcome_message').value || 'Welcome message will appear here';
+            document.getElementById('preview-placeholder').placeholder = 
+                document.getElementById('chat_placeholder').value || 'Chat placeholder...';
+            document.getElementById('preview-footer').textContent = 
+                document.getElementById('footer_text').value || 'Footer text';
+            document.getElementById('preview-color').style.background = 
+                document.getElementById('primary_color').value;
+        }
+
+        // Client ID validation
+        document.getElementById('client_id').addEventListener('blur', function() {
+            const clientId = this.value.toLowerCase().trim();
+            const feedback = document.getElementById('client-id-feedback');
+            
+            if (!clientId) {
+                feedback.textContent = '';
+                return;
+            }
+            
+            fetch('/wizard/validate-client-id', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({client_id: clientId})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.valid) {
+                    feedback.textContent = '✓ ' + data.message;
+                    feedback.className = 'validation-feedback valid';
+                } else {
+                    feedback.textContent = '✗ ' + data.message;
+                    feedback.className = 'validation-feedback invalid';
+                }
+            })
+            .catch(error => {
+                feedback.textContent = '✗ Error validating client ID';
+                feedback.className = 'validation-feedback invalid';
+            });
+        });
+
+        // Auto-update footer text based on company name
+        document.getElementById('company_name').addEventListener('input', function() {
+            const footerField = document.getElementById('footer_text');
+            if (!footerField.value || footerField.value.startsWith('Powered by')) {
+                footerField.value = 'Powered by ' + this.value;
+            }
+            updatePreview();
+        });
+
+        // Update preview on all relevant field changes
+        ['company_name', 'welcome_message', 'chat_placeholder', 'footer_text'].forEach(id => {
+            document.getElementById(id).addEventListener('input', updatePreview);
+        });
+
+        // Initialize preview
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePreview();
+            document.getElementById('primary_color_text').value = document.getElementById('primary_color').value;
+            document.getElementById('secondary_color_text').value = document.getElementById('secondary_color').value;
+        });
+
+        function previewBranding() {
+            // Could implement a modal preview here
+            alert('Preview functionality - this could open a modal with full branding preview');
+        }
+    </script>
+</body>
+</html>
