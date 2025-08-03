@@ -37,23 +37,6 @@ class DevelopmentConfig(Config):
     RATE_LIMIT_MESSAGES_PER_MINUTE = 200
     RATE_LIMIT_CONNECTIONS_PER_IP = 20
 
-class ProductionConfig(Config):
-    """Production configuration"""
-    DEBUG = False
-    DEVELOPMENT = False
-    
-    # Stricter settings for production
-    SECRET_KEY = os.environ.get('SECRET_KEY')
-    
-    if not SECRET_KEY:
-        raise ValueError("SECRET_KEY environment variable must be set in production")
-    
-    # Production-specific settings
-    PREFERRED_URL_SCHEME = 'https'
-    SESSION_COOKIE_SECURE = True
-    SESSION_COOKIE_HTTPONLY = True
-    SESSION_COOKIE_SAMESITE = 'Lax'
-
 class TestingConfig(Config):
     """Testing configuration"""
     TESTING = True
@@ -63,6 +46,24 @@ class TestingConfig(Config):
     WTF_CSRF_ENABLED = False
     MAX_USERS_PER_ROOM = 5  # Smaller for testing
     MESSAGE_HISTORY_LIMIT = 10
+    SECRET_KEY = 'test-secret-key-for-testing'
+
+class ProductionConfig(Config):
+    """Production configuration"""
+    DEBUG = False
+    DEVELOPMENT = False
+    
+    # Get secret key from environment in production
+    SECRET_KEY = os.environ.get('SECRET_KEY')
+    
+    if not SECRET_KEY and os.environ.get('FLASK_ENV') == 'production':
+        raise ValueError("SECRET_KEY environment variable must be set in production")
+    
+    # Production-specific settings
+    PREFERRED_URL_SCHEME = 'https'
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
 
 # Configuration dictionary
 config = {

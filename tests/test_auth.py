@@ -2,32 +2,29 @@ import pytest
 import uuid
 from services.auth import AuthService
 from unittest.mock import patch
+import os
 
 class TestAuthService:
     """Test cases for authentication service"""
     
-    def test_generate_token(self):
+    def test_generate_token(self, app):
         """Test JWT token generation"""
         user_id = str(uuid.uuid4())
         username = "testuser"
         
-        with patch('flask.current_app') as mock_app:
-            mock_app.config.get.return_value = "test-secret-key"
-            
+        with app.app_context():
             token = AuthService.generate_token(user_id, username)
             
             assert token is not None
             assert isinstance(token, str)
             assert len(token) > 0
     
-    def test_verify_valid_token(self):
+    def test_verify_valid_token(self, app):
         """Test verifying a valid token"""
         user_id = str(uuid.uuid4())
         username = "testuser"
         
-        with patch('flask.current_app') as mock_app:
-            mock_app.config.get.return_value = "test-secret-key"
-            
+        with app.app_context():
             # Generate token
             token = AuthService.generate_token(user_id, username)
             
@@ -38,11 +35,9 @@ class TestAuthService:
             assert result['user_id'] == user_id
             assert result['username'] == username
     
-    def test_verify_invalid_token(self):
+    def test_verify_invalid_token(self, app):
         """Test verifying an invalid token"""
-        with patch('flask.current_app') as mock_app:
-            mock_app.config.get.return_value = "test-secret-key"
-            
+        with app.app_context():
             result = AuthService.verify_token("invalid-token")
             
             assert result['valid'] is False

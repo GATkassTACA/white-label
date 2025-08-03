@@ -1,10 +1,14 @@
 import pytest
 import json
+import os
 from app import create_app
 
 @pytest.fixture
 def app():
     """Create application for testing"""
+    # Set testing environment
+    os.environ['FLASK_ENV'] = 'testing'
+    
     app, socketio = create_app()
     app.config['TESTING'] = True
     app.config['WTF_CSRF_ENABLED'] = False
