@@ -5,12 +5,24 @@ import os
 
 chat_bp = Blueprint('chat', __name__)
 
-def load_branding_config():
+def load_branding_config(client=None):
     """Load branding configuration from JSON file"""
     config_path = os.path.join(current_app.root_path, 'branding', 'configs.json')
     try:
         with open(config_path, 'r') as f:
-            return json.load(f)
+            configs = json.load(f)
+            
+        # If client is specified and exists, return client-specific config
+        if client and client in configs:
+            return configs[client]
+        
+        # Return default config or the old format for backward compatibility
+        if 'default' in configs:
+            return configs['default']
+        else:
+            # Backward compatibility with old single-config format
+            return configs
+            
     except FileNotFoundError:
         # Return default branding if config file not found
         return {
@@ -21,16 +33,35 @@ def load_branding_config():
         }
 
 @chat_bp.route('/')
-def index():
+@chat_bp.route('/<client>')
+def index(client=None):
     """Main chat interface"""
-    branding = load_branding_config()
-    return render_template('base.html', branding=branding)
+    branding = load_branding_config(client)
+    return render_template('base.html', branding=branding, client=client)
 
 @chat_bp.route('/api/branding')
-def get_branding():
+@chat_bp.route('/api/branding/<client>')
+def get_branding(client=None):
     """API endpoint to get branding configuration"""
-    branding = load_branding_config()
+    branding = load_branding_config(client)
     return jsonify(branding)
+
+@chat_bp.route('/api/clients')
+def get_clients():
+    """API endpoint to get available client configurations"""
+    config_path = os.path.join(current_app.root_path, 'branding', 'configs.json')
+    try:
+        with open(config_path, 'r') as f:
+            configs = json.load(f)
+        
+        # Return list of available clients (excluding 'default')
+        clients = [client for client in configs.keys() if client != 'default']
+        return jsonify({
+            "clients": clients,
+            "count": len(clients)
+        })
+    except FileNotFoundError:
+        return jsonify({"clients": [], "count": 0})
 
 @chat_bp.route('/api/health')
 def health_check():

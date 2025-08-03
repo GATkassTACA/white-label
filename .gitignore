@@ -172,3 +172,7 @@ instance/
 node_modules/
 .DS_Store
 Thumbs.db
+
+# Client logos (replace with actual client assets)
+static/images/*-logo.*
+!static/images/default-logo.png
