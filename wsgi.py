@@ -30,6 +30,21 @@ print(f"DATABASE_URL configured: {bool(os.environ.get('DATABASE_URL'))}")
 
 try:
     print("Attempting to import create_app from the app module...")
+    
+    # Test individual imports first
+    print("Testing flask import...")
+    import flask
+    print(f"Flask version: {flask.__version__}")
+    
+    print("Testing psycopg2 import...")
+    import psycopg2
+    print("psycopg2: OK")
+    
+    print("Testing redis import...")
+    import redis
+    print("redis: OK")
+    
+    print("Testing app module import...")
     from app import create_app
     print("Successfully imported create_app")
     
