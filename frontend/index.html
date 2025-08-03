@@ -7,6 +7,7 @@
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .gradient-bg {
@@ -83,107 +84,614 @@
                 </div>
             );
 
-            const ChatPage = () => (
-                <div className="glass-effect p-6 rounded-xl text-white max-w-4xl mx-auto">
-                    <h2 className="text-3xl font-bold mb-4">💬 Chat Interface</h2>
-                    <div className="bg-gray-800 bg-opacity-50 rounded-lg p-4 mb-4 h-64 overflow-y-auto">
-                        <div className="space-y-3">
-                            <div className="bg-blue-500 bg-opacity-30 p-3 rounded-lg">
-                                <strong>System:</strong> Welcome to your white-label chat!
-                            </div>
-                            <div className="bg-green-500 bg-opacity-30 p-3 rounded-lg">
-                                <strong>User:</strong> This looks amazing!
-                            </div>
-                            <div className="bg-purple-500 bg-opacity-30 p-3 rounded-lg">
-                                <strong>Assistant:</strong> Ready to integrate with your Flask backend via Socket.IO
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex gap-2">
-                        <input 
-                            type="text" 
-                            placeholder="Type your message..."
-                            className="flex-1 p-3 rounded-lg bg-white bg-opacity-20 text-white placeholder-gray-300"
-                        />
-                        <button className="bg-blue-500 px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors">
-                            Send
-                        </button>
-                    </div>
-                </div>
-            );
+            const ChatPage = () => {
+                const [messages, setMessages] = useState([
+                    { id: 1, type: 'system', message: 'Welcome to your white-label chat!', timestamp: new Date() },
+                    { id: 2, type: 'user', message: 'This looks amazing!', timestamp: new Date() },
+                    { id: 3, type: 'assistant', message: 'Ready to integrate with your Flask backend via Socket.IO', timestamp: new Date() }
+                ]);
+                const [currentMessage, setCurrentMessage] = useState('');
+                const [isConnected, setIsConnected] = useState(false);
+                const [isLoading, setIsLoading] = useState(false);
 
-            const DocumentsPage = () => (
-                <div className="glass-effect p-6 rounded-xl text-white max-w-4xl mx-auto">
-                    <h2 className="text-3xl font-bold mb-4">📄 Document Processing</h2>
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <div className="bg-gray-800 bg-opacity-50 rounded-lg p-4">
-                            <h3 className="text-xl font-semibold mb-3">Upload Documents</h3>
-                            <div className="border-2 border-dashed border-gray-400 rounded-lg p-8 text-center">
-                                <p className="text-gray-300">Drag & drop files here or click to browse</p>
-                                <button className="mt-4 bg-green-500 px-4 py-2 rounded hover:bg-green-600 transition-colors">
-                                    Choose Files
-                                </button>
+                // Initialize Socket.IO connection
+                useEffect(() => {
+                    const socket = io('http://localhost:5000');
+                    
+                    socket.on('connect', () => {
+                        console.log('Connected to server');
+                        setIsConnected(true);
+                        
+                        // Join the general room
+                        socket.emit('join_room', { room_id: 'general' });
+                    });
+
+                    socket.on('disconnect', () => {
+                        console.log('Disconnected from server');
+                        setIsConnected(false);
+                    });
+
+                    socket.on('receive_message', (data) => {
+                        const newMessage = {
+                            id: Date.now() + Math.random(),
+                            type: data.username.startsWith('User_') ? 'assistant' : 'user',
+                            message: data.message,
+                            username: data.username,
+                            timestamp: new Date(data.timestamp || Date.now())
+                        };
+                        setMessages(prev => [...prev, newMessage]);
+                    });
+
+                    socket.on('user_connected', (data) => {
+                        const systemMessage = {
+                            id: Date.now() + Math.random(),
+                            type: 'system',
+                            message: data.message,
+                            timestamp: new Date()
+                        };
+                        setMessages(prev => [...prev, systemMessage]);
+                    });
+
+                    socket.on('user_joined_room', (data) => {
+                        const systemMessage = {
+                            id: Date.now() + Math.random(),
+                            type: 'system',
+                            message: data.message,
+                            timestamp: new Date()
+                        };
+                        setMessages(prev => [...prev, systemMessage]);
+                    });
+
+                    // Store socket reference for cleanup
+                    window.chatSocket = socket;
+
+                    return () => {
+                        socket.disconnect();
+                    };
+                }, []);
+
+                const sendMessage = async () => {
+                    if (!currentMessage.trim() || !window.chatSocket) return;
+
+                    const userMessage = {
+                        id: Date.now(),
+                        type: 'user',
+                        message: currentMessage,
+                        timestamp: new Date()
+                    };
+
+                    setMessages(prev => [...prev, userMessage]);
+                    setIsLoading(true);
+
+                    try {
+                        // Send via Socket.IO
+                        window.chatSocket.emit('send_message', {
+                            message: currentMessage,
+                            room_id: 'general'
+                        });
+
+                        setCurrentMessage('');
+                    } catch (error) {
+                        console.error('Error sending message:', error);
+                        // Add error message
+                        const errorMessage = {
+                            id: Date.now(),
+                            type: 'error',
+                            message: 'Failed to send message. Please try again.',
+                            timestamp: new Date()
+                        };
+                        setMessages(prev => [...prev, errorMessage]);
+                    } finally {
+                        setIsLoading(false);
+                    }
+                };
+
+                const handleKeyPress = (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                };
+
+                return (
+                    <div className="glass-effect p-6 rounded-xl text-white max-w-4xl mx-auto">
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-3xl font-bold">💬 Chat Interface</h2>
+                            <div className="flex items-center gap-2">
+                                <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-400' : 'bg-red-400'}`}></div>
+                                <span className="text-sm">{isConnected ? 'Connected' : 'Disconnected'}</span>
                             </div>
                         </div>
-                        <div className="bg-gray-800 bg-opacity-50 rounded-lg p-4">
-                            <h3 className="text-xl font-semibold mb-3">Recent Documents</h3>
-                            <div className="space-y-2">
-                                {['document1.pdf', 'presentation.pptx', 'data.xlsx'].map(doc => (
-                                    <div key={doc} className="bg-gray-700 bg-opacity-50 p-2 rounded flex justify-between">
-                                        <span>{doc}</span>
-                                        <span className="text-green-400">✓ Processed</span>
+                        
+                        <div className="bg-gray-800 bg-opacity-50 rounded-lg p-4 mb-4 h-64 overflow-y-auto" id="chatMessages">
+                            <div className="space-y-3">
+                                {messages.map(msg => (
+                                    <div key={msg.id} className={`p-3 rounded-lg ${
+                                        msg.type === 'user' ? 'bg-blue-500 bg-opacity-30 ml-8' :
+                                        msg.type === 'assistant' ? 'bg-purple-500 bg-opacity-30 mr-8' :
+                                        msg.type === 'error' ? 'bg-red-500 bg-opacity-30' :
+                                        'bg-green-500 bg-opacity-30'
+                                    }`}>
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <strong className="capitalize">
+                                                    {msg.type === 'user' ? 'You' : 
+                                                     msg.type === 'assistant' ? (msg.username || 'Assistant') :
+                                                     msg.type === 'system' ? 'System' : 'Error'}:
+                                                </strong> {msg.message}
+                                            </div>
+                                            <span className="text-xs opacity-70">
+                                                {msg.timestamp.toLocaleTimeString()}
+                                            </span>
+                                        </div>
                                     </div>
                                 ))}
+                                {isLoading && (
+                                    <div className="bg-gray-500 bg-opacity-30 p-3 rounded-lg mr-8">
+                                        <div className="flex items-center gap-2">
+                                            <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+                                            <span>Assistant is typing...</span>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
+                        
+                        <div className="flex gap-2">
+                            <input 
+                                type="text" 
+                                value={currentMessage}
+                                onChange={(e) => setCurrentMessage(e.target.value)}
+                                onKeyPress={handleKeyPress}
+                                placeholder="Type your message..."
+                                className="flex-1 p-3 rounded-lg bg-white bg-opacity-20 text-white placeholder-gray-300"
+                                disabled={!isConnected || isLoading}
+                            />
+                            <button 
+                                onClick={sendMessage}
+                                disabled={!isConnected || isLoading || !currentMessage.trim()}
+                                className="bg-blue-500 px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed"
+                            >
+                                {isLoading ? '...' : 'Send'}
+                            </button>
+                        </div>
                     </div>
-                </div>
-            );
+                );
+            };
 
-            const WizardPage = () => (
-                <div className="glass-effect p-6 rounded-xl text-white max-w-4xl mx-auto">
-                    <h2 className="text-3xl font-bold mb-4">🎨 Branding Wizard</h2>
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <div className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Company Name</label>
-                                <input 
-                                    type="text" 
-                                    placeholder="Your Company"
-                                    className="w-full p-3 rounded-lg bg-white bg-opacity-20 text-white placeholder-gray-300"
-                                />
+            const DocumentsPage = () => {
+                const [documents, setDocuments] = useState([]);
+                const [history, setHistory] = useState([]);
+                const [isUploading, setIsUploading] = useState(false);
+                const [dragActive, setDragActive] = useState(false);
+
+                // Load documents and history on component mount
+                useEffect(() => {
+                    loadHistory();
+                }, []);
+
+                const loadHistory = async () => {
+                    try {
+                        const response = await fetch('http://localhost:5000/api/history');
+                        if (response.ok) {
+                            const data = await response.json();
+                            setHistory(data.history || []);
+                        }
+                    } catch (error) {
+                        console.error('Error loading history:', error);
+                    }
+                };
+
+                const handleFileUpload = async (files) => {
+                    setIsUploading(true);
+                    const formData = new FormData();
+
+                    Array.from(files).forEach(file => {
+                        formData.append('files', file);
+                    });
+
+                    try {
+                        const response = await fetch('http://localhost:5000/api/process', {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        if (response.ok) {
+                            const result = await response.json();
+                            setDocuments(prev => [...prev, ...result.processed_files]);
+                            loadHistory(); // Refresh history
+                        } else {
+                            console.error('Upload failed');
+                        }
+                    } catch (error) {
+                        console.error('Error uploading files:', error);
+                    } finally {
+                        setIsUploading(false);
+                    }
+                };
+
+                const handleDrag = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (e.type === "dragenter" || e.type === "dragover") {
+                        setDragActive(true);
+                    } else if (e.type === "dragleave") {
+                        setDragActive(false);
+                    }
+                };
+
+                const handleDrop = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDragActive(false);
+                    
+                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                        handleFileUpload(e.dataTransfer.files);
+                    }
+                };
+
+                const onButtonClick = () => {
+                    document.getElementById('fileInput').click();
+                };
+
+                return (
+                    <div className="glass-effect p-6 rounded-xl text-white max-w-4xl mx-auto">
+                        <h2 className="text-3xl font-bold mb-4">� Document Management</h2>
+                        
+                        {/* File Upload Area */}
+                        <div 
+                            className={`border-2 border-dashed rounded-lg p-8 mb-6 text-center transition-colors ${
+                                dragActive ? 'border-blue-400 bg-blue-500 bg-opacity-20' : 'border-gray-400'
+                            }`}
+                            onDragEnter={handleDrag}
+                            onDragLeave={handleDrag}
+                            onDragOver={handleDrag}
+                            onDrop={handleDrop}
+                        >
+                            <input
+                                id="fileInput"
+                                type="file"
+                                multiple
+                                accept=".pdf,.doc,.docx,.txt"
+                                onChange={(e) => handleFileUpload(e.target.files)}
+                                className="hidden"
+                            />
+                            
+                            {isUploading ? (
+                                <div className="flex flex-col items-center">
+                                    <div className="animate-spin w-8 h-8 border-4 border-white border-t-transparent rounded-full mb-2"></div>
+                                    <p>Uploading and processing files...</p>
+                                </div>
+                            ) : (
+                                <div>
+                                    <div className="text-4xl mb-2">📤</div>
+                                    <p className="mb-2">Drag and drop files here, or</p>
+                                    <button 
+                                        onClick={onButtonClick}
+                                        className="bg-blue-500 px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                                    >
+                                        Choose Files
+                                    </button>
+                                    <p className="text-sm text-gray-300 mt-2">
+                                        Supported formats: PDF, DOC, DOCX, TXT
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Document History */}
+                        <div className="bg-gray-800 bg-opacity-50 rounded-lg p-4">
+                            <h3 className="text-xl font-semibold mb-3">Processing History</h3>
+                            {history.length === 0 ? (
+                                <p className="text-gray-400">No documents processed yet</p>
+                            ) : (
+                                <div className="space-y-2">
+                                    {history.map((item, index) => (
+                                        <div key={index} className="bg-white bg-opacity-10 p-3 rounded-lg flex justify-between items-center">
+                                            <div>
+                                                <div className="font-medium">{item.filename || `Document ${index + 1}`}</div>
+                                                <div className="text-sm text-gray-300">
+                                                    {item.status || 'Processed'} • {item.timestamp ? new Date(item.timestamp).toLocaleString() : 'Recently'}
+                                                </div>
+                                            </div>
+                                            <div className="text-green-400">✅</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Currently Uploaded Documents */}
+                        {documents.length > 0 && (
+                            <div className="mt-6">
+                                <h3 className="text-xl font-semibold mb-3">Current Session</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {documents.map((doc, index) => (
+                                        <div key={index} className="bg-white bg-opacity-10 p-4 rounded-lg">
+                                            <div className="flex items-center gap-3">
+                                                <div className="text-2xl">📄</div>
+                                                <div>
+                                                    <div className="font-medium">{doc.name}</div>
+                                                    <div className="text-sm text-gray-300">
+                                                        {doc.size ? `${(doc.size / 1024).toFixed(1)} KB` : 'Unknown size'}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Primary Color</label>
-                                <input 
-                                    type="color" 
-                                    defaultValue="#667eea"
-                                    className="w-full h-12 rounded-lg"
-                                />
+                        )}
+                    </div>
+                );
+            };
+
+            const WizardPage = () => {
+                const [formData, setFormData] = useState({
+                    client_name: '',
+                    company_name: '',
+                    primary_color: '#3B82F6',
+                    secondary_color: '#8B5CF6',
+                    logo_url: '',
+                    features: {
+                        chat: true,
+                        documents: true,
+                        analytics: false
+                    }
+                });
+                const [isLoading, setIsLoading] = useState(false);
+                const [savedClients, setSavedClients] = useState([]);
+                const [currentClient, setCurrentClient] = useState(null);
+
+                // Load existing clients on component mount
+                useEffect(() => {
+                    loadClients();
+                }, []);
+
+                const loadClients = async () => {
+                    try {
+                        const response = await fetch('http://localhost:5000/api/clients');
+                        if (response.ok) {
+                            const data = await response.json();
+                            setSavedClients(data.clients || []);
+                        }
+                    } catch (error) {
+                        console.error('Error loading clients:', error);
+                    }
+                };
+
+                const handleInputChange = (e) => {
+                    const { name, value, type, checked } = e.target;
+                    
+                    if (name.startsWith('features.')) {
+                        const featureName = name.split('.')[1];
+                        setFormData(prev => ({
+                            ...prev,
+                            features: {
+                                ...prev.features,
+                                [featureName]: checked
+                            }
+                        }));
+                    } else {
+                        setFormData(prev => ({
+                            ...prev,
+                            [name]: type === 'checkbox' ? checked : value
+                        }));
+                    }
+                };
+
+                const handleSubmit = async (e) => {
+                    e.preventDefault();
+                    setIsLoading(true);
+
+                    try {
+                        const response = await fetch('http://localhost:5000/api/branding', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(formData)
+                        });
+
+                        if (response.ok) {
+                            const result = await response.json();
+                            setCurrentClient(result.client);
+                            loadClients(); // Refresh the clients list
+                            
+                            // Reset form
+                            setFormData({
+                                client_name: '',
+                                company_name: '',
+                                primary_color: '#3B82F6',
+                                secondary_color: '#8B5CF6',
+                                logo_url: '',
+                                features: {
+                                    chat: true,
+                                    documents: true,
+                                    analytics: false
+                                }
+                            });
+                        } else {
+                            console.error('Failed to save branding');
+                        }
+                    } catch (error) {
+                        console.error('Error saving branding:', error);
+                    } finally {
+                        setIsLoading(false);
+                    }
+                };
+
+                const loadClient = async (clientName) => {
+                    try {
+                        const response = await fetch(`http://localhost:5000/api/branding/${clientName}`);
+                        if (response.ok) {
+                            const data = await response.json();
+                            setFormData(data.branding);
+                            setCurrentClient(data);
+                        }
+                    } catch (error) {
+                        console.error('Error loading client:', error);
+                    }
+                };
+
+                return (
+                    <div className="glass-effect p-6 rounded-xl text-white max-w-4xl mx-auto">
+                        <h2 className="text-3xl font-bold mb-4">🎨 White-Label Wizard</h2>
+                        
+                        {/* Existing Clients */}
+                        {savedClients.length > 0 && (
+                            <div className="bg-gray-800 bg-opacity-50 rounded-lg p-4 mb-6">
+                                <h3 className="text-xl font-semibold mb-3">Existing Clients</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                    {savedClients.map((client, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => loadClient(client)}
+                                            className="bg-white bg-opacity-10 p-3 rounded-lg hover:bg-opacity-20 transition-colors text-left"
+                                        >
+                                            <div className="font-medium">{client}</div>
+                                            <div className="text-sm text-gray-300">Click to edit</div>
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
+                        )}
+
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium mb-2">Client Name</label>
+                                    <input
+                                        type="text"
+                                        name="client_name"
+                                        value={formData.client_name}
+                                        onChange={handleInputChange}
+                                        className="w-full p-3 rounded-lg bg-white bg-opacity-20 text-white placeholder-gray-300"
+                                        placeholder="Enter client identifier"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium mb-2">Company Name</label>
+                                    <input
+                                        type="text"
+                                        name="company_name"
+                                        value={formData.company_name}
+                                        onChange={handleInputChange}
+                                        className="w-full p-3 rounded-lg bg-white bg-opacity-20 text-white placeholder-gray-300"
+                                        placeholder="Display name"
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium mb-2">Primary Color</label>
+                                    <input
+                                        type="color"
+                                        name="primary_color"
+                                        value={formData.primary_color}
+                                        onChange={handleInputChange}
+                                        className="w-full p-2 rounded-lg bg-white bg-opacity-20"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium mb-2">Secondary Color</label>
+                                    <input
+                                        type="color"
+                                        name="secondary_color"
+                                        value={formData.secondary_color}
+                                        onChange={handleInputChange}
+                                        className="w-full p-2 rounded-lg bg-white bg-opacity-20"
+                                    />
+                                </div>
+                            </div>
+
                             <div>
                                 <label className="block text-sm font-medium mb-2">Logo URL</label>
-                                <input 
-                                    type="url" 
-                                    placeholder="https://example.com/logo.png"
+                                <input
+                                    type="url"
+                                    name="logo_url"
+                                    value={formData.logo_url}
+                                    onChange={handleInputChange}
                                     className="w-full p-3 rounded-lg bg-white bg-opacity-20 text-white placeholder-gray-300"
+                                    placeholder="https://example.com/logo.png"
                                 />
                             </div>
-                        </div>
-                        <div className="bg-gray-800 bg-opacity-50 rounded-lg p-4">
-                            <h3 className="text-xl font-semibold mb-3">Preview</h3>
-                            <div className="bg-white rounded-lg p-4 text-gray-800">
-                                <div className="flex items-center mb-4">
-                                    <div className="w-8 h-8 bg-purple-500 rounded mr-3"></div>
-                                    <h4 className="font-bold">Your Company</h4>
+
+                            <div>
+                                <label className="block text-sm font-medium mb-2">Features</label>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                    <label className="flex items-center gap-2">
+                                        <input
+                                            type="checkbox"
+                                            name="features.chat"
+                                            checked={formData.features.chat}
+                                            onChange={handleInputChange}
+                                            className="rounded"
+                                        />
+                                        <span>Chat System</span>
+                                    </label>
+                                    <label className="flex items-center gap-2">
+                                        <input
+                                            type="checkbox"
+                                            name="features.documents"
+                                            checked={formData.features.documents}
+                                            onChange={handleInputChange}
+                                            className="rounded"
+                                        />
+                                        <span>Document Processing</span>
+                                    </label>
+                                    <label className="flex items-center gap-2">
+                                        <input
+                                            type="checkbox"
+                                            name="features.analytics"
+                                            checked={formData.features.analytics}
+                                            onChange={handleInputChange}
+                                            className="rounded"
+                                        />
+                                        <span>Analytics</span>
+                                    </label>
                                 </div>
-                                <p className="text-sm text-gray-600">
-                                    This is how your branded interface will look to your clients.
-                                </p>
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={isLoading}
+                                className="w-full bg-gradient-to-r from-blue-500 to-purple-600 py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isLoading ? 'Saving...' : 'Save Configuration'}
+                            </button>
+                        </form>
+
+                        {/* Live Preview */}
+                        <div className="mt-6 bg-gray-800 bg-opacity-50 rounded-lg p-4">
+                            <h3 className="text-xl font-semibold mb-3">Live Preview</h3>
+                            <div 
+                                className="p-4 rounded-lg"
+                                style={{
+                                    background: `linear-gradient(135deg, ${formData.primary_color}20, ${formData.secondary_color}20)`,
+                                    border: `2px solid ${formData.primary_color}40`
+                                }}
+                            >
+                                <div className="flex items-center gap-3 mb-3">
+                                    {formData.logo_url && (
+                                        <img src={formData.logo_url} alt="Logo" className="w-8 h-8 rounded" />
+                                    )}
+                                    <h4 style={{ color: formData.primary_color }} className="text-lg font-semibold">
+                                        {formData.company_name || 'Your Company'}
+                                    </h4>
+                                </div>
+                                <div className="text-sm space-y-1">
+                                    <p>Client ID: {formData.client_name || 'your-client'}</p>
+                                    <p>Features: {Object.entries(formData.features).filter(([_, enabled]) => enabled).map(([feature, _]) => feature).join(', ')}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                );
+            };
             );
 
             const LoadingScreen = () => (
