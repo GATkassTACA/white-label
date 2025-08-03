@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Design System Demo</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Modern Design System -->
+    <link href="static/css/modern-design-system.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Modern Header -->
+    <header class="chat-header">
+        <div class="chat-avatar">
+            <i class="fas fa-comments"></i>
+        </div>
+        <div class="flex-1">
+            <h1 class="text-xl font-semibold m-0">ScarlettAI Chat</h1>
+            <p class="text-sm m-0" style="opacity: 0.9;">Your AI wellness companion</p>
+        </div>
+        <nav class="flex gap-4">
+            <button class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.3);">
+                <i class="fas fa-home"></i> Home
+            </button>
+            <button class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.3);">
+                <i class="fas fa-magic"></i> Create Brand
+            </button>
+        </nav>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="chat-container">
+        <!-- Welcome Card -->
+        <div class="card animate-fade-in">
+            <div class="card-body text-center">
+                <h2 class="text-2xl font-semibold mb-4">Welcome to the Future of Chat</h2>
+                <p class="text-gray-600 mb-6">Experience our modernized chat interface with beautiful animations and professional design.</p>
+                
+                <!-- Quick Actions -->
+                <div class="flex gap-4 justify-center flex-wrap">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-users"></i> View Rooms
+                    </button>
+                    <button class="btn btn-outline">
+                        <i class="fas fa-upload"></i> Upload Document
+                    </button>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-cog"></i> Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chat Interface Demo -->
+        <div class="card mt-8 animate-slide-up">
+            <div class="card-header">
+                <h3 class="text-lg font-medium m-0">Live Chat Demo</h3>
+            </div>
+            
+            <div class="chat-messages" id="messages" style="height: 400px;">
+                <!-- Sample Messages -->
+                <div class="message message-assistant">
+                    <div class="chat-avatar bg-primary">
+                        <i class="fas fa-robot text-white"></i>
+                    </div>
+                    <div class="message-bubble">
+                        Hello! I'm your AI assistant. How can I help you today?
+                    </div>
+                </div>
+                
+                <div class="message message-user">
+                    <div class="message-bubble">
+                        Hi there! I'd like to know more about this platform.
+                    </div>
+                    <div class="chat-avatar" style="background: var(--color-gray-500);">
+                        <i class="fas fa-user text-white"></i>
+                    </div>
+                </div>
+                
+                <div class="message message-assistant">
+                    <div class="chat-avatar bg-primary">
+                        <i class="fas fa-robot text-white"></i>
+                    </div>
+                    <div class="message-bubble">
+                        This is a white-label chat SaaS platform with modern design, document processing, and real-time messaging. The new design features smooth animations, better typography, and improved user experience!
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input-area">
+                <textarea 
+                    class="chat-input" 
+                    placeholder="Type your message..."
+                    id="messageInput"
+                    rows="1"
+                ></textarea>
+                <button class="btn btn-primary btn-lg" onclick="sendDemoMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                    Send
+                </button>
+            </div>
+        </div>
+        
+        <!-- Component Showcase -->
+        <div class="card mt-8">
+            <div class="card-header">
+                <h3 class="text-lg font-medium m-0">Design System Components</h3>
+            </div>
+            
+            <div class="card-body">
+                <!-- Buttons -->
+                <div class="mb-6">
+                    <h4 class="text-base font-medium mb-3">Button Variants</h4>
+                    <div class="flex gap-3 flex-wrap">
+                        <button class="btn btn-primary">Primary</button>
+                        <button class="btn btn-secondary">Secondary</button>
+                        <button class="btn btn-outline">Outline</button>
+                        <button class="btn btn-primary btn-sm">Small</button>
+                        <button class="btn btn-primary btn-lg">Large</button>
+                    </div>
+                </div>
+                
+                <!-- Form Elements -->
+                <div class="mb-6">
+                    <h4 class="text-base font-medium mb-3">Form Elements</h4>
+                    <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-control" placeholder="Enter your email">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Message</label>
+                            <textarea class="form-control" placeholder="Your message..." rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Upload Area -->
+                <div class="mb-6">
+                    <h4 class="text-base font-medium mb-3">File Upload</h4>
+                    <div class="upload-area" onclick="document.getElementById('demo-file').click()">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h5 class="text-lg font-medium mb-2">Drop files here or click to upload</h5>
+                        <p class="text-gray-500 text-sm">Supports PDF, DOC, and image files</p>
+                        <input type="file" id="demo-file" style="display: none;">
+                    </div>
+                </div>
+                
+                <!-- Typography -->
+                <div class="mb-6">
+                    <h4 class="text-base font-medium mb-3">Typography Scale</h4>
+                    <div class="space-y-2">
+                        <h1 class="text-4xl font-bold">Heading 1 - 36px Bold</h1>
+                        <h2 class="text-3xl font-semibold">Heading 2 - 30px Semibold</h2>
+                        <h3 class="text-2xl font-medium">Heading 3 - 24px Medium</h3>
+                        <p class="text-base">Body text - 16px Regular with good line height for readability</p>
+                        <p class="text-sm text-gray-600">Small text - 14px for captions and secondary information</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="text-center p-6 text-gray-500 text-sm">
+        <p>Powered by Modern White Label Chat SaaS</p>
+    </footer>
+    
+    <script>
+        // Demo functionality
+        const messagesContainer = document.getElementById('messages');
+        const messageInput = document.getElementById('messageInput');
+        
+        // Auto-resize textarea
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+        
+        // Send message on Enter
+        messageInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendDemoMessage();
+            }
+        });
+        
+        function sendDemoMessage() {
+            const message = messageInput.value.trim();
+            if (message) {
+                addDemoMessage(message, 'user');
+                messageInput.value = '';
+                messageInput.style.height = 'auto';
+                
+                // Simulate AI response
+                setTimeout(() => {
+                    const responses = [
+                        "That's a great question! The modern design really improves the user experience.",
+                        "I love the new animations and smooth transitions!",
+                        "This design system makes everything look so professional.",
+                        "The typography and spacing create such a clean interface."
+                    ];
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    addDemoMessage(randomResponse, 'assistant');
+                }, 1000);
+            }
+        }
+        
+        function addDemoMessage(content, role) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message message-${role} animate-fade-in`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'chat-avatar';
+            
+            if (role === 'user') {
+                avatar.innerHTML = '<i class="fas fa-user text-white"></i>';
+                avatar.style.background = 'var(--color-gray-500)';
+            } else {
+                avatar.innerHTML = '<i class="fas fa-robot text-white"></i>';
+                avatar.className += ' bg-primary';
+            }
+            
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+            bubble.textContent = content;
+            
+            if (role === 'user') {
+                messageDiv.appendChild(bubble);
+                messageDiv.appendChild(avatar);
+            } else {
+                messageDiv.appendChild(avatar);
+                messageDiv.appendChild(bubble);
+            }
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // Upload demo
+        document.getElementById('demo-file').addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                const fileName = e.target.files[0].name;
+                alert(`File "${fileName}" selected! In a real app, this would start processing.`);
+            }
+        });
+    </script>
+</body>
+</html>
