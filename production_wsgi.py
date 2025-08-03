@@ -5,7 +5,7 @@ Simplified version with incremental functionality
 import os
 import sys
 import traceback
-from flask import Flask, render_template, jsonify, request, make_response, render_template_string
+from flask import Flask, render_template, jsonify, request, make_response, render_template_string, send_from_directory
 from flask_socketio import SocketIO
 from flask_cors import CORS
 
