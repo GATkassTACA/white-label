@@ -27,7 +27,7 @@ def index():
             "default-src 'self'; "
             "script-src 'self' https://unpkg.com https://cdn.socket.io https://cdn.tailwindcss.com 'unsafe-eval'; "
             "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; "
-            "connect-src 'self' http://localhost:5001 ws://localhost:5001; "
+            "connect-src 'self' http://localhost:5000 ws://localhost:5000; "
             "img-src 'self' data: https:; "
             "font-src 'self' https:;"
         )
