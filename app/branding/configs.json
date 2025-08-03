@@ -1,0 +1,24 @@
+{
+    "company_name": "ChatHub Pro",
+    "primary_color": "#2563eb",
+    "secondary_color": "#64748b",
+    "logo_url": "/static/images/logo.png",
+    "welcome_message": "Welcome to ChatHub Pro!",
+    "features": {
+        "real_time_messaging": true,
+        "file_sharing": true,
+        "voice_calls": false,
+        "video_calls": false,
+        "custom_themes": true
+    },
+    "limits": {
+        "max_rooms": 10,
+        "max_users_per_room": 50,
+        "message_history_days": 30
+    },
+    "styling": {
+        "font_family": "Inter, sans-serif",
+        "border_radius": "8px",
+        "box_shadow": "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
+    }
+}
