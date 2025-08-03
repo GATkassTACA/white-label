@@ -1,7 +1,5 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy Python app to Azure Web App - white-label-chat-km
+# Azure deployment workflow for white-label chat application
+name: Deploy to Azure App Service
 
 on:
   push:
@@ -10,66 +8,39 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Python version
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      - name: Create and start virtual environment
+      - name: Create deployment package
         run: |
-          python -m venv venv
-          source venv/bin/activate
+          # Create a clean deployment directory
+          mkdir deployment
+          
+          # Copy essential files
+          cp production_wsgi.py deployment/
+          cp requirements.txt deployment/
+          cp auth.html deployment/
+          
+          # Copy application directories
+          cp -r app deployment/
+          cp -r static deployment/
+          
+          # Create deployment zip
+          cd deployment
+          zip -r ../deployment.zip .
+          cd ..
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
-
-      - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
-
-      - name: Upload artifact for deployment jobs
-        uses: actions/upload-artifact@v3
-        with:
-          name: python-app
-          path: |
-            release.zip
-            !venv/
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v3
-        with:
-          name: python-app
-
-      - name: Unzip artifact for deployment
-        run: unzip release.zip
-
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_8F5E5F5E5F5E5F5E5F5E5F5E5F5E5F5E }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_8F5E5F5E5F5E5F5E5F5E5F5E5F5E5F5E }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8F5E5F5E5F5E5F5E5F5E5F5E5F5E5F5E }}
-
-      - name: 'Deploy to Azure Web App'
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
-        id: deploy-to-webapp
         with:
           app-name: 'white-label-chat-km'
-          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: deployment.zip
