@@ -381,22 +381,22 @@ By installing this software, you agree to these terms and conditions.
 For questions: legal@pharmchat.com
 """
     
-    with open(installer_dir / "docs" / "LICENSE.txt", "w") as f:
+    with open(installer_dir / "docs" / "LICENSE.txt", "w", encoding="utf-8") as f:
         f.write(license_agreement)
     
-    print("✓ Created installer directory structure")
-    print("✓ Copied application files")
-    print("✓ Created Windows installer script")
-    print("✓ Created configuration templates")
-    print("✓ Created documentation")
-    print("✓ Created uninstaller")
-    print("✓ Created license agreement")
+    print("[OK] Created installer directory structure")
+    print("[OK] Copied application files")
+    print("[OK] Created Windows installer script")
+    print("[OK] Created configuration templates")
+    print("[OK] Created documentation")
+    print("[OK] Created uninstaller")
+    print("[OK] Created license agreement")
     
     print("\n" + "=" * 60)
-    print("🎯 PHARMACY INSTALLER PACKAGE READY!")
+    print("PHARMACY INSTALLER PACKAGE READY!")
     print("=" * 60)
-    print(f"📦 Package Location: {installer_dir.absolute()}")
-    print("\n📋 Package Contents:")
+    print(f"Package Location: {installer_dir.absolute()}")
+    print("\nPackage Contents:")
     print("   ├── install_windows.bat (Main installer)")
     print("   ├── uninstall.bat (Removal tool)")
     print("   ├── README.md (Installation guide)")
@@ -404,13 +404,13 @@ For questions: legal@pharmchat.com
     print("   ├── config/ (Configuration templates)")
     print("   └── docs/ (Documentation & license)")
     
-    print("\n🚀 Next Steps:")
+    print("\nNext Steps:")
     print("   1. Test the installer on a clean Windows system")
     print("   2. Create executable with PyInstaller for easier distribution")
     print("   3. Package into ZIP file for download distribution")
     print("   4. Set up digital signing for security trust")
     
-    print("\n💰 Distribution Options:")
+    print("\nDistribution Options:")
     print("   • Email ZIP package to customers")
     print("   • Host on secure download portal")
     print("   • Provide on USB drives for on-site installation")
@@ -421,7 +421,7 @@ For questions: legal@pharmchat.com
 if __name__ == "__main__":
     try:
         installer_path = create_pharmacy_installer()
-        print(f"\n✅ SUCCESS: Installer package created at {installer_path}")
+        print(f"\n[SUCCESS] Installer package created at {installer_path}")
     except Exception as e:
-        print(f"\n❌ ERROR: {e}")
+        print(f"\n[ERROR] {e}")
         sys.exit(1)
