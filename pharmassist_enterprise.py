@@ -320,6 +320,154 @@ def create_app():
             'timestamp': datetime.datetime.now().isoformat()
         })
     
+    # API Routes for frontend compatibility
+    @app.route('/api/status')
+    def api_status():
+        """API status endpoint for frontend"""
+        return jsonify({
+            'status': 'operational',
+            'pdf_processing_available': PDF_PROCESSING_AVAILABLE,
+            'database_available': DATABASE_AVAILABLE and db.connection is not None,
+            'methods_available': ['auto', 'pypdf2', 'pdfplumber', 'ocr'] if PDF_PROCESSING_AVAILABLE else ['demo'],
+            'version': '1.0.0',
+            'timestamp': datetime.datetime.now().isoformat()
+        })
+    
+    @app.route('/api/process', methods=['POST'])
+    def api_process():
+        """API endpoint for PDF processing - frontend compatible"""
+        start_time = datetime.datetime.now()
+        
+        try:
+            if 'file' not in request.files:
+                return jsonify({'error': 'No file uploaded', 'success': False}), 400
+            
+            file = request.files['file']
+            if file.filename == '':
+                return jsonify({'error': 'No file selected', 'success': False}), 400
+            
+            if not file.filename.lower().endswith('.pdf'):
+                return jsonify({'error': 'Only PDF files are allowed', 'success': False}), 400
+            
+            # Secure filename and save
+            original_filename = file.filename
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            
+            # Get file size
+            file_size = os.path.getsize(filepath)
+            
+            # Get processing method from request
+            method = request.form.get('method', 'auto')
+            
+            # Process the PDF
+            if PDF_PROCESSING_AVAILABLE and pdf_processor:
+                try:
+                    result = pdf_processor.process_pdf(filepath, method)
+                    status = 'success'
+                    
+                    # Processing time
+                    processing_time = (datetime.datetime.now() - start_time).total_seconds()
+                    
+                    # Log to database
+                    if DATABASE_AVAILABLE and db.connection:
+                        db.log_processing(
+                            session['session_id'], filename, original_filename, 
+                            method, status, processing_time, file_size,
+                            result.get('extracted_text', ''), result.get('converted_data')
+                        )
+                    
+                    # Clean up file
+                    try:
+                        os.remove(filepath)
+                    except:
+                        pass
+                    
+                    # Return API-formatted response
+                    return jsonify({
+                        'success': True,
+                        'method_used': result.get('method_used', method),
+                        'pages_processed': result.get('pages_processed'),
+                        'medications_count': len(result.get('medications', [])) if result.get('medications') else None,
+                        'caretend_output': result.get('converted_data'),
+                        'extracted_text': result.get('extracted_text'),
+                        'processing_time': processing_time,
+                        'file_size': file_size,
+                        'timestamp': datetime.datetime.now().isoformat()
+                    })
+                    
+                except Exception as e:
+                    # Log error to database
+                    if DATABASE_AVAILABLE and db.connection:
+                        processing_time = (datetime.datetime.now() - start_time).total_seconds()
+                        db.log_processing(
+                            session['session_id'], filename, original_filename, 
+                            method, 'error', processing_time, file_size,
+                            '', str(e)
+                        )
+                    
+                    # Clean up file
+                    try:
+                        os.remove(filepath)
+                    except:
+                        pass
+                    
+                    return jsonify({
+                        'success': False,
+                        'error': f'Processing failed: {str(e)}',
+                        'method_used': method
+                    }), 500
+            else:
+                # Demo mode - return mock data
+                processing_time = (datetime.datetime.now() - start_time).total_seconds()
+                
+                demo_result = {
+                    'success': True,
+                    'method_used': 'demo_mode',
+                    'pages_processed': 1,
+                    'medications_count': 3,
+                    'caretend_output': '''Patient: DEMO PATIENT
+DOB: 01/01/1980
+MRN: DEMO123
+
+MEDICATIONS:
+1. Lisinopril 10mg - Take once daily
+2. Metformin 500mg - Take twice daily with meals  
+3. Atorvastatin 20mg - Take once daily at bedtime
+
+Date: ''' + datetime.datetime.now().strftime('%m/%d/%Y') + '''
+Converted by PharmAssist Enterprise
+''',
+                    'extracted_text': 'Demo text extraction - PDF processing libraries not available',
+                    'processing_time': processing_time,
+                    'file_size': file_size,
+                    'timestamp': datetime.datetime.now().isoformat(),
+                    'note': 'Demo mode - Install PDF processing libraries for full functionality'
+                }
+                
+                # Log demo processing
+                if DATABASE_AVAILABLE and db.connection:
+                    db.log_processing(
+                        session['session_id'], filename, original_filename, 
+                        'demo', 'success', processing_time, file_size,
+                        demo_result['extracted_text'], demo_result['caretend_output']
+                    )
+                
+                # Clean up file
+                try:
+                    os.remove(filepath)
+                except:
+                    pass
+                
+                return jsonify(demo_result)
+        
+        except Exception as e:
+            return jsonify({
+                'success': False,
+                'error': f'Upload failed: {str(e)}'
+            }), 500
+    
     return app
 
 # Create the application
