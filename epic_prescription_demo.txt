@@ -1,0 +1,88 @@
+
+█████████████████████████████████████████████████████████████████████████████
+                          EPIC HEALTHCARE SYSTEM
+                     ELECTRONIC PRESCRIPTION RECORD
+█████████████████████████████████████████████████████████████████████████████
+
+Patient Information:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Name: MARTINEZ, ELENA SOFIA                    DOB: 03/15/1967 (Age: 58)
+MRN: EMR-4429851                              Gender: Female
+Address: 2847 Maple Grove Drive                SSN: XXX-XX-4429
+         Sacramento, CA 95825                  Phone: (916) 555-2847
+Insurance: BlueCross BlueShield - Premium Plan
+Member ID: BCBS441298471                      Group: 00847B
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Provider Information:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Prescriber: Dr. Michael Chen, MD              NPI: 1234567890
+Specialty: Internal Medicine                  DEA: BC1234567
+Clinic: Sacramento Medical Center             Phone: (916) 555-EPIC
+Address: 1200 Health Plaza, Sacramento CA 95814
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PRESCRIPTION DETAILS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Date Prescribed: 08/04/2025                  Rx Number: RX-2025-0804-001
+Date Valid Until: 08/04/2026                 Priority: Routine
+
+MEDICATIONS:
+
+1. LISINOPRIL TABLET 10 MG
+   ▪ NDC: 68180-518-06    ▪ Generic Name: lisinopril
+   ▪ Quantity: 90 tablets (90 day supply)
+   ▪ Directions: Take one (1) tablet by mouth once daily for blood pressure
+   ▪ Refills: 5 remaining   ▪ DAW: Generic substitution permitted
+   ▪ Indication: Hypertension   ▪ Last Fill: 05/04/2025
+
+2. METFORMIN HCL TABLET 500 MG
+   ▪ NDC: 93132-159-01    ▪ Generic Name: metformin hydrochloride
+   ▪ Quantity: 180 tablets (90 day supply)
+   ▪ Directions: Take one (1) tablet by mouth twice daily with meals
+   ▪ Refills: 3 remaining   ▪ DAW: Generic substitution permitted
+   ▪ Indication: Type 2 Diabetes Mellitus   ▪ Last Fill: 05/04/2025
+
+3. ATORVASTATIN CALCIUM TABLET 20 MG
+   ▪ NDC: 0071-0155-23    ▪ Generic Name: atorvastatin calcium
+   ▪ Quantity: 90 tablets (90 day supply)
+   ▪ Directions: Take one (1) tablet by mouth once daily at bedtime
+   ▪ Refills: 5 remaining   ▪ DAW: Brand name requested by patient
+   ▪ Indication: Hyperlipidemia   ▪ Last Fill: 05/04/2025
+
+4. AMLODIPINE BESYLATE TABLET 5 MG
+   ▪ NDC: 68180-372-09    ▪ Generic Name: amlodipine besylate
+   ▪ Quantity: 90 tablets (90 day supply)
+   ▪ Directions: Take one (1) tablet by mouth once daily
+   ▪ Refills: 5 remaining   ▪ DAW: Generic substitution permitted
+   ▪ Indication: Hypertension   ▪ Last Fill: 05/04/2025
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CLINICAL NOTES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Chief Complaint: Routine follow-up for diabetes and hypertension management
+Vitals: BP 138/82, Pulse 76, Weight 165 lbs, BMI 27.3
+A1C (3 months ago): 7.2%    LDL (3 months ago): 98 mg/dL
+Plan: Continue current regimen, recheck labs in 3 months
+Next Appointment: 11/04/2025
+
+ALLERGIES: NKDA (No Known Drug Allergies)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Pharmacy Information:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Preferred Pharmacy: Caretend Pharmacy Solutions
+Address: 4500 Business Center Drive, Sacramento CA 95825
+Phone: (916) 555-CARE (2273)
+NCPDP: 1234567    NPI: 9876543210
+
+█████████████████████████████████████████████████████████████████████████████
+                    Electronic Signature Applied
+               Dr. Michael Chen, MD - 08/04/2025 14:32 PST
+                    Document ID: EPIC-RX-20250804-143247
+█████████████████████████████████████████████████████████████████████████████
+
+CARETEND PROCESSING CODES:
+For internal pharmacy use - EPIC format requires conversion
+Processing Priority: Standard    ePrescribe ID: eRx-2025-0804-001
