@@ -42,9 +42,9 @@ try:
     import flask
     print(f"Flask version: {flask.__version__}")
     
-    print("Testing app module import...")
-    from app import app
-    print("Successfully imported app")
+    print("Testing pharmassist_enterprise module import...")
+    from pharmassist_enterprise import app
+    print("Successfully imported app from pharmassist_enterprise")
     
     print("PharmAssist WSGI app loaded successfully!")
     print(f"Flask app: {app}")
