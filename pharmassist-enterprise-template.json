@@ -1,0 +1,219 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "metadata": {
+        "description": "PharmAssist Web App with PostgreSQL Database - Based on Microsoft.Web-WebAppDatabase-Portal template"
+    },
+    "parameters": {
+        "webAppName": {
+            "type": "string",
+            "defaultValue": "pharmassist-enterprise",
+            "metadata": {
+                "description": "Name of the PharmAssist web application"
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources"
+            }
+        },
+        "sku": {
+            "type": "string",
+            "defaultValue": "B1",
+            "allowedValues": [
+                "F1",
+                "B1",
+                "B2",
+                "S1",
+                "S2",
+                "P1v2"
+            ],
+            "metadata": {
+                "description": "App Service Plan SKU"
+            }
+        },
+        "databaseName": {
+            "type": "string",
+            "defaultValue": "pharmassist_db",
+            "metadata": {
+                "description": "Name of the PostgreSQL database"
+            }
+        },
+        "serverName": {
+            "type": "string",
+            "defaultValue": "[concat('pharmassist-server-', uniqueString(resourceGroup().id))]",
+            "metadata": {
+                "description": "Name of the PostgreSQL server"
+            }
+        },
+        "administratorLogin": {
+            "type": "string",
+            "defaultValue": "pharmadmin",
+            "metadata": {
+                "description": "Administrator username for PostgreSQL"
+            }
+        },
+        "administratorLoginPassword": {
+            "type": "secureString",
+            "metadata": {
+                "description": "Administrator password for PostgreSQL"
+            }
+        },
+        "databaseSku": {
+            "type": "string",
+            "defaultValue": "Standard_B1ms",
+            "allowedValues": [
+                "Standard_B1ms",
+                "Standard_B2s",
+                "Standard_D2s_v3"
+            ],
+            "metadata": {
+                "description": "PostgreSQL server SKU"
+            }
+        }
+    },
+    "variables": {
+        "appServicePlanName": "[concat(parameters('webAppName'), '-plan')]",
+        "linuxFxVersion": "PYTHON|3.11",
+        "postgreSQLVersion": "13"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2022-03-01",
+            "name": "[variables('appServicePlanName')]",
+            "location": "[parameters('location')]",
+            "kind": "linux",
+            "properties": {
+                "reserved": true
+            },
+            "sku": {
+                "name": "[parameters('sku')]"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+            "apiVersion": "2022-12-01",
+            "name": "[parameters('serverName')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "version": "[variables('postgreSQLVersion')]",
+                "administratorLogin": "[parameters('administratorLogin')]",
+                "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+                "storage": {
+                    "storageSizeGB": 32
+                },
+                "backup": {
+                    "backupRetentionDays": 7,
+                    "geoRedundantBackup": "Disabled"
+                },
+                "highAvailability": {
+                    "mode": "Disabled"
+                }
+            },
+            "sku": {
+                "name": "[parameters('databaseSku')]",
+                "tier": "Burstable"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/flexibleServers/databases",
+            "apiVersion": "2022-12-01",
+            "name": "[concat(parameters('serverName'), '/', parameters('databaseName'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers', parameters('serverName'))]"
+            ],
+            "properties": {
+                "charset": "UTF8",
+                "collation": "en_US.utf8"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
+            "apiVersion": "2022-12-01",
+            "name": "[concat(parameters('serverName'), '/AllowAzureServices')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers', parameters('serverName'))]"
+            ],
+            "properties": {
+                "startIpAddress": "0.0.0.0",
+                "endIpAddress": "0.0.0.0"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2022-03-01",
+            "name": "[parameters('webAppName')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+                "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers/databases', parameters('serverName'), parameters('databaseName'))]"
+            ],
+            "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+                "siteConfig": {
+                    "linuxFxVersion": "[variables('linuxFxVersion')]",
+                    "appSettings": [
+                        {
+                            "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
+                            "value": "true"
+                        },
+                        {
+                            "name": "FLASK_ENV",
+                            "value": "production"
+                        },
+                        {
+                            "name": "FLASK_DEBUG",
+                            "value": "false"
+                        },
+                        {
+                            "name": "DATABASE_HOST",
+                            "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/flexibleServers', parameters('serverName'))).fullyQualifiedDomainName]"
+                        },
+                        {
+                            "name": "DATABASE_NAME",
+                            "value": "[parameters('databaseName')]"
+                        },
+                        {
+                            "name": "DATABASE_USER",
+                            "value": "[parameters('administratorLogin')]"
+                        },
+                        {
+                            "name": "DATABASE_PASSWORD",
+                            "value": "[parameters('administratorLoginPassword')]"
+                        },
+                        {
+                            "name": "DATABASE_URL",
+                            "value": "[concat('postgresql://', parameters('administratorLogin'), ':', parameters('administratorLoginPassword'), '@', reference(resourceId('Microsoft.DBforPostgreSQL/flexibleServers', parameters('serverName'))).fullyQualifiedDomainName, ':5432/', parameters('databaseName'))]"
+                        }
+                    ],
+                    "pythonVersion": "3.11",
+                    "ftpsState": "FtpsOnly",
+                    "minTlsVersion": "1.2"
+                },
+                "httpsOnly": true,
+                "clientAffinityEnabled": false
+            }
+        }
+    ],
+    "outputs": {
+        "webAppUrl": {
+            "type": "string",
+            "value": "[concat('https://', reference(resourceId('Microsoft.Web/sites', parameters('webAppName'))).defaultHostName)]"
+        },
+        "webAppName": {
+            "type": "string",
+            "value": "[parameters('webAppName')]"
+        },
+        "databaseServer": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/flexibleServers', parameters('serverName'))).fullyQualifiedDomainName]"
+        },
+        "databaseName": {
+            "type": "string",
+            "value": "[parameters('databaseName')]"
+        }
+    }
+}
