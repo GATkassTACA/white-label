@@ -370,7 +370,44 @@ def index():
     return render_template('index.html', 
                          pdf_available=PDF_PROCESSING_AVAILABLE,
                          database_available=DATABASE_AVAILABLE,
-                         history=history)
+                         history=history,
+                         user=session.get('username'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """User login page"""
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+        
+        if not username or not password:
+            flash('Please enter both username and password', 'error')
+            return render_template('login.html')
+        
+        # Check credentials
+        user = get_user_by_credentials(username, password)
+        
+        if user:
+            # Set session
+            session['user_id'] = user['id']
+            session['username'] = user['username']
+            session['role'] = user['role']
+            session['session_id'] = str(uuid.uuid4())
+            
+            flash(f'Welcome back, {user["username"]}!', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Invalid username or password', 'error')
+    
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    """User logout"""
+    username = session.get('username', 'User')
+    session.clear()
+    flash(f'Goodbye, {username}!', 'info')
+    return redirect(url_for('login'))
 
 @app.route('/api/status')
 def api_status():
