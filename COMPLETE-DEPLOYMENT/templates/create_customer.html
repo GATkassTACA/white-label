@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Customer - PharmAssist Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #323130;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #0078d4;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 2rem;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0078d4;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #323130;
+        }
+
+        .form-label .required {
+            color: #d13438;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d1d1;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #0078d4;
+            box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.2);
+        }
+
+        .form-textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .color-input {
+            width: 60px;
+            height: 40px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .plan-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .plan-option {
+            border: 2px solid #d1d1d1;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .plan-option:hover {
+            border-color: #0078d4;
+        }
+
+        .plan-option.selected {
+            border-color: #0078d4;
+            background: #f0f8ff;
+        }
+
+        .plan-option input[type="radio"] {
+            display: none;
+        }
+
+        .plan-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #0078d4;
+        }
+
+        .plan-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #323130;
+        }
+
+        .plan-features {
+            font-size: 0.9rem;
+            color: #666;
+            text-align: left;
+        }
+
+        .plan-features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .plan-features li {
+            margin-bottom: 0.25rem;
+        }
+
+        .plan-features li:before {
+            content: "✓";
+            color: #107c10;
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+
+        .password-generator {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .password-generator button {
+            background: #0078d4;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .password-generator button:hover {
+            background: #106ebe;
+        }
+
+        .submit-section {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+
+        .submit-button {
+            background: #0078d4;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-button:hover {
+            background: #106ebe;
+        }
+
+        .preview-section {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+
+        .preview-url {
+            font-family: monospace;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: 1px solid #d1d1d1;
+            word-break: break-all;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                margin: 1rem;
+            }
+            
+            .plan-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Create New Customer</h1>
+            <p>Set up a new pharmacy with branded PharmAssist access</p>
+        </div>
+
+        <form method="POST" class="form-container">
+            <!-- Pharmacy Information -->
+            <div class="form-section">
+                <div class="section-title">
+                    🏢 Pharmacy Information
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pharmacy_name" class="form-label">
+                            Pharmacy Name <span class="required">*</span>
+                        </label>
+                        <input type="text" id="pharmacy_name" name="pharmacy_name" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subdomain" class="form-label">Custom Subdomain</label>
+                        <input type="text" id="subdomain" name="subdomain" class="form-input" 
+                               placeholder="mypharmacy" pattern="[a-z0-9-]+">
+                        <small>Optional: Creates custom login URL</small>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="contact_email" class="form-label">
+                            Contact Email <span class="required">*</span>
+                        </label>
+                        <input type="email" id="contact_email" name="contact_email" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" class="form-input">
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="address" class="form-label">Billing Address</label>
+                    <textarea id="address" name="address" class="form-textarea" 
+                              placeholder="Street address, city, state, ZIP"></textarea>
+                </div>
+
+                <div id="url-preview" class="preview-section" style="display: none;">
+                    <strong>Login URL Preview:</strong>
+                    <div id="preview-url" class="preview-url"></div>
+                </div>
+            </div>
+
+            <!-- Branding -->
+            <div class="form-section">
+                <div class="section-title">
+                    🎨 Branding & Appearance
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="logo_url" class="form-label">Logo URL</label>
+                        <input type="url" id="logo_url" name="logo_url" class="form-input" 
+                               placeholder="https://example.com/logo.png">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="brand_color" class="form-label">Brand Color</label>
+                        <input type="color" id="brand_color" name="brand_color" 
+                               class="color-input" value="#0078d4">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subscription Plan -->
+            <div class="form-section">
+                <div class="section-title">
+                    💼 Subscription Plan
+                </div>
+                
+                <div class="plan-selector">
+                    <div class="plan-option" data-plan="trial">
+                        <input type="radio" name="plan" value="trial" id="plan-trial">
+                        <div class="plan-title">Trial</div>
+                        <div class="plan-price">Free</div>
+                        <div class="plan-features">
+                            <ul>
+                                <li>100 PDFs/month</li>
+                                <li>Basic processing</li>
+                                <li>30 days</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="plan-option selected" data-plan="professional">
+                        <input type="radio" name="plan" value="professional" id="plan-professional" checked>
+                        <div class="plan-title">Professional</div>
+                        <div class="plan-price">$99/month</div>
+                        <div class="plan-features">
+                            <ul>
+                                <li>2,000 PDFs/month</li>
+                                <li>OCR processing</li>
+                                <li>Custom branding</li>
+                                <li>Analytics</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="plan-option" data-plan="enterprise">
+                        <input type="radio" name="plan" value="enterprise" id="plan-enterprise">
+                        <div class="plan-title">Enterprise</div>
+                        <div class="plan-price">$299/month</div>
+                        <div class="plan-features">
+                            <ul>
+                                <li>Unlimited PDFs</li>
+                                <li>API access</li>
+                                <li>Dedicated support</li>
+                                <li>SLA guarantee</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin User -->
+            <div class="form-section">
+                <div class="section-title">
+                    👤 Administrator Account
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="admin_first_name" class="form-label">First Name</label>
+                        <input type="text" id="admin_first_name" name="admin_first_name" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="admin_last_name" class="form-label">Last Name</label>
+                        <input type="text" id="admin_last_name" name="admin_last_name" class="form-input">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="admin_username" class="form-label">
+                            Username <span class="required">*</span>
+                        </label>
+                        <input type="text" id="admin_username" name="admin_username" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="admin_email" class="form-label">
+                            Email <span class="required">*</span>
+                        </label>
+                        <input type="email" id="admin_email" name="admin_email" class="form-input" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="admin_password" class="form-label">Temporary Password</label>
+                    <div class="password-generator">
+                        <input type="text" id="admin_password" name="admin_password" class="form-input">
+                        <button type="button" onclick="generatePassword()">Generate</button>
+                    </div>
+                    <small>Leave blank to auto-generate. User must change on first login.</small>
+                </div>
+            </div>
+
+            <div class="submit-section">
+                <button type="submit" class="submit-button">
+                    🚀 Create Customer Account
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Plan selection
+        document.querySelectorAll('.plan-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.plan-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                this.querySelector('input[type="radio"]').checked = true;
+            });
+        });
+
+        // URL preview
+        function updateUrlPreview() {
+            const subdomain = document.getElementById('subdomain').value;
+            const preview = document.getElementById('url-preview');
+            const previewUrl = document.getElementById('preview-url');
+            
+            if (subdomain) {
+                preview.style.display = 'block';
+                previewUrl.textContent = `https://vitalcare.azurewebsites.net/login/${subdomain}`;
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        document.getElementById('subdomain').addEventListener('input', updateUrlPreview);
+
+        // Password generator
+        function generatePassword() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%';
+            let password = '';
+            for (let i = 0; i < 12; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('admin_password').value = password;
+        }
+
+        // Auto-generate username from pharmacy name
+        document.getElementById('pharmacy_name').addEventListener('input', function() {
+            const name = this.value.toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (name && !document.getElementById('admin_username').value) {
+                document.getElementById('admin_username').value = name + 'admin';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmAssist - Professional PDF Processing</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%232196F3' rx='4'/><rect x='14' y='6' width='4' height='20' fill='white' rx='1'/><rect x='6' y='14' width='20' height='4' fill='white' rx='1'/><circle cx='8' cy='8' r='1.5' fill='%23FFD700'/><circle cx='24' cy='8' r='1.5' fill='%23FFD700'/><circle cx='8' cy='24' r='1.5' fill='%23FFD700'/><circle cx='24' cy='24' r='1.5' fill='%23FFD700'/></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%232196F3' rx='20'/><rect x='78' y='30' width='24' height='120' fill='white' rx='6'/><rect x='30' y='78' width='120' height='24' fill='white' rx='6'/><circle cx='54' cy='54' r='8' fill='%23FFD700'/><circle cx='126' cy='54' r='8' fill='%23FFD700'/><circle cx='54' cy='126' r='8' fill='%23FFD700'/><circle cx='126' cy='126' r='8' fill='%23FFD700'/></svg>">
+    <meta name="theme-color" content="#2196F3">
+    <style>
+        :root {
+            --primary-color: #5EB97D;     /* Leaf green */
+            --primary-dark: #4A9B68;      /* Darker leaf green */
+            --accent-color: #264653;      /* Navy */
+            --button-color: #577590;      /* Indigo */
+            --highlight-color: #F9C846;   /* Gold */
+            --success-color: #5EB97D;     /* Using primary green for success */
+            --warning-color: #F9C846;     /* Gold for warnings */
+            --error-color: #D32F2F;       /* Standard error red */
+            --text-primary: #22223B;      /* Deep gray */
+            --text-secondary: #577590;    /* Indigo for secondary text */
+            --background: #F6F4EF;        /* Cream */
+            --card-background: white;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px rgba(38, 70, 83, 0.1);
+            --shadow-hover: 0 8px 25px rgba(38, 70, 83, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-bottom: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .user-info {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .user-info .username {
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .upload-section {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .upload-section:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .upload-area {
+            border: 3px dashed var(--primary-color);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-dark);
+            background: rgba(94, 185, 125, 0.05);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--success-color);
+            background: rgba(94, 185, 125, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .processing-methods {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .method-option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .method-option:hover {
+            border-color: var(--primary-color);
+            background: rgba(94, 185, 125, 0.05);
+        }
+
+        .method-option.selected {
+            border-color: var(--primary-color);
+            background: rgba(94, 185, 125, 0.1);
+        }
+
+        .results-section {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-top: 30px;
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid var(--success-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .error-message {
+            background: rgba(244, 67, 54, 0.1);
+            border-left: 4px solid var(--error-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .file-preview {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #e0e0e0;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            {% if user %}
+            <div class="user-info">
+                <span class="username">👤 {{ user }}</span>
+                <a href="/logout" class="logout-btn">Logout</a>
+            </div>
+            {% endif %}
+            <h1>🏥 PharmAssist</h1>
+            <p>Professional Pharmacy PDF Processing & CareTend Conversion System</p>
+        </div>
+
+        <div class="main-content">
+            <div class="upload-section">
+                <h2>📄 Document Upload</h2>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">
+                        <strong>Drag & drop your PDF file here</strong><br>
+                        or click to browse
+                    </div>
+                    <input type="file" id="fileInput" class="file-input" accept=".pdf" multiple>
+                    <button class="btn" onclick="document.getElementById('fileInput').click()">
+                        📂 Choose Files
+                    </button>
+                </div>
+                
+                <div id="filePreview" class="file-preview" style="display: none;">
+                    <h4>Selected File:</h4>
+                    <div id="fileDetails"></div>
+                    <button class="btn btn-success" id="processBtn" onclick="processFiles()">
+                        ⚡ Process Document
+                    </button>
+                </div>
+            </div>
+
+            <div class="processing-methods">
+                <h2>🔧 Processing Method</h2>
+                <p>Select the best method for your document type:</p>
+                
+                <div class="method-option selected" data-method="auto">
+                    <h4>🤖 Auto-Detect (Recommended)</h4>
+                    <p>Automatically chooses the best processing method</p>
+                </div>
+                
+                <div class="method-option" data-method="pypdf2">
+                    <h4>📖 Text Extraction</h4>
+                    <p>Best for digital PDFs with selectable text</p>
+                </div>
+                
+                <div class="method-option" data-method="pdfplumber">
+                    <h4>📊 Table Extraction</h4>
+                    <p>Ideal for structured medication lists and tables</p>
+                </div>
+                
+                <div class="method-option" data-method="ocr">
+                    <h4>👁️ OCR Scanning</h4>
+                    <p>For scanned documents and images</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <h3>Processing your medication list...</h3>
+            <p>Extracting data and converting to CareTend format</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="results-section" id="results">
+            <h2>✅ Processing Complete</h2>
+            <div id="resultsContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let selectedFiles = [];
+        let selectedMethod = 'auto';
+        
+        // DOM elements
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const filePreview = document.getElementById('filePreview');
+        const fileDetails = document.getElementById('fileDetails');
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        const resultsContent = document.getElementById('resultsContent');
+        const progressFill = document.getElementById('progressFill');
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            checkApiStatus();
+        });
+
+        function setupEventListeners() {
+            // File upload listeners
+            uploadArea.addEventListener('dragover', handleDragOver);
+            uploadArea.addEventListener('dragleave', handleDragLeave);
+            uploadArea.addEventListener('drop', handleDrop);
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // Processing method selection
+            document.querySelectorAll('.method-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.method-option').forEach(opt => 
+                        opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedMethod = this.dataset.method;
+                });
+            });
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files).filter(file => 
+                file.type === 'application/pdf');
+            if (files.length > 0) {
+                selectedFiles = files;
+                displayFilePreview();
+            } else {
+                showError('Please select only PDF files.');
+            }
+        }
+
+        function handleFileSelect(e) {
+            const files = Array.from(e.target.files).filter(file => 
+                file.type === 'application/pdf');
+            if (files.length > 0) {
+                selectedFiles = files;
+                displayFilePreview();
+            } else {
+                showError('Please select only PDF files.');
+            }
+        }
+
+        function displayFilePreview() {
+            let html = '';
+            selectedFiles.forEach((file, index) => {
+                html += `
+                    <div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 8px;">
+                        <strong>${file.name}</strong><br>
+                        <small>Size: ${(file.size / 1024 / 1024).toFixed(2)} MB | 
+                        Type: PDF Document</small>
+                    </div>
+                `;
+            });
+            fileDetails.innerHTML = html;
+            filePreview.style.display = 'block';
+        }
+
+        async function processFiles() {
+            if (selectedFiles.length === 0) {
+                showError('Please select files to process.');
+                return;
+            }
+
+            showLoading();
+            
+            for (let i = 0; i < selectedFiles.length; i++) {
+                const file = selectedFiles[i];
+                await processFile(file, i + 1, selectedFiles.length);
+            }
+        }
+
+        async function processFile(file, current, total) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('method', selectedMethod);
+
+            try {
+                updateProgress((current - 1) / total * 100);
+                
+                const response = await fetch('/api/process', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                updateProgress(current / total * 100);
+
+                if (response.ok) {
+                    showResults(result, file.name);
+                } else {
+                    showError(`Error processing ${file.name}: ${result.error}`);
+                }
+            } catch (error) {
+                showError(`Network error processing ${file.name}: ${error.message}`);
+            }
+        }
+
+        function showLoading() {
+            loading.style.display = 'block';
+            results.classList.remove('show');
+            updateProgress(0);
+        }
+
+        function hideLoading() {
+            loading.style.display = 'none';
+        }
+
+        function updateProgress(percent) {
+            progressFill.style.width = percent + '%';
+        }
+
+        function showResults(data, filename) {
+            hideLoading();
+            const html = `
+                <div class="success-message">
+                    <h4>✅ Successfully processed: ${filename}</h4>
+                    <p><strong>Method used:</strong> ${data.method_used}</p>
+                    <p><strong>Pages processed:</strong> ${data.pages_processed || 'N/A'}</p>
+                    <p><strong>Medications found:</strong> ${data.medications_count || 'N/A'}</p>
+                    <p><strong>Processing time:</strong> ${data.processing_time ? data.processing_time.toFixed(2) + 's' : 'N/A'}</p>
+                    
+                    ${data.caretend_output ? `
+                        <div style="margin-top: 20px;">
+                            <h4>📋 CareTend Format Output:</h4>
+                            <textarea id="caretendOutput" readonly style="width: 100%; height: 200px; font-family: monospace; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">${data.caretend_output}</textarea>
+                            <div style="margin-top: 10px;">
+                                <button class="btn" onclick="downloadCareTend('${filename}')">
+                                    💾 Download CareTend Format
+                                </button>
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    ${data.extracted_text ? `
+                        <div style="margin-top: 20px;">
+                            <h4>📄 Extracted Text:</h4>
+                            <textarea id="extractedText" readonly style="width: 100%; height: 150px; font-family: monospace; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">${data.extracted_text}</textarea>
+                            <div style="margin-top: 10px;">
+                                <button class="btn" onclick="downloadExtracted('${filename}')">
+                                    💾 Download Extracted Text
+                                </button>
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+                        <button class="btn" onclick="resetUpload()" style="background: #4CAF50;">
+                            🔄 Process Another PDF
+                        </button>
+                    </div>
+                </div>
+            `;
+            resultsContent.innerHTML = html;
+            results.classList.add('show');
+        }
+
+        function showError(message) {
+            hideLoading();
+            const html = `
+                <div class="error-message">
+                    <h4>❌ Processing Error</h4>
+                    <p>${message}</p>
+                    <button class="btn" onclick="resetUpload()">Try Again</button>
+                </div>
+            `;
+            resultsContent.innerHTML = html;
+            results.classList.add('show');
+        }
+
+        function resetUpload() {
+            selectedFiles = [];
+            filePreview.style.display = 'none';
+            results.classList.remove('show');
+            fileInput.value = '';
+        }
+
+        async function downloadCareTend(originalFilename) {
+            const content = document.getElementById('caretendOutput').value;
+            const filename = originalFilename.replace('.pdf', '_caretend.txt');
+            await downloadFile(content, filename);
+        }
+
+        async function downloadExtracted(originalFilename) {
+            const content = document.getElementById('extractedText').value;
+            const filename = originalFilename.replace('.pdf', '_extracted.txt');
+            await downloadFile(content, filename);
+        }
+
+        async function downloadFile(content, filename) {
+            try {
+                // Method 1: Try the API download (preferred)
+                const response = await fetch('/api/download', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: content,
+                        filename: filename
+                    })
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    downloadBlob(blob, filename);
+                } else {
+                    // Method 2: Fallback to client-side download
+                    console.warn('API download failed, using fallback method');
+                    downloadTextAsFallback(content, filename);
+                }
+            } catch (error) {
+                console.error('Download error:', error);
+                // Method 2: Fallback to client-side download
+                downloadTextAsFallback(content, filename);
+            }
+        }
+
+        function downloadBlob(blob, filename) {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        function downloadTextAsFallback(content, filename) {
+            // Create blob directly from content
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            downloadBlob(blob, filename);
+        }
+
+        async function checkApiStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const status = await response.json();
+                console.log('API Status:', status);
+            } catch (error) {
+                console.warn('Could not check API status:', error);
+            }
+        }
+    </script>
+</body>
+</html>
