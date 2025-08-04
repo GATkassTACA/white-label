@@ -1,7 +1,17 @@
 import os
 import datetime
 import logging
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
+from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
+import uuid
+from functools import wraps
+
+# Import admin manager
+from admin_manager import AdminManager
+import datetime
+import logging
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from werkzeug.utils import secure_filename
 import uuid
 
@@ -97,6 +107,32 @@ class DatabaseManager:
                 )
             """)
             
+            # Create users table for authentication
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS users (
+                    id SERIAL PRIMARY KEY,
+                    username VARCHAR(255) UNIQUE NOT NULL,
+                    email VARCHAR(255) UNIQUE NOT NULL,
+                    password_hash VARCHAR(255) NOT NULL,
+                    role VARCHAR(50) DEFAULT 'user',
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    last_login TIMESTAMP,
+                    is_active BOOLEAN DEFAULT TRUE
+                )
+            """)
+            
+            # Insert default admin user if no users exist
+            cursor.execute("SELECT COUNT(*) FROM users")
+            user_count = cursor.fetchone()[0]
+            
+            if user_count == 0:
+                admin_password = generate_password_hash('admin123')
+                cursor.execute("""
+                    INSERT INTO users (username, email, password_hash, role)
+                    VALUES (%s, %s, %s, %s)
+                """, ('admin', 'admin@pharmassist.com', admin_password, 'admin'))
+                print("✓ Default admin user created (username: admin, password: admin123)")
+            
             # Insert some sample medications
             cursor.execute("""
                 INSERT INTO medications (name, generic_name, drug_class, common_dosages, caretend_code)
@@ -170,6 +206,48 @@ def log_processing(connection, session, filename, method, status, processing_tim
         connection.commit()
     except Exception as e:
         print(f"Error logging processing: {e}")
+
+# Authentication helper functions
+def login_required(f):
+    """Decorator to require login for routes"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def get_user_by_credentials(username, password):
+    """Verify user credentials and return user info"""
+    if not db.connection:
+        return None
+    
+    try:
+        cursor = db.connection.cursor()
+        cursor.execute("""
+            SELECT id, username, email, password_hash, role, is_active 
+            FROM users 
+            WHERE (username = %s OR email = %s) AND is_active = TRUE
+        """, (username, username))
+        
+        user = cursor.fetchone()
+        if user and check_password_hash(user[3], password):
+            # Update last login
+            cursor.execute("""
+                UPDATE users SET last_login = %s WHERE id = %s
+            """, (datetime.datetime.now(), user[0]))
+            db.connection.commit()
+            
+            return {
+                'id': user[0],
+                'username': user[1],
+                'email': user[2],
+                'role': user[4]
+            }
+    except Exception as e:
+        print(f"Error checking credentials: {e}")
+    
+    return None
 
 # Create Flask application
 app = Flask(__name__, static_folder='static')
@@ -307,6 +385,8 @@ def api_status():
     })
 
 @app.route('/api/process', methods=['POST'])
+@login_required
+@permission_required('pdf_process')
 def api_process():
     """API endpoint for PDF processing - frontend compatible"""
     start_time = datetime.datetime.now()
