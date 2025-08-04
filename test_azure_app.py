@@ -13,8 +13,19 @@ from io import BytesIO
 # Set environment for testing
 os.environ['FLASK_ENV'] = 'testing'
 
-# Import the app
-from app import app, DATABASE_AVAILABLE, PDF_PROCESSING_AVAILABLE
+# Import the app - use explicit module name to avoid conflicts
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+# Import from the main app.py file
+import importlib.util
+spec = importlib.util.spec_from_file_location("app_module", "app.py")
+app_module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(app_module)
+
+app = app_module.app
+DATABASE_AVAILABLE = app_module.DATABASE_AVAILABLE
+PDF_PROCESSING_AVAILABLE = app_module.PDF_PROCESSING_AVAILABLE
 
 def test_app_creation():
     """Test that the app can be created and configured"""
