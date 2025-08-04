@@ -490,19 +490,37 @@
                     <p><strong>Method used:</strong> ${data.method_used}</p>
                     <p><strong>Pages processed:</strong> ${data.pages_processed || 'N/A'}</p>
                     <p><strong>Medications found:</strong> ${data.medications_count || 'N/A'}</p>
+                    <p><strong>Processing time:</strong> ${data.processing_time ? data.processing_time.toFixed(2) + 's' : 'N/A'}</p>
+                    
                     ${data.caretend_output ? `
                         <div style="margin-top: 20px;">
                             <h4>📋 CareTend Format Output:</h4>
-                            <textarea readonly style="width: 100%; height: 200px; font-family: monospace; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">${data.caretend_output}</textarea>
+                            <textarea id="caretendOutput" readonly style="width: 100%; height: 200px; font-family: monospace; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">${data.caretend_output}</textarea>
+                            <div style="margin-top: 10px;">
+                                <button class="btn" onclick="downloadCareTend('${filename}')">
+                                    💾 Download CareTend Format
+                                </button>
+                            </div>
                         </div>
                     ` : ''}
-                    ${data.download_url ? `
+                    
+                    ${data.extracted_text ? `
                         <div style="margin-top: 20px;">
-                            <a href="${data.download_url}" class="btn" download>
-                                💾 Download Processed File
-                            </a>
+                            <h4>📄 Extracted Text:</h4>
+                            <textarea id="extractedText" readonly style="width: 100%; height: 150px; font-family: monospace; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">${data.extracted_text}</textarea>
+                            <div style="margin-top: 10px;">
+                                <button class="btn" onclick="downloadExtracted('${filename}')">
+                                    💾 Download Extracted Text
+                                </button>
+                            </div>
                         </div>
                     ` : ''}
+                    
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+                        <button class="btn" onclick="resetUpload()" style="background: #4CAF50;">
+                            🔄 Process Another PDF
+                        </button>
+                    </div>
                 </div>
             `;
             resultsContent.innerHTML = html;
@@ -527,6 +545,51 @@
             filePreview.style.display = 'none';
             results.classList.remove('show');
             fileInput.value = '';
+        }
+
+        async function downloadCareTend(originalFilename) {
+            const content = document.getElementById('caretendOutput').value;
+            const filename = originalFilename.replace('.pdf', '_caretend.txt');
+            await downloadFile(content, filename);
+        }
+
+        async function downloadExtracted(originalFilename) {
+            const content = document.getElementById('extractedText').value;
+            const filename = originalFilename.replace('.pdf', '_extracted.txt');
+            await downloadFile(content, filename);
+        }
+
+        async function downloadFile(content, filename) {
+            try {
+                const response = await fetch('/api/download', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: content,
+                        filename: filename
+                    })
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                } else {
+                    alert('Download failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Download error:', error);
+                alert('Download failed. Please try again.');
+            }
         }
 
         async function checkApiStatus() {
