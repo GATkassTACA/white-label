@@ -1,10 +1,2 @@
-# Clean, minimal requirements for PharmAssist
 Flask==2.3.3
 gunicorn==21.2.0
-
-# Database support
-psycopg2-binary==2.9.7
-
-# PDF Processing (optional - graceful fallback to demo mode)
-PyPDF2==3.0.1
-pdfplumber==0.9.0
