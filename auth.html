@@ -123,9 +123,13 @@
                         
                         setSuccess(isLogin ? 'Login successful!' : 'Registration successful!');
                         
-                        // Redirect to main app after short delay
+                        // Redirect based on user type
                         setTimeout(() => {
-                            window.location.href = '/';
+                            if (data.user && data.user.user_type === 'admin') {
+                                window.location.href = '/admin';
+                            } else {
+                                window.location.href = '/';
+                            }
                         }, 1500);
                     } else {
                         setError(data.error || 'Authentication failed');
