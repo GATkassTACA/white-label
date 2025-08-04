@@ -200,7 +200,84 @@ else:
 # Initialize admin manager
 admin_manager = AdminManager(app, db)
 
+# Add user manager to request context
+@app.before_request
+def load_user_manager():
+    request.user_manager = user_manager
+
+@app.route('/login')
+def login_page():
+    """User login page"""
+    if user_manager.is_authenticated():
+        return redirect('/')
+    return render_template('login.html')
+
+@app.route('/api/login', methods=['POST'])
+def api_login():
+    """API endpoint for user authentication"""
+    try:
+        data = request.get_json()
+        username = data.get('username', '').strip()
+        password = data.get('password', '')
+        
+        if not username or not password:
+            return jsonify({
+                'success': False,
+                'error': 'Username and password are required'
+            }), 400
+        
+        # Authenticate user
+        auth_result = user_manager.authenticate_user(username, password)
+        
+        if auth_result['success']:
+            # Create session
+            user_manager.create_session(auth_result['user'])
+            
+            return jsonify({
+                'success': True,
+                'message': 'Login successful',
+                'user': auth_result['user'],
+                'redirect': '/'
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': auth_result.get('error', 'Authentication failed')
+            }), 401
+            
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': 'Login error occurred'
+        }), 500
+
+@app.route('/api/logout', methods=['POST'])
+@login_required
+def api_logout():
+    """API endpoint for user logout"""
+    result = user_manager.logout_user()
+    return jsonify(result)
+
+@app.route('/logout')
+@login_required
+def logout_page():
+    """Logout page"""
+    user_manager.logout_user()
+    return redirect('/login')
+
+@app.route('/api/session-status')
+def api_session_status():
+    """Check current session status"""
+    if user_manager.is_authenticated():
+        return jsonify({
+            'authenticated': True,
+            'user': user_manager.get_current_user()
+        })
+    else:
+        return jsonify({'authenticated': False})
+
 @app.route('/')
+@login_required
 def index():
     """Main application page"""
     # Initialize session
