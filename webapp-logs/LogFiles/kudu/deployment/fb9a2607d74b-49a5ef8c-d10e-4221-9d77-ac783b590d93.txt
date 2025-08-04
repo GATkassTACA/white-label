@@ -1,0 +1,44 @@
+2025-08-03T22:37:27  Fetching changes.
+2025-08-03T22:37:27    Starting  LocalZipHandler
+2025-08-03T22:37:27    Cleaning up temp folders from previous zip deployments and extracting pushed zip file /tmp/zipdeploy/9d56eb42-a1e3-476a-9250-e12d0205bbac.zip (5.72 MB) to /tmp/zipdeploy/extracted
+2025-08-03T22:37:37  Updating submodules.
+2025-08-03T22:37:37  Preparing deployment for commit id '00657eb7-3'.
+2025-08-03T22:37:39  PreDeployment: context.CleanOutputPath False
+2025-08-03T22:37:40  PreDeployment: context.OutputPath /home/site/wwwroot
+2025-08-03T22:37:41  Repository path is /tmp/zipdeploy/extracted
+2025-08-03T22:37:42  Running oryx build...
+2025-08-03T22:37:42    Command: oryx build /tmp/zipdeploy/extracted -o /home/site/wwwroot --platform python --platform-version 3.11 -p virtualenv_name=antenv --log-file /tmp/build-debug.log  -i /tmp/8ddd2de59bf2c8c --compress-destination-dir | tee /tmp/oryx-build.log
+2025-08-03T22:38:06    Operation performed by Microsoft Oryx, https://github.com/Microsoft/Oryx
+2025-08-03T22:38:06    You can report issues at https://github.com/Microsoft/Oryx/issues
+2025-08-03T22:38:06    
+2025-08-03T22:38:06    Oryx Version: 0.2.20250611.1+0649de32f1279969c9023dd41b389cce4bb94493, Commit: 0649de32f1279969c9023dd41b389cce4bb94493, ReleaseTagName: 20250611.1
+2025-08-03T22:38:06    
+2025-08-03T22:38:07    Build Operation ID: e50f9f21f427dc22
+2025-08-03T22:38:07    Repository Commit : 00657eb7-3ac9-4d4c-a845-1d07486be53d
+2025-08-03T22:38:07    OS Type           : bullseye
+2025-08-03T22:38:07    Image Type        : githubactions
+2025-08-03T22:38:07    
+2025-08-03T22:38:07    Primary SDK Storage URL: https://oryx-cdn.microsoft.io
+2025-08-03T22:38:07    Backup SDK Storage URL: https://oryxsdks-cdn.azureedge.net
+2025-08-03T22:38:07    Detecting platforms...
+2025-08-03T22:38:07    External SDK provider is enabled.
+2025-08-03T22:38:07    Requesting metadata for platform python from external SDK provider
+2025-08-03T22:38:11    Requesting metadata for platform python from external SDK provider
+2025-08-03T22:38:12    Detected following platforms:
+2025-08-03T22:38:12      python: 3.11.13
+2025-08-03T22:38:14    
+2025-08-03T22:38:14    Using intermediate directory '/tmp/8ddd2de59bf2c8c'.
+2025-08-03T22:38:14    
+2025-08-03T22:38:14    Copying files to the intermediate directory...
+2025-08-03T22:38:18    Done in 3 sec(s).
+2025-08-03T22:38:18    
+2025-08-03T22:38:18    Source directory     : /tmp/8ddd2de59bf2c8c
+2025-08-03T22:38:18    Destination directory: /home/site/wwwroot
+2025-08-03T22:38:18    
+2025-08-03T22:38:19    Python Version: /tmp/oryx/platforms/python/3.11.13/bin/python3.11
+2025-08-03T22:38:19    Creating directory for command manifest file if it does not exist
+2025-08-03T22:38:19    Removing existing manifest file
+2025-08-03T22:38:20    Python Virtual Environment: antenv
+2025-08-03T22:38:20    Creating virtual environment...
+2025-08-03T22:38:43    Activating virtual environment...
+2025-08-03T22:38:43    Running pip install...

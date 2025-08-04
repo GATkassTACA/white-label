@@ -1,0 +1,9 @@
+<step title="Incoming Request" date="2025-08-03T23:40:03.048" instance="e2467e" url="/api/deployments/latest" method="GET" type="request" pid="767,1,31" Accept="*/*" Host="white-label-chat-km-cxhkhjd0aecsf9ah.scm.centralus-01.azurewebsites.net" User-Agent="AZURECLI/2.75.0 (MSI)" Accept-Encoding="gzip, deflate" Authorization="Bas..." x-ms-client-request-id="24928071-70c3-11f0-a0a1-9c67d682987a" X-ARR-LOG-ID="24928071-70c3-11f0-a0a1-9c67d682987a" CLIENT-IP="167.248.114.72:64060" X-SITE-DEPLOYMENT-ID="white-label-chat-km" WAS-DEFAULT-HOSTNAME="white-label-chat-km-cxhkhjd0aecsf9ah.scm.centralus-01.azurewebsites.net" X-Forwarded-Proto="https" X-AppService-Proto="https" X-Forwarded-TlsVersion="1.3" X-WAWS-Unencoded-URL="/api/deployments/latest" X-Client-IP="167.248.114.72" X-Client-Port="64060" >
+  <step title="Cleanup Xml Logs" date="2025-08-03T23:40:03.067" /><!-- duration: 47ms -->
+  <step title="DeploymentService.GetResult" date="2025-08-03T23:40:03.143" >
+    <step title="DeploymentService.GetLatestDeployment" date="2025-08-03T23:40:03.153" >
+      <step title="DeploymentManager.GetResults" date="2025-08-03T23:40:03.161" /><!-- duration: 1025ms -->
+    </step><!-- duration: 1067ms -->
+  </step><!-- duration: 1087ms -->
+  <step title="Outgoing response" date="2025-08-03T23:40:04.262" type="response" statusCode="202" statusText="Accepted" /><!-- duration: 37ms -->
+</step><!-- duration: 1280ms -->

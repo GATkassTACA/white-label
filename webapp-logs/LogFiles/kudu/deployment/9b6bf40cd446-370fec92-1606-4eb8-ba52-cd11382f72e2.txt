@@ -1,0 +1,220 @@
+2025-08-03T23:51:50  Fetching changes.
+2025-08-03T23:51:50    Starting  LocalZipHandler
+2025-08-03T23:51:50    Cleaning up temp folders from previous zip deployments and extracting pushed zip file /tmp/zipdeploy/d218b6db-b698-47cc-9669-f1c3d9176e50.zip (0.07 MB) to /tmp/zipdeploy/extracted
+2025-08-03T23:51:53  Updating submodules.
+2025-08-03T23:51:53  Preparing deployment for commit id 'f2773061-4'.
+2025-08-03T23:51:54  PreDeployment: context.CleanOutputPath False
+2025-08-03T23:51:54  PreDeployment: context.OutputPath /home/site/wwwroot
+2025-08-03T23:51:54  Repository path is /tmp/zipdeploy/extracted
+2025-08-03T23:51:54  Running oryx build...
+2025-08-03T23:51:54    Command: oryx build /tmp/zipdeploy/extracted -o /home/site/wwwroot --platform python --platform-version 3.11 -p virtualenv_name=antenv --log-file /tmp/build-debug.log  -i /tmp/8ddd2e8b956dcc3 --compress-destination-dir | tee /tmp/oryx-build.log
+2025-08-03T23:51:56    Operation performed by Microsoft Oryx, https://github.com/Microsoft/Oryx
+2025-08-03T23:51:56    You can report issues at https://github.com/Microsoft/Oryx/issues
+2025-08-03T23:51:56    
+2025-08-03T23:51:56    Oryx Version: 0.2.20250611.1+0649de32f1279969c9023dd41b389cce4bb94493, Commit: 0649de32f1279969c9023dd41b389cce4bb94493, ReleaseTagName: 20250611.1
+2025-08-03T23:51:56    
+2025-08-03T23:51:56    Build Operation ID: c38aabfca47394d5
+2025-08-03T23:51:56    Repository Commit : f2773061-4554-4de3-8d91-e8df2170bac5
+2025-08-03T23:51:56    OS Type           : bullseye
+2025-08-03T23:51:56    Image Type        : githubactions
+2025-08-03T23:51:56    
+2025-08-03T23:51:56    Primary SDK Storage URL: https://oryx-cdn.microsoft.io
+2025-08-03T23:51:56    Backup SDK Storage URL: https://oryxsdks-cdn.azureedge.net
+2025-08-03T23:51:56    Detecting platforms...
+2025-08-03T23:51:57    External SDK provider is enabled.
+2025-08-03T23:51:57    Requesting metadata for platform python from external SDK provider
+2025-08-03T23:51:57    Requesting metadata for platform python from external SDK provider
+2025-08-03T23:51:57    Detected following platforms:
+2025-08-03T23:51:57      python: 3.11.13
+2025-08-03T23:51:58    
+2025-08-03T23:51:58    Using intermediate directory '/tmp/8ddd2e8b956dcc3'.
+2025-08-03T23:51:58    
+2025-08-03T23:51:58    Copying files to the intermediate directory...
+2025-08-03T23:51:58    Done in 0 sec(s).
+2025-08-03T23:51:58    
+2025-08-03T23:51:59    Source directory     : /tmp/8ddd2e8b956dcc3
+2025-08-03T23:51:59    Destination directory: /home/site/wwwroot
+2025-08-03T23:51:59    
+2025-08-03T23:51:59    Python Version: /tmp/oryx/platforms/python/3.11.13/bin/python3.11
+2025-08-03T23:51:59    Creating directory for command manifest file if it does not exist
+2025-08-03T23:51:59    Removing existing manifest file
+2025-08-03T23:51:59    Python Virtual Environment: antenv
+2025-08-03T23:51:59    Creating virtual environment...
+2025-08-03T23:52:31    Activating virtual environment...
+2025-08-03T23:52:31    Running pip install...
+2025-08-03T23:53:34    [23:52:34+0000] Collecting Flask==2.3.3 (from -r requirements.txt (line 1))
+2025-08-03T23:53:34    [23:52:34+0000]   Using cached flask-2.3.3-py3-none-any.whl.metadata (3.6 kB)
+2025-08-03T23:53:34    [23:52:34+0000] Collecting Flask-SocketIO==5.3.5 (from -r requirements.txt (line 2))
+2025-08-03T23:53:34    [23:52:34+0000]   Using cached Flask_SocketIO-5.3.5-py3-none-any.whl.metadata (2.6 kB)
+2025-08-03T23:53:34    [23:52:34+0000] Collecting python-socketio==5.9.0 (from -r requirements.txt (line 3))
+2025-08-03T23:53:34    [23:52:34+0000]   Using cached python_socketio-5.9.0-py3-none-any.whl.metadata (3.2 kB)
+2025-08-03T23:53:34    [23:52:34+0000] Collecting python-engineio==4.7.1 (from -r requirements.txt (line 4))
+2025-08-03T23:53:34    [23:52:34+0000]   Using cached python_engineio-4.7.1-py3-none-any.whl.metadata (2.2 kB)
+2025-08-03T23:53:35    [23:52:35+0000] Collecting Flask-CORS==4.0.1 (from -r requirements.txt (line 5))
+2025-08-03T23:53:35    [23:52:35+0000]   Using cached Flask_Cors-4.0.1-py2.py3-none-any.whl.metadata (5.5 kB)
+2025-08-03T23:53:35    [23:52:35+0000] Collecting Flask-JWT-Extended==4.6.0 (from -r requirements.txt (line 6))
+2025-08-03T23:53:35    [23:52:35+0000]   Using cached Flask_JWT_Extended-4.6.0-py2.py3-none-any.whl.metadata (3.9 kB)
+2025-08-03T23:53:35    [23:52:35+0000] Collecting Flask-SQLAlchemy==3.1.1 (from -r requirements.txt (line 7))
+2025-08-03T23:53:35    [23:52:35+0000]   Using cached flask_sqlalchemy-3.1.1-py3-none-any.whl.metadata (3.4 kB)
+2025-08-03T23:53:35    [23:52:35+0000] Collecting PyJWT==2.8.0 (from -r requirements.txt (line 8))
+2025-08-03T23:53:35    [23:52:35+0000]   Using cached PyJWT-2.8.0-py3-none-any.whl.metadata (4.2 kB)
+2025-08-03T23:53:35    [23:52:35+0000] Collecting python-dotenv==1.0.0 (from -r requirements.txt (line 9))
+2025-08-03T23:53:35    [23:52:35+0000]   Using cached python_dotenv-1.0.0-py3-none-any.whl.metadata (21 kB)
+2025-08-03T23:53:35    [23:52:35+0000] Collecting eventlet==0.33.3 (from -r requirements.txt (line 10))
+2025-08-03T23:53:35    [23:52:35+0000]   Using cached eventlet-0.33.3-py2.py3-none-any.whl.metadata (4.3 kB)
+2025-08-03T23:53:35    [23:52:35+0000] Collecting redis==4.6.0 (from -r requirements.txt (line 11))
+2025-08-03T23:53:35    [23:52:35+0000]   Using cached redis-4.6.0-py3-none-any.whl.metadata (8.3 kB)
+2025-08-03T23:53:35    [23:52:36+0000] Collecting psycopg2-binary==2.9.9 (from -r requirements.txt (line 12))
+2025-08-03T23:53:35    [23:52:36+0000]   Using cached psycopg2_binary-2.9.9-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.4 kB)
+2025-08-03T23:53:35    [23:52:37+0000] Collecting cryptography==41.0.7 (from -r requirements.txt (line 13))
+2025-08-03T23:53:35    [23:52:37+0000]   Using cached cryptography-41.0.7-cp37-abi3-manylinux_2_28_x86_64.whl.metadata (5.2 kB)
+2025-08-03T23:53:35    [23:52:38+0000] Collecting sentry-sdk==1.38.0 (from sentry-sdk[flask]==1.38.0->-r requirements.txt (line 14))
+2025-08-03T23:53:35    [23:52:38+0000]   Using cached sentry_sdk-1.38.0-py2.py3-none-any.whl.metadata (9.7 kB)
+2025-08-03T23:53:35    [23:52:38+0000] Collecting pytest==7.4.2 (from -r requirements.txt (line 15))
+2025-08-03T23:53:35    [23:52:38+0000]   Using cached pytest-7.4.2-py3-none-any.whl.metadata (7.9 kB)
+2025-08-03T23:53:36    [23:52:38+0000] Collecting pytest-flask==1.2.0 (from -r requirements.txt (line 16))
+2025-08-03T23:53:36    [23:52:38+0000]   Using cached pytest_flask-1.2.0-py3-none-any.whl.metadata (6.5 kB)
+2025-08-03T23:53:36    [23:52:42+0000] Collecting coverage==7.3.2 (from -r requirements.txt (line 17))
+2025-08-03T23:53:36    [23:52:42+0000]   Using cached coverage-7.3.2-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (8.1 kB)
+2025-08-03T23:53:36    [23:52:42+0000] Collecting black==23.9.1 (from -r requirements.txt (line 18))
+2025-08-03T23:53:36    [23:52:42+0000]   Using cached black-23.9.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (65 kB)
+2025-08-03T23:53:36    [23:52:42+0000] Collecting flake8==6.1.0 (from -r requirements.txt (line 19))
+2025-08-03T23:53:36    [23:52:42+0000]   Using cached flake8-6.1.0-py2.py3-none-any.whl.metadata (3.8 kB)
+2025-08-03T23:53:36    [23:52:42+0000] Collecting gunicorn==21.2.0 (from -r requirements.txt (line 20))
+2025-08-03T23:53:36    [23:52:42+0000]   Using cached gunicorn-21.2.0-py3-none-any.whl.metadata (4.1 kB)
+2025-08-03T23:53:36    [23:52:42+0000] Collecting Werkzeug>=2.3.7 (from Flask==2.3.3->-r requirements.txt (line 1))
+2025-08-03T23:53:36    [23:52:42+0000]   Using cached werkzeug-3.1.3-py3-none-any.whl.metadata (3.7 kB)
+2025-08-03T23:53:36    [23:52:43+0000] Collecting Jinja2>=3.1.2 (from Flask==2.3.3->-r requirements.txt (line 1))
+2025-08-03T23:53:36    [23:52:43+0000]   Using cached jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+2025-08-03T23:53:36    [23:52:43+0000] Collecting itsdangerous>=2.1.2 (from Flask==2.3.3->-r requirements.txt (line 1))
+2025-08-03T23:53:36    [23:52:43+0000]   Using cached itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+2025-08-03T23:53:36    [23:52:43+0000] Collecting click>=8.1.3 (from Flask==2.3.3->-r requirements.txt (line 1))
+2025-08-03T23:53:36    [23:52:43+0000]   Using cached click-8.2.1-py3-none-any.whl.metadata (2.5 kB)
+2025-08-03T23:53:36    [23:52:43+0000] Collecting blinker>=1.6.2 (from Flask==2.3.3->-r requirements.txt (line 1))
+2025-08-03T23:53:37    [23:52:43+0000]   Using cached blinker-1.9.0-py3-none-any.whl.metadata (1.6 kB)
+2025-08-03T23:53:37    [23:52:43+0000] Collecting bidict>=0.21.0 (from python-socketio==5.9.0->-r requirements.txt (line 3))
+2025-08-03T23:53:37    [23:52:43+0000]   Using cached bidict-0.23.1-py3-none-any.whl.metadata (8.7 kB)
+2025-08-03T23:53:37    [23:52:44+0000] Collecting simple-websocket>=0.10.0 (from python-engineio==4.7.1->-r requirements.txt (line 4))
+2025-08-03T23:53:37    [23:52:44+0000]   Using cached simple_websocket-1.1.0-py3-none-any.whl.metadata (1.5 kB)
+2025-08-03T23:53:37    [23:52:47+0000] Collecting sqlalchemy>=2.0.16 (from Flask-SQLAlchemy==3.1.1->-r requirements.txt (line 7))
+2025-08-03T23:53:37    [23:52:47+0000]   Using cached sqlalchemy-2.0.42-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (9.6 kB)
+2025-08-03T23:53:37    [23:52:47+0000] Collecting dnspython>=1.15.0 (from eventlet==0.33.3->-r requirements.txt (line 10))
+2025-08-03T23:53:37    [23:52:47+0000]   Using cached dnspython-2.7.0-py3-none-any.whl.metadata (5.8 kB)
+2025-08-03T23:53:37    [23:52:51+0000] Collecting greenlet>=0.3 (from eventlet==0.33.3->-r requirements.txt (line 10))
+2025-08-03T23:53:37    [23:52:51+0000]   Using cached greenlet-3.2.3-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (4.1 kB)
+2025-08-03T23:53:37    [23:52:51+0000] Collecting six>=1.10.0 (from eventlet==0.33.3->-r requirements.txt (line 10))
+2025-08-03T23:53:37    [23:52:51+0000]   Using cached six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+2025-08-03T23:53:37    [23:52:53+0000] Collecting cffi>=1.12 (from cryptography==41.0.7->-r requirements.txt (line 13))
+2025-08-03T23:53:37    [23:52:53+0000]   Using cached cffi-1.17.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (1.5 kB)
+2025-08-03T23:53:37    [23:52:54+0000] Collecting certifi (from sentry-sdk==1.38.0->sentry-sdk[flask]==1.38.0->-r requirements.txt (line 14))
+2025-08-03T23:53:37    [23:52:54+0000]   Using cached certifi-2025.8.3-py3-none-any.whl.metadata (2.4 kB)
+2025-08-03T23:53:37    [23:52:54+0000] Collecting urllib3>=1.26.11 (from sentry-sdk==1.38.0->sentry-sdk[flask]==1.38.0->-r requirements.txt (line 14))
+2025-08-03T23:53:37    [23:52:54+0000]   Using cached urllib3-2.5.0-py3-none-any.whl.metadata (6.5 kB)
+2025-08-03T23:53:38    [23:52:55+0000] Collecting iniconfig (from pytest==7.4.2->-r requirements.txt (line 15))
+2025-08-03T23:53:38    [23:52:55+0000]   Using cached iniconfig-2.1.0-py3-none-any.whl.metadata (2.7 kB)
+2025-08-03T23:53:38    [23:52:55+0000] Collecting packaging (from pytest==7.4.2->-r requirements.txt (line 15))
+2025-08-03T23:53:38    [23:52:55+0000]   Using cached packaging-25.0-py3-none-any.whl.metadata (3.3 kB)
+2025-08-03T23:53:38    [23:52:56+0000] Collecting pluggy<2.0,>=0.12 (from pytest==7.4.2->-r requirements.txt (line 15))
+2025-08-03T23:53:38    [23:52:56+0000]   Using cached pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+2025-08-03T23:53:38    [23:52:58+0000] Collecting mypy-extensions>=0.4.3 (from black==23.9.1->-r requirements.txt (line 18))
+2025-08-03T23:53:38    [23:52:58+0000]   Using cached mypy_extensions-1.1.0-py3-none-any.whl.metadata (1.1 kB)
+2025-08-03T23:53:38    [23:52:58+0000] Collecting pathspec>=0.9.0 (from black==23.9.1->-r requirements.txt (line 18))
+2025-08-03T23:53:38    [23:52:58+0000]   Using cached pathspec-0.12.1-py3-none-any.whl.metadata (21 kB)
+2025-08-03T23:53:38    [23:52:59+0000] Collecting platformdirs>=2 (from black==23.9.1->-r requirements.txt (line 18))
+2025-08-03T23:53:38    [23:52:59+0000]   Using cached platformdirs-4.3.8-py3-none-any.whl.metadata (12 kB)
+2025-08-03T23:53:38    [23:53:00+0000] Collecting mccabe<0.8.0,>=0.7.0 (from flake8==6.1.0->-r requirements.txt (line 19))
+2025-08-03T23:53:38    [23:53:00+0000]   Using cached mccabe-0.7.0-py2.py3-none-any.whl.metadata (5.0 kB)
+2025-08-03T23:53:38    [23:53:00+0000] Collecting pycodestyle<2.12.0,>=2.11.0 (from flake8==6.1.0->-r requirements.txt (line 19))
+2025-08-03T23:53:38    [23:53:00+0000]   Using cached pycodestyle-2.11.1-py2.py3-none-any.whl.metadata (4.5 kB)
+2025-08-03T23:53:38    [23:53:01+0000] Collecting pyflakes<3.2.0,>=3.1.0 (from flake8==6.1.0->-r requirements.txt (line 19))
+2025-08-03T23:53:39    [23:53:01+0000]   Using cached pyflakes-3.1.0-py2.py3-none-any.whl.metadata (3.5 kB)
+2025-08-03T23:53:39    [23:53:03+0000] Collecting markupsafe (from sentry-sdk[flask]==1.38.0->-r requirements.txt (line 14))
+2025-08-03T23:53:39    [23:53:03+0000]   Using cached MarkupSafe-3.0.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.0 kB)
+2025-08-03T23:53:39    [23:53:04+0000] Collecting pycparser (from cffi>=1.12->cryptography==41.0.7->-r requirements.txt (line 13))
+2025-08-03T23:53:39    [23:53:04+0000]   Using cached pycparser-2.22-py3-none-any.whl.metadata (943 bytes)
+2025-08-03T23:53:39    [23:53:04+0000] Collecting wsproto (from simple-websocket>=0.10.0->python-engineio==4.7.1->-r requirements.txt (line 4))
+2025-08-03T23:53:39    [23:53:05+0000]   Using cached wsproto-1.2.0-py3-none-any.whl.metadata (5.6 kB)
+2025-08-03T23:53:39    [23:53:06+0000] Collecting typing-extensions>=4.6.0 (from sqlalchemy>=2.0.16->Flask-SQLAlchemy==3.1.1->-r requirements.txt (line 7))
+2025-08-03T23:53:39    [23:53:06+0000]   Using cached typing_extensions-4.14.1-py3-none-any.whl.metadata (3.0 kB)
+2025-08-03T23:53:39    [23:53:07+0000] Collecting h11<1,>=0.9.0 (from wsproto->simple-websocket>=0.10.0->python-engineio==4.7.1->-r requirements.txt (line 4))
+2025-08-03T23:53:39    [23:53:07+0000]   Using cached h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+2025-08-03T23:53:39    [23:53:07+0000] Using cached flask-2.3.3-py3-none-any.whl (96 kB)
+2025-08-03T23:53:39    [23:53:07+0000] Using cached Flask_SocketIO-5.3.5-py3-none-any.whl (17 kB)
+2025-08-03T23:53:39    [23:53:07+0000] Using cached python_socketio-5.9.0-py3-none-any.whl (57 kB)
+2025-08-03T23:53:39    [23:53:07+0000] Using cached python_engineio-4.7.1-py3-none-any.whl (55 kB)
+2025-08-03T23:53:39    [23:53:07+0000] Using cached Flask_Cors-4.0.1-py2.py3-none-any.whl (14 kB)
+2025-08-03T23:53:39    [23:53:07+0000] Using cached Flask_JWT_Extended-4.6.0-py2.py3-none-any.whl (22 kB)
+2025-08-03T23:53:39    [23:53:07+0000] Using cached flask_sqlalchemy-3.1.1-py3-none-any.whl (25 kB)
+2025-08-03T23:53:40    [23:53:07+0000] Using cached PyJWT-2.8.0-py3-none-any.whl (22 kB)
+2025-08-03T23:53:40    [23:53:07+0000] Using cached python_dotenv-1.0.0-py3-none-any.whl (19 kB)
+2025-08-03T23:53:40    [23:53:07+0000] Using cached eventlet-0.33.3-py2.py3-none-any.whl (226 kB)
+2025-08-03T23:53:40    [23:53:07+0000] Using cached redis-4.6.0-py3-none-any.whl (241 kB)
+2025-08-03T23:53:40    [23:53:07+0000] Using cached psycopg2_binary-2.9.9-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.0 MB)
+2025-08-03T23:53:40    [23:53:07+0000] Using cached cryptography-41.0.7-cp37-abi3-manylinux_2_28_x86_64.whl (4.4 MB)
+2025-08-03T23:53:40    [23:53:07+0000] Using cached sentry_sdk-1.38.0-py2.py3-none-any.whl (252 kB)
+2025-08-03T23:53:40    [23:53:08+0000] Using cached pytest-7.4.2-py3-none-any.whl (324 kB)
+2025-08-03T23:53:40    [23:53:08+0000] Using cached pytest_flask-1.2.0-py3-none-any.whl (10 kB)
+2025-08-03T23:53:40    [23:53:08+0000] Using cached coverage-7.3.2-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (231 kB)
+2025-08-03T23:53:40    [23:53:08+0000] Using cached black-23.9.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.6 MB)
+2025-08-03T23:53:40    [23:53:08+0000] Using cached flake8-6.1.0-py2.py3-none-any.whl (58 kB)
+2025-08-03T23:53:40    [23:53:08+0000] Using cached gunicorn-21.2.0-py3-none-any.whl (80 kB)
+2025-08-03T23:53:40    [23:53:08+0000] Using cached bidict-0.23.1-py3-none-any.whl (32 kB)
+2025-08-03T23:53:40    [23:53:08+0000] Using cached blinker-1.9.0-py3-none-any.whl (8.5 kB)
+2025-08-03T23:53:40    [23:53:08+0000] Using cached cffi-1.17.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (467 kB)
+2025-08-03T23:53:40    [23:53:08+0000] Using cached click-8.2.1-py3-none-any.whl (102 kB)
+2025-08-03T23:53:40    [23:53:08+0000] Using cached dnspython-2.7.0-py3-none-any.whl (313 kB)
+2025-08-03T23:53:40    [23:53:08+0000] Using cached greenlet-3.2.3-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (585 kB)
+2025-08-03T23:53:40    [23:53:08+0000] Using cached itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+2025-08-03T23:53:41    [23:53:08+0000] Using cached jinja2-3.1.6-py3-none-any.whl (134 kB)
+2025-08-03T23:53:41    [23:53:08+0000] Using cached MarkupSafe-3.0.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (23 kB)
+2025-08-03T23:53:41    [23:53:08+0000] Using cached mccabe-0.7.0-py2.py3-none-any.whl (7.3 kB)
+2025-08-03T23:53:41    [23:53:08+0000] Using cached mypy_extensions-1.1.0-py3-none-any.whl (5.0 kB)
+2025-08-03T23:53:41    [23:53:08+0000] Using cached packaging-25.0-py3-none-any.whl (66 kB)
+2025-08-03T23:53:41    [23:53:08+0000] Using cached pathspec-0.12.1-py3-none-any.whl (31 kB)
+2025-08-03T23:53:41    [23:53:08+0000] Using cached platformdirs-4.3.8-py3-none-any.whl (18 kB)
+2025-08-03T23:53:41    [23:53:08+0000] Using cached pluggy-1.6.0-py3-none-any.whl (20 kB)
+2025-08-03T23:53:41    [23:53:08+0000] Using cached pycodestyle-2.11.1-py2.py3-none-any.whl (31 kB)
+2025-08-03T23:53:41    [23:53:08+0000] Using cached pyflakes-3.1.0-py2.py3-none-any.whl (62 kB)
+2025-08-03T23:53:41    [23:53:08+0000] Using cached simple_websocket-1.1.0-py3-none-any.whl (13 kB)
+2025-08-03T23:53:41    [23:53:08+0000] Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
+2025-08-03T23:53:41    [23:53:08+0000] Using cached sqlalchemy-2.0.42-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.3 MB)
+2025-08-03T23:53:41    [23:53:09+0000] Using cached urllib3-2.5.0-py3-none-any.whl (129 kB)
+2025-08-03T23:53:41    [23:53:09+0000] Using cached werkzeug-3.1.3-py3-none-any.whl (224 kB)
+2025-08-03T23:53:41    [23:53:09+0000] Using cached certifi-2025.8.3-py3-none-any.whl (161 kB)
+2025-08-03T23:53:41    [23:53:09+0000] Using cached iniconfig-2.1.0-py3-none-any.whl (6.0 kB)
+2025-08-03T23:53:41    [23:53:09+0000] Using cached typing_extensions-4.14.1-py3-none-any.whl (43 kB)
+2025-08-03T23:53:41    [23:53:09+0000] Using cached pycparser-2.22-py3-none-any.whl (117 kB)
+2025-08-03T23:53:41    [23:53:09+0000] Using cached wsproto-1.2.0-py3-none-any.whl (24 kB)
+2025-08-03T23:53:41    [23:53:09+0000] Using cached h11-0.16.0-py3-none-any.whl (37 kB)
+2025-08-03T23:53:42    [23:53:11+0000] Installing collected packages: urllib3, typing-extensions, six, redis, python-dotenv, PyJWT, pyflakes, pycparser, pycodestyle, psycopg2-binary, pluggy, platformdirs, pathspec, packaging, mypy-extensions, mccabe, markupsafe, itsdangerous, iniconfig, h11, greenlet, dnspython, coverage, click, certifi, blinker, bidict, wsproto, Werkzeug, sqlalchemy, sentry-sdk, pytest, Jinja2, gunicorn, flake8, eventlet, cffi, black, simple-websocket, Flask, cryptography, python-engineio, pytest-flask, Flask-SQLAlchemy, Flask-JWT-Extended, Flask-CORS, python-socketio, Flask-SocketIO
+2025-08-03T23:53:42    [23:53:32+0000] Successfully installed Flask-2.3.3 Flask-CORS-4.0.1 Flask-JWT-Extended-4.6.0 Flask-SQLAlchemy-3.1.1 Flask-SocketIO-5.3.5 Jinja2-3.1.6 PyJWT-2.8.0 Werkzeug-3.1.3 bidict-0.23.1 black-23.9.1 blinker-1.9.0 certifi-2025.8.3 cffi-1.17.1 click-8.2.1 coverage-7.3.2 cryptography-41.0.7 dnspython-2.7.0 eventlet-0.33.3 flake8-6.1.0 greenlet-3.2.3 gunicorn-21.2.0 h11-0.16.0 iniconfig-2.1.0 itsdangerous-2.2.0 markupsafe-3.0.2 mccabe-0.7.0 mypy-extensions-1.1.0 packaging-25.0 pathspec-0.12.1 platformdirs-4.3.8 pluggy-1.6.0 psycopg2-binary-2.9.9 pycodestyle-2.11.1 pycparser-2.22 pyflakes-3.1.0 pytest-7.4.2 pytest-flask-1.2.0 python-dotenv-1.0.0 python-engineio-4.7.1 python-socketio-5.9.0 redis-4.6.0 sentry-sdk-1.38.0 simple-websocket-1.1.0 six-1.17.0 sqlalchemy-2.0.42 typing-extensions-4.14.1 urllib3-2.5.0 wsproto-1.2.0
+2025-08-03T23:53:42    
+2025-08-03T23:53:42    [notice] A new release of pip is available: 24.0 -> 25.2
+2025-08-03T23:53:42    [notice] To update, run: pip install --upgrade pip
+2025-08-03T23:53:42    Not a vso image, so not writing build commands
+2025-08-03T23:53:42    Preparing output...
+2025-08-03T23:53:42    
+2025-08-03T23:53:42    Copying files to destination directory '/tmp/_preCompressedDestinationDir'...
+2025-08-03T23:53:46    Done in 9 sec(s).
+2025-08-03T23:53:46    Compressing content of directory '/tmp/_preCompressedDestinationDir'...
+2025-08-03T23:54:05    Copied the compressed output to '/home/site/wwwroot'
+2025-08-03T23:54:06    
+2025-08-03T23:54:06    Removing existing manifest file
+2025-08-03T23:54:06    Creating a manifest file...
+2025-08-03T23:54:06    Manifest file created.
+2025-08-03T23:54:06    Copying .ostype to manifest output directory.
+2025-08-03T23:54:06    
+2025-08-03T23:54:06    Done in 128 sec(s).
+2025-08-03T23:54:07  Running post deployment command(s)...
+2025-08-03T23:54:07  
+2025-08-03T23:54:07  Generating summary of Oryx build
+2025-08-03T23:54:07  Parsing the build logs
+2025-08-03T23:54:07  Found 0 issue(s)
+2025-08-03T23:54:08  
+2025-08-03T23:54:08  Build Summary :
+2025-08-03T23:54:08  ===============
+2025-08-03T23:54:08  Errors (0)
+2025-08-03T23:54:08  Warnings (0)
+2025-08-03T23:54:08  
+2025-08-03T23:54:08  Triggering container recycle for OneDeploy by adding/updating restartTrigger.txt to the site root path
+2025-08-03T23:54:08  Deployment successful. deployer = OneDeploy deploymentPath = OneDeploy
