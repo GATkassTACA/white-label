@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "webAppName": {
+            "value": "pharmassist-enterprise"
+        },
+        "location": {
+            "value": "Central US"
+        },
+        "sku": {
+            "value": "B1"
+        },
+        "databaseName": {
+            "value": "pharmassist_db"
+        },
+        "administratorLogin": {
+            "value": "pharmadmin"
+        },
+        "administratorLoginPassword": {
+            "value": "PharmAssist2025!"
+        },
+        "databaseSku": {
+            "value": "Standard_B1ms"
+        }
+    }
+}
