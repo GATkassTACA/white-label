@@ -281,7 +281,7 @@ echo.
 pause
 """
     
-    with open(installer_dir / "uninstall.bat", "w") as f:
+    with open(installer_dir / "uninstall.bat", "w", encoding="utf-8") as f:
         f.write(uninstaller)
     
     # Create README for installer package
@@ -336,7 +336,7 @@ pause
 **PharmChat - Secure Communication for Modern Pharmacies**
 """
     
-    with open(installer_dir / "README.md", "w") as f:
+    with open(installer_dir / "README.md", "w", encoding="utf-8") as f:
         f.write(readme)
     
     # Create pharmacy license agreement
