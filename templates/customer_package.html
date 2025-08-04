@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Setup Package - {{ package.pharmacy_name }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #323130;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0078d4, #106ebe);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .success-message {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #15803d;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border-left: 4px solid #0078d4;
+        }
+
+        .info-card h3 {
+            color: #0078d4;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .credential-display {
+            background: white;
+            border: 1px solid #d1d1d1;
+            border-radius: 4px;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            font-family: monospace;
+            position: relative;
+        }
+
+        .copy-button {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #0078d4;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .copy-button:hover {
+            background: #106ebe;
+        }
+
+        .qr-code {
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .qr-code img {
+            border: 1px solid #d1d1d1;
+            border-radius: 8px;
+            padding: 1rem;
+            background: white;
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .features-list li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .features-list li:before {
+            content: "✓";
+            color: #107c10;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .instructions {
+            background: #fff4e6;
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .instructions h3 {
+            color: #f59e0b;
+            margin-bottom: 1rem;
+        }
+
+        .instructions ol {
+            padding-left: 1.5rem;
+        }
+
+        .instructions ol li {
+            margin-bottom: 0.5rem;
+        }
+
+        .security-notice {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #0078d4;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #106ebe;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .print-section {
+            page-break-inside: avoid;
+        }
+
+        @media print {
+            .action-buttons {
+                display: none;
+            }
+            
+            .container {
+                box-shadow: none;
+                margin: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                margin: 1rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎉 Customer Setup Complete!</h1>
+            <p>{{ package.pharmacy_name }} is ready to use PharmAssist</p>
+        </div>
+
+        <div class="content">
+            <div class="success-message">
+                ✅ Account successfully created! Your pharmacy can now process PDF medication lists.
+            </div>
+
+            <div class="info-grid">
+                <!-- Login Information -->
+                <div class="info-card">
+                    <h3>🔐 Login Information</h3>
+                    
+                    <div>
+                        <strong>Login URL:</strong>
+                        <div class="credential-display">
+                            {{ package.login_url }}
+                            <button class="copy-button" onclick="copyToClipboard('{{ package.login_url }}')">Copy</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <strong>Admin Username:</strong>
+                        <div class="credential-display">
+                            {{ package.admin_credentials.username }}
+                            <button class="copy-button" onclick="copyToClipboard('{{ package.admin_credentials.username }}')">Copy</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <strong>Temporary Password:</strong>
+                        <div class="credential-display">
+                            {{ package.admin_credentials.temp_password }}
+                            <button class="copy-button" onclick="copyToClipboard('{{ package.admin_credentials.temp_password }}')">Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="security-notice">
+                        ⚠️ <strong>Important:</strong> Change password on first login!
+                    </div>
+                </div>
+
+                <!-- Mobile Access -->
+                <div class="info-card">
+                    <h3>📱 Mobile Access</h3>
+                    <p>Scan this QR code for quick mobile access:</p>
+                    
+                    <div class="qr-code">
+                        <img src="{{ package.qr_code }}" alt="QR Code for Mobile Access" style="max-width: 200px;">
+                    </div>
+                    
+                    <small>Staff can scan this code to quickly access the system on tablets or phones.</small>
+                </div>
+
+                <!-- Subscription Details -->
+                <div class="info-card">
+                    <h3>💼 Subscription Details</h3>
+                    
+                    <div>
+                        <strong>Plan:</strong> {{ package.subscription_details.plan.title() }}
+                    </div>
+                    
+                    {% if package.subscription_details.expires %}
+                    <div>
+                        <strong>Expires:</strong> {{ package.subscription_details.expires.strftime('%B %d, %Y') }}
+                    </div>
+                    {% endif %}
+                    
+                    <div>
+                        <strong>Features:</strong>
+                        <ul class="features-list">
+                            {% for feature in package.subscription_details.features %}
+                            <li>{{ feature }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- API Information -->
+                {% if package.api_key %}
+                <div class="info-card">
+                    <h3>🔑 API Access</h3>
+                    
+                    <div>
+                        <strong>API Key:</strong>
+                        <div class="credential-display">
+                            {{ package.api_key }}
+                            <button class="copy-button" onclick="copyToClipboard('{{ package.api_key }}')">Copy</button>
+                        </div>
+                    </div>
+                    
+                    <small>Use this key for programmatic access to PharmAssist APIs.</small>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Setup Instructions -->
+            <div class="instructions print-section">
+                <h3>📋 Quick Start Instructions</h3>
+                <ol>
+                    <li><strong>Access the system:</strong> Visit the login URL above</li>
+                    <li><strong>First login:</strong> Use the admin credentials provided</li>
+                    <li><strong>Change password:</strong> You'll be prompted to set a new password</li>
+                    <li><strong>Upload a test PDF:</strong> Drag and drop a medication list to test</li>
+                    <li><strong>Review results:</strong> Check the CareTend format output</li>
+                    <li><strong>Add staff users:</strong> Create accounts for your pharmacy team</li>
+                    <li><strong>Customize branding:</strong> Upload your logo and adjust colors</li>
+                </ol>
+            </div>
+
+            <!-- Support Information -->
+            <div class="info-card">
+                <h3>🛟 Support & Resources</h3>
+                <ul class="features-list">
+                    <li><strong>Email Support:</strong> support@pharmassist.com</li>
+                    <li><strong>Phone Support:</strong> 1-800-PHARMA-1</li>
+                    <li><strong>Knowledge Base:</strong> Available in your dashboard</li>
+                    <li><strong>Training Videos:</strong> Accessible after login</li>
+                    <li><strong>24/7 System Status:</strong> status.pharmassist.com</li>
+                </ul>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="{{ package.login_url }}" class="btn btn-primary" target="_blank">
+                    🚀 Access PharmAssist Now
+                </a>
+                
+                <button onclick="window.print()" class="btn btn-secondary">
+                    🖨️ Print Setup Info
+                </button>
+                
+                <button onclick="downloadCredentials()" class="btn btn-secondary">
+                    💾 Download Credentials
+                </button>
+                
+                <a href="/admin/create-customer" class="btn btn-secondary">
+                    ➕ Create Another Customer
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                // Show temporary success message
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.style.background = '#107c10';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '#0078d4';
+                }, 2000);
+            }).catch(function() {
+                alert('Failed to copy to clipboard. Please copy manually.');
+            });
+        }
+
+        function downloadCredentials() {
+            const credentials = {
+                pharmacy_name: "{{ package.pharmacy_name }}",
+                login_url: "{{ package.login_url }}",
+                admin_username: "{{ package.admin_credentials.username }}",
+                admin_email: "{{ package.admin_credentials.email }}",
+                temp_password: "{{ package.admin_credentials.temp_password }}",
+                api_key: "{{ package.api_key or 'Not applicable' }}",
+                subscription_plan: "{{ package.subscription_details.plan }}",
+                created_date: new Date().toISOString().split('T')[0]
+            };
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(credentials, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "{{ package.pharmacy_name }}_pharmassist_credentials.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+    </script>
+</body>
+</html>
