@@ -1,7 +1,7 @@
 """
 Minimal Flask app for Azure App Service testing
 """
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 import os
 import sys
 
