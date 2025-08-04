@@ -8,6 +8,9 @@ import uuid
 # Import admin manager
 from admin_manager import AdminManager
 
+# Import user authentication
+from user_auth import UserManager, login_required, permission_required
+
 # Database imports (optional - graceful degradation)
 try:
     import psycopg2
@@ -182,6 +185,11 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 # Initialize database
 db = DatabaseManager()
 db.init_app(app)
+
+# Initialize user manager
+user_manager = UserManager(db)
+if DATABASE_AVAILABLE and db.connection:
+    user_manager.setup_database_tables()
 
 # Initialize PDF processor
 if PDF_PROCESSING_AVAILABLE:
