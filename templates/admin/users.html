@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - PharmAssist Admin</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%232196F3' rx='4'/><rect x='14' y='6' width='4' height='20' fill='white' rx='1'/><rect x='6' y='14' width='20' height='4' fill='white' rx='1'/><circle cx='8' cy='8' r='1.5' fill='%23FFD700'/><circle cx='24' cy='8' r='1.5' fill='%23FFD700'/><circle cx='8' cy='24' r='1.5' fill='%23FFD700'/><circle cx='24' cy='24' r='1.5' fill='%23FFD700'/></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .admin-header .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .admin-nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .admin-nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: background 0.3s;
+        }
+
+        .admin-nav a:hover, .admin-nav a.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1976D2;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #388E3C;
+        }
+
+        .users-table {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .table-header h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status-inactive {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .role-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .role-admin {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .role-user {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .role-pharmacist {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-color: #4CAF50;
+            color: #155724;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            border-color: #f44336;
+            color: #721c24;
+        }
+
+        .search-box {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-header">
+        <div class="container">
+            <h1>🏥 PharmAssist Admin</h1>
+            <nav class="admin-nav">
+                <a href="/admin/dashboard">Dashboard</a>
+                <a href="/admin/users" class="active">Users</a>
+                <a href="/admin/customers">Customers</a>
+                <a href="/admin/processing-logs">Processing Logs</a>
+                <a href="/admin/system-config">System Config</a>
+                <a href="/admin/logout">Logout</a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="page-header">
+            <h2>👥 User Management</h2>
+            <p>Manage user accounts, roles, and permissions</p>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <div class="action-bar">
+            <div>
+                <input type="text" id="searchUsers" class="search-box" placeholder="Search users...">
+            </div>
+            <button class="btn btn-primary" onclick="openCreateUserModal()">
+                ➕ Add New User
+            </button>
+        </div>
+
+        <div class="users-table">
+            <div class="table-header">
+                <h3>System Users</h3>
+                <p>Total: {{ users|length }} users</p>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Last Login</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    {% for user in users %}
+                    <tr data-user-id="{{ user.id }}">
+                        <td><strong>{{ user.username }}</strong></td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            <span class="role-badge role-{{ user.role }}">
+                                {{ user.role }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge {% if user.is_active %}status-active{% else %}status-inactive{% endif %}">
+                                {% if user.is_active %}Active{% else %}Inactive{% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            {% if user.created_at %}
+                                {{ user.created_at[:10] }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.last_login %}
+                                {{ user.last_login[:10] }}
+                            {% else %}
+                                Never
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary btn-sm" onclick="editUser({{ user.id }}, '{{ user.username }}', '{{ user.email }}', '{{ user.role }}', {{ user.is_active|lower }})">
+                                    Edit
+                                </button>
+                                {% if user.username != 'admin' %}
+                                <button class="btn btn-danger btn-sm" onclick="deleteUser({{ user.id }}, '{{ user.username }}')">
+                                    Delete
+                                </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Create User Modal -->
+    <div id="createUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New User</h3>
+                <span class="close" onclick="closeModal('createUserModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="createUserForm">
+                    <div class="form-group">
+                        <label for="newUsername">Username</label>
+                        <input type="text" id="newUsername" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newEmail">Email</label>
+                        <input type="email" id="newEmail" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">Password</label>
+                        <input type="password" id="newPassword" name="password" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="newRole">Role</label>
+                        <select id="newRole" name="role">
+                            <option value="user">User</option>
+                            <option value="pharmacist">Pharmacist</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="createUser()">Create User</button>
+                <button class="btn" onclick="closeModal('createUserModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit User</h3>
+                <span class="close" onclick="closeModal('editUserModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editUserForm">
+                    <input type="hidden" id="editUserId">
+                    <div class="form-group">
+                        <label for="editUsername">Username</label>
+                        <input type="text" id="editUsername" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editEmail">Email</label>
+                        <input type="email" id="editEmail" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPassword">New Password (leave blank to keep current)</label>
+                        <input type="password" id="editPassword" name="password">
+                    </div>
+                    <div class="form-group">
+                        <label for="editRole">Role</label>
+                        <select id="editRole" name="role">
+                            <option value="user">User</option>
+                            <option value="pharmacist">Pharmacist</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="editIsActive" name="is_active"> Active
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="updateUser()">Update User</button>
+                <button class="btn" onclick="closeModal('editUserModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal functions
+        function openCreateUserModal() {
+            document.getElementById('createUserModal').style.display = 'block';
+        }
+
+        function editUser(id, username, email, role, isActive) {
+            document.getElementById('editUserId').value = id;
+            document.getElementById('editUsername').value = username;
+            document.getElementById('editEmail').value = email;
+            document.getElementById('editRole').value = role;
+            document.getElementById('editIsActive').checked = isActive;
+            document.getElementById('editUserModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // User management functions
+        async function createUser() {
+            const form = document.getElementById('createUserForm');
+            const formData = new FormData(form);
+            const userData = Object.fromEntries(formData);
+
+            try {
+                const response = await fetch('/admin/create-user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('success', result.message);
+                    closeModal('createUserModal');
+                    form.reset();
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showAlert('error', result.message);
+                }
+            } catch (error) {
+                showAlert('error', 'Error creating user: ' + error.message);
+            }
+        }
+
+        async function updateUser() {
+            const userId = document.getElementById('editUserId').value;
+            const form = document.getElementById('editUserForm');
+            const formData = new FormData(form);
+            const userData = Object.fromEntries(formData);
+            
+            // Convert checkbox to boolean
+            userData.is_active = document.getElementById('editIsActive').checked;
+            
+            // Remove empty password
+            if (!userData.password) {
+                delete userData.password;
+            }
+
+            try {
+                const response = await fetch(`/admin/edit-user/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('success', result.message);
+                    closeModal('editUserModal');
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showAlert('error', result.message);
+                }
+            } catch (error) {
+                showAlert('error', 'Error updating user: ' + error.message);
+            }
+        }
+
+        async function deleteUser(userId, username) {
+            if (!confirm(`Are you sure you want to delete user "${username}"? This action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/admin/delete-user/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('success', result.message);
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showAlert('error', result.message);
+                }
+            } catch (error) {
+                showAlert('error', 'Error deleting user: ' + error.message);
+            }
+        }
+
+        function showAlert(type, message) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+            
+            alertContainer.innerHTML = `
+                <div class="alert ${alertClass}">
+                    ${message}
+                </div>
+            `;
+            
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        // Search functionality
+        document.getElementById('searchUsers').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#usersTableBody tr');
+            
+            rows.forEach(row => {
+                const username = row.cells[0].textContent.toLowerCase();
+                const email = row.cells[1].textContent.toLowerCase();
+                const role = row.cells[2].textContent.toLowerCase();
+                
+                if (username.includes(searchTerm) || email.includes(searchTerm) || role.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

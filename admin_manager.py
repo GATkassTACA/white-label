@@ -61,6 +61,36 @@ class AdminManager:
             customers = self.get_all_customers()
             return render_template('admin/customers.html', customers=customers)
         
+        @self.app.route('/admin/users')
+        @self.admin_required
+        def admin_users():
+            """User management page"""
+            users = self.get_all_users()
+            return render_template('admin/users.html', users=users)
+        
+        @self.app.route('/admin/create-user', methods=['POST'])
+        @self.admin_required
+        def admin_create_user():
+            """Create new user"""
+            data = request.get_json()
+            result = self.create_user(data)
+            return jsonify(result)
+        
+        @self.app.route('/admin/edit-user/<int:user_id>', methods=['POST'])
+        @self.admin_required
+        def admin_edit_user(user_id):
+            """Edit existing user"""
+            data = request.get_json()
+            result = self.edit_user(user_id, data)
+            return jsonify(result)
+        
+        @self.app.route('/admin/delete-user/<int:user_id>', methods=['POST'])
+        @self.admin_required
+        def admin_delete_user(user_id):
+            """Delete user"""
+            result = self.delete_user(user_id)
+            return jsonify(result)
+        
         @self.app.route('/admin/processing-logs')
         @self.admin_required
         def admin_processing_logs():
@@ -262,3 +292,162 @@ class AdminManager:
                 'success': False,
                 'message': f'Error creating customer: {str(e)}'
             }
+    
+    def get_all_users(self):
+        """Get all users from the database"""
+        if not self.db.connection:
+            return []
+        
+        try:
+            cursor = self.db.connection.cursor()
+            cursor.execute("""
+                SELECT id, username, email, role, created_at, last_login, is_active
+                FROM users 
+                ORDER BY created_at DESC
+            """)
+            users = []
+            for row in cursor.fetchall():
+                users.append({
+                    'id': row[0],
+                    'username': row[1],
+                    'email': row[2],
+                    'role': row[3],
+                    'created_at': row[4].isoformat() if row[4] else None,
+                    'last_login': row[5].isoformat() if row[5] else None,
+                    'is_active': row[6]
+                })
+            return users
+        except Exception as e:
+            print(f"Error getting users: {e}")
+            return []
+    
+    def create_user(self, data):
+        """Create a new user"""
+        if not self.db.connection:
+            return {'success': False, 'message': 'Database not available'}
+        
+        try:
+            from werkzeug.security import generate_password_hash
+            
+            username = data.get('username', '').strip()
+            email = data.get('email', '').strip()
+            password = data.get('password', '')
+            role = data.get('role', 'user')
+            
+            # Validation
+            if not username or not email or not password:
+                return {'success': False, 'message': 'Username, email, and password are required'}
+            
+            if len(password) < 6:
+                return {'success': False, 'message': 'Password must be at least 6 characters'}
+            
+            # Check if user already exists
+            cursor = self.db.connection.cursor()
+            cursor.execute("""
+                SELECT id FROM users WHERE username = %s OR email = %s
+            """, (username, email))
+            
+            if cursor.fetchone():
+                return {'success': False, 'message': 'Username or email already exists'}
+            
+            # Create user
+            password_hash = generate_password_hash(password)
+            cursor.execute("""
+                INSERT INTO users (username, email, password_hash, role, is_active)
+                VALUES (%s, %s, %s, %s, %s)
+                RETURNING id
+            """, (username, email, password_hash, role, True))
+            
+            user_id = cursor.fetchone()[0]
+            self.db.connection.commit()
+            
+            return {
+                'success': True,
+                'message': f'User "{username}" created successfully',
+                'user_id': user_id
+            }
+            
+        except Exception as e:
+            return {'success': False, 'message': f'Error creating user: {str(e)}'}
+    
+    def edit_user(self, user_id, data):
+        """Edit an existing user"""
+        if not self.db.connection:
+            return {'success': False, 'message': 'Database not available'}
+        
+        try:
+            cursor = self.db.connection.cursor()
+            
+            # Check if user exists
+            cursor.execute("SELECT id FROM users WHERE id = %s", (user_id,))
+            if not cursor.fetchone():
+                return {'success': False, 'message': 'User not found'}
+            
+            # Build update query dynamically
+            updates = []
+            params = []
+            
+            if 'username' in data and data['username'].strip():
+                updates.append("username = %s")
+                params.append(data['username'].strip())
+            
+            if 'email' in data and data['email'].strip():
+                updates.append("email = %s")
+                params.append(data['email'].strip())
+            
+            if 'role' in data:
+                updates.append("role = %s")
+                params.append(data['role'])
+            
+            if 'is_active' in data:
+                updates.append("is_active = %s")
+                params.append(data['is_active'])
+            
+            if 'password' in data and data['password']:
+                from werkzeug.security import generate_password_hash
+                updates.append("password_hash = %s")
+                params.append(generate_password_hash(data['password']))
+            
+            if not updates:
+                return {'success': False, 'message': 'No fields to update'}
+            
+            # Execute update
+            params.append(user_id)
+            query = f"UPDATE users SET {', '.join(updates)} WHERE id = %s"
+            cursor.execute(query, params)
+            self.db.connection.commit()
+            
+            return {'success': True, 'message': 'User updated successfully'}
+            
+        except Exception as e:
+            return {'success': False, 'message': f'Error updating user: {str(e)}'}
+    
+    def delete_user(self, user_id):
+        """Delete a user (soft delete by setting is_active = False)"""
+        if not self.db.connection:
+            return {'success': False, 'message': 'Database not available'}
+        
+        try:
+            cursor = self.db.connection.cursor()
+            
+            # Check if user exists and get info
+            cursor.execute("SELECT username FROM users WHERE id = %s", (user_id,))
+            user = cursor.fetchone()
+            
+            if not user:
+                return {'success': False, 'message': 'User not found'}
+            
+            # Soft delete by setting is_active = False
+            cursor.execute("""
+                UPDATE users SET is_active = FALSE WHERE id = %s
+            """, (user_id,))
+            
+            self.db.connection.commit()
+            
+            return {
+                'success': True, 
+                'message': f'User "{user[0]}" deactivated successfully'
+            }
+            
+        except Exception as e:
+            return {'success': False, 'message': f'Error deleting user: {str(e)}'}

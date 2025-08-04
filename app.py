@@ -9,17 +9,6 @@ from functools import wraps
 
 # Import admin manager
 from admin_manager import AdminManager
-import datetime
-import logging
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
-from werkzeug.utils import secure_filename
-import uuid
-
-# Import admin manager
-from admin_manager import AdminManager
-
-# Import user authentication
-from user_auth import UserManager, login_required, permission_required
 
 # Database imports (optional - graceful degradation)
 try:
@@ -264,11 +253,6 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 db = DatabaseManager()
 db.init_app(app)
 
-# Initialize user manager
-user_manager = UserManager(db)
-if DATABASE_AVAILABLE and db.connection:
-    user_manager.setup_database_tables()
-
 # Initialize PDF processor
 if PDF_PROCESSING_AVAILABLE:
     pdf_processor = PDFProcessor()
@@ -277,101 +261,6 @@ else:
 
 # Initialize admin manager
 admin_manager = AdminManager(app, db)
-
-# Add user manager to request context
-@app.before_request
-def load_user_manager():
-    request.user_manager = user_manager
-
-@app.route('/login')
-def login_page():
-    """User login page"""
-    if user_manager.is_authenticated():
-        return redirect('/')
-    return render_template('login.html')
-
-@app.route('/api/login', methods=['POST'])
-def api_login():
-    """API endpoint for user authentication"""
-    try:
-        data = request.get_json()
-        username = data.get('username', '').strip()
-        password = data.get('password', '')
-        
-        if not username or not password:
-            return jsonify({
-                'success': False,
-                'error': 'Username and password are required'
-            }), 400
-        
-        # Authenticate user
-        auth_result = user_manager.authenticate_user(username, password)
-        
-        if auth_result['success']:
-            # Create session
-            user_manager.create_session(auth_result['user'])
-            
-            return jsonify({
-                'success': True,
-                'message': 'Login successful',
-                'user': auth_result['user'],
-                'redirect': '/'
-            })
-        else:
-            return jsonify({
-                'success': False,
-                'error': auth_result.get('error', 'Authentication failed')
-            }), 401
-            
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': 'Login error occurred'
-        }), 500
-
-@app.route('/api/logout', methods=['POST'])
-@login_required
-def api_logout():
-    """API endpoint for user logout"""
-    result = user_manager.logout_user()
-    return jsonify(result)
-
-@app.route('/logout')
-@login_required
-def logout_page():
-    """Logout page"""
-    user_manager.logout_user()
-    return redirect('/login')
-
-@app.route('/api/session-status')
-def api_session_status():
-    """Check current session status"""
-    if user_manager.is_authenticated():
-        return jsonify({
-            'authenticated': True,
-            'user': user_manager.get_current_user()
-        })
-    else:
-        return jsonify({'authenticated': False})
-
-@app.route('/')
-@login_required
-def index():
-    """Main application page"""
-    # Initialize session
-    if 'session_id' not in session:
-        session['session_id'] = str(uuid.uuid4())
-    
-    # Get processing history if database is available
-    history = []
-    if DATABASE_AVAILABLE and db.connection:
-        history = db.get_processing_history(session['session_id'])
-    
-    return render_template('index.html', 
-                         pdf_available=PDF_PROCESSING_AVAILABLE,
-                         database_available=DATABASE_AVAILABLE,
-                         history=history,
-                         user=session.get('username'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -401,6 +290,25 @@ def login():
     
     return render_template('login.html')
 
+@app.route('/')
+@login_required
+def index():
+    """Main application page"""
+    # Initialize session
+    if 'session_id' not in session:
+        session['session_id'] = str(uuid.uuid4())
+    
+    # Get processing history if database is available
+    history = []
+    if DATABASE_AVAILABLE and db.connection:
+        history = db.get_processing_history(session['session_id'])
+    
+    return render_template('index.html', 
+                         pdf_available=PDF_PROCESSING_AVAILABLE,
+                         database_available=DATABASE_AVAILABLE,
+                         history=history,
+                         user=session.get('username'))
+
 @app.route('/logout')
 def logout():
     """User logout"""
@@ -423,7 +331,6 @@ def api_status():
 
 @app.route('/api/process', methods=['POST'])
 @login_required
-@permission_required('pdf_process')
 def api_process():
     """API endpoint for PDF processing - frontend compatible"""
     start_time = datetime.datetime.now()
