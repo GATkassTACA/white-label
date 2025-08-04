@@ -1,5 +1,5 @@
 """
-WSGI entry point for production deployment of white-label chat application
+WSGI entry point for production deployment of PharmAssist application
 """
 import os
 import sys
@@ -9,7 +9,7 @@ from flask import Flask, jsonify
 # Add current directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-print("Starting White Label Chat Application...")
+print("Starting PharmAssist Application...")
 print(f"Python path: {sys.path}")
 print(f"Current working directory: {os.getcwd()}")
 print(f"Directory contents: {os.listdir('.')}")
@@ -18,50 +18,40 @@ print(f"Directory contents: {os.listdir('.')}")
 os.environ['FLASK_ENV'] = 'production'
 
 # Set basic configuration for Azure
-os.environ.setdefault('SECRET_KEY', 'azure-production-secret-key-change-me')
-os.environ.setdefault('JWT_SECRET_KEY', 'azure-jwt-secret-key-change-me')
+os.environ.setdefault('SECRET_KEY', 'pharmassist-secure-key-2025')
 
-# Set database URL if not already configured
+# Set database URL if not already configured (for PostgreSQL)
 if not os.environ.get('DATABASE_URL'):
-    os.environ['DATABASE_URL'] = 'postgresql://dbadmin:Unicorn1982@white-label-db-km.postgres.database.azure.com:5432/postgres?sslmode=require'
-    print("Set fallback DATABASE_URL")
+    # Azure PostgreSQL connection format
+    database_host = os.environ.get('DATABASE_HOST', 'localhost')
+    database_name = os.environ.get('DATABASE_NAME', 'pharmassist_db')
+    database_user = os.environ.get('DATABASE_USER', 'pharmadmin')
+    database_password = os.environ.get('DATABASE_PASSWORD', '')
+    
+    if database_host and database_name and database_user and database_password:
+        os.environ['DATABASE_URL'] = f'postgresql://{database_user}:{database_password}@{database_host}:5432/{database_name}?sslmode=require'
+        print("Set DATABASE_URL from individual environment variables")
 
 print(f"DATABASE_URL configured: {bool(os.environ.get('DATABASE_URL'))}")
 
 try:
-    print("Attempting to import create_app from the app module...")
+    print("Attempting to import app from the app module...")
     
     # Test individual imports first
     print("Testing flask import...")
     import flask
     print(f"Flask version: {flask.__version__}")
     
-    print("Testing psycopg2 import...")
-    import psycopg2
-    print("psycopg2: OK")
-    
-    print("Testing redis import...")
-    import redis
-    print("redis: OK")
-    
     print("Testing app module import...")
-    from app import create_app
-    print("Successfully imported create_app")
+    from app import app
+    print("Successfully imported app")
     
-    # Create the Flask app and SocketIO instance
-    print("Creating Flask application...")
-    flask_app, socketio = create_app()
-    
-    # For Azure App Service, expose the Flask app directly
-    # Note: SocketIO functionality may be limited in this deployment mode
-    app = flask_app
-    
-    print("White Label Chat WSGI app created successfully!")
+    print("PharmAssist WSGI app loaded successfully!")
     print(f"Flask app: {app}")
     print(f"Environment: {os.environ.get('FLASK_ENV')}")
     
 except Exception as e:
-    print(f"Error creating white-label chat app: {e}")
+    print(f"Error loading PharmAssist app: {e}")
     traceback.print_exc()
     
     # Create a fallback Flask app with detailed error info
@@ -71,7 +61,7 @@ except Exception as e:
     @app.route('/')
     def hello():
         return f"""
-        <h1>🚨 White Label Chat - Loading Error</h1>
+        <h1>🏥 PharmAssist - Loading Error</h1>
         <p><strong>Error:</strong> {str(e)}</p>
         <p><strong>Python Path:</strong> {sys.path}</p>
         <p><strong>Working Directory:</strong> {os.getcwd()}</p>
@@ -79,13 +69,13 @@ except Exception as e:
         <p><strong>Environment Variables:</strong></p>
         <ul>
             <li>DATABASE_URL: {'✅ Configured' if os.environ.get('DATABASE_URL') else '❌ Missing'}</li>
-            <li>REDIS_URL: {'✅ Configured' if os.environ.get('REDIS_URL') else '❌ Missing'}</li>
+            <li>SECRET_KEY: {'✅ Configured' if os.environ.get('SECRET_KEY') else '❌ Missing'}</li>
             <li>FLASK_ENV: {os.environ.get('FLASK_ENV', 'Not Set')}</li>
         </ul>
-        <p><a href="/api/health">Health Check</a></p>
+        <p><a href="/health">Health Check</a></p>
         """
     
-    @app.route('/api/health')
+    @app.route('/health')
     def health():
         return jsonify({
             "status": "error", 
@@ -94,7 +84,7 @@ except Exception as e:
             "cwd": os.getcwd(),
             "environment": {
                 "DATABASE_URL": bool(os.environ.get('DATABASE_URL')),
-                "REDIS_URL": bool(os.environ.get('REDIS_URL')),
+                "SECRET_KEY": bool(os.environ.get('SECRET_KEY')),
                 "FLASK_ENV": os.environ.get('FLASK_ENV')
             }
         })
