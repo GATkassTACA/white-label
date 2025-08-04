@@ -376,6 +376,29 @@ def favicon():
     """Serve favicon"""
     return app.send_static_file('favicon.svg')
 
+@app.route('/api/download', methods=['POST'])
+def api_download():
+    """Download processed results as text file"""
+    try:
+        data = request.get_json()
+        content = data.get('content', '')
+        filename = data.get('filename', 'processed_medications.txt')
+        
+        if not content:
+            return jsonify({'error': 'No content to download'}), 400
+        
+        # Create response with file content
+        from flask import make_response
+        
+        response = make_response(content)
+        response.headers['Content-Type'] = 'text/plain'
+        response.headers['Content-Disposition'] = f'attachment; filename="{filename}"'
+        
+        return response
+        
+    except Exception as e:
+        return jsonify({'error': f'Download error: {str(e)}'}), 500
+
 if __name__ == '__main__':
     # Configure logging
     logging.basicConfig(level=logging.INFO)
