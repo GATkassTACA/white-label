@@ -5,6 +5,9 @@ from flask import Flask, render_template, request, jsonify, session
 from werkzeug.utils import secure_filename
 import uuid
 
+# Import admin manager
+from admin_manager import AdminManager
+
 # Database imports (optional - graceful degradation)
 try:
     import psycopg2
@@ -162,6 +165,9 @@ if PDF_PROCESSING_AVAILABLE:
     pdf_processor = PDFProcessor()
 else:
     pdf_processor = None
+
+# Initialize admin manager
+admin_manager = AdminManager(app, db)
 
 @app.route('/')
 def index():
