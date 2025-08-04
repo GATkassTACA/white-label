@@ -391,12 +391,14 @@ def api_download():
         from flask import make_response
         
         response = make_response(content)
-        response.headers['Content-Type'] = 'text/plain'
+        response.headers['Content-Type'] = 'text/plain; charset=utf-8'
         response.headers['Content-Disposition'] = f'attachment; filename="{filename}"'
+        response.headers['Content-Length'] = str(len(content.encode('utf-8')))
         
         return response
         
     except Exception as e:
+        print(f"Download error: {e}")  # Add logging
         return jsonify({'error': f'Download error: {str(e)}'}), 500
 
 if __name__ == '__main__':
