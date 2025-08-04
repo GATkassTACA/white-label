@@ -143,7 +143,7 @@ class DatabaseManager:
             return []
 
 # Create Flask application
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.secret_key = os.getenv('SECRET_KEY', 'pharmassist-secure-key-2025')
 
 # Configure upload settings
@@ -278,6 +278,11 @@ def health_check():
         'database': DATABASE_AVAILABLE and db.connection is not None,
         'timestamp': datetime.datetime.now().isoformat()
     })
+
+@app.route('/favicon.ico')
+def favicon():
+    """Serve favicon"""
+    return app.send_static_file('favicon.svg')
 
 if __name__ == '__main__':
     # Configure logging
