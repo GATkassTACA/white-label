@@ -275,12 +275,13 @@ def api_process():
                         'success': True,
                         'method_used': result.get('method_used', method),
                         'pages_processed': result.get('pages_processed', 0),
-                        'medications_count': len(result.get('medications', [])),
-                        'caretend_output': result.get('caretend_format', ''),
-                        'extracted_text': result.get('raw_text', ''),
+                        'medications_count': result.get('medications_count', 0),
+                        'caretend_output': result.get('caretend_output', ''),
+                        'extracted_text': result.get('extracted_text', ''),
                         'processing_time': processing_time,
                         'file_size': file_size,
-                        'medications': result.get('medications', [])
+                        'medications': result.get('medications_found', []),
+                        'raw_text': result.get('extracted_text', '')
                     })
                 else:
                     # Processing failed, log error

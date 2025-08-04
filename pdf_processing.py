@@ -250,32 +250,105 @@ class PDFProcessor:
         }
     
     def _extract_medications(self, text: str) -> List[Dict]:
-        """Extract medication information from text using pattern matching"""
+        """Extract medication information from text using comprehensive pattern matching"""
         medications = []
         
-        # Common medication patterns
+        # Clean and normalize text
+        text = re.sub(r'\s+', ' ', text)  # Normalize whitespace
+        
+        # Enhanced medication patterns - more flexible and comprehensive
         patterns = [
-            # Generic drug name pattern
-            r'(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s+(\d+(?:\.\d+)?)\s*(mg|mcg|g|mL|units?)\b',
-            # Brand name pattern
-            r'(\b[A-Z][A-Z\s]+)\s+(\d+(?:\.\d+)?)\s*(mg|mcg|g|mL|units?)\b',
-            # Dosage pattern
-            r'(\w+(?:\s+\w+)*)\s+(\d+(?:\.\d+)?)\s*(mg|mcg|g|mL|units?)\s+(?:take|taken?|daily|twice|once)',
+            # Pattern 1: Drug name followed by dosage (most common)
+            r'(\b[A-Za-z][A-Za-z\s\-]{2,30}?)\s+(\d+(?:\.\d+)?)\s*(mg|mcg|g|mL|units?|tabs?|capsules?)\b',
+            
+            # Pattern 2: Numbered list format (1. Drug 10mg, 2. Drug 20mg)
+            r'\d+\.?\s*([A-Za-z][A-Za-z\s\-]{2,30}?)\s+(\d+(?:\.\d+)?)\s*(mg|mcg|g|mL|units?|tabs?|capsules?)',
+            
+            # Pattern 3: With dosing instructions
+            r'([A-Za-z][A-Za-z\s\-]{2,30}?)\s+(\d+(?:\.\d+)?)\s*(mg|mcg|g|mL|units?)\s+(?:take|taken?|daily|twice|once|bid|tid|qid|prn)',
+            
+            # Pattern 4: Tablet/capsule format
+            r'([A-Za-z][A-Za-z\s\-]{2,30}?)\s+(\d+(?:\.\d+)?)\s*mg\s+(?:tablet|capsule|tab|cap)',
+            
+            # Pattern 5: Generic format with parentheses
+            r'([A-Za-z][A-Za-z\s\-]{2,30}?)\s*\(\s*(\d+(?:\.\d+)?)\s*(mg|mcg|g|mL|units?)\s*\)',
+            
+            # Pattern 6: Simple drug name with mg
+            r'\b([A-Za-z][A-Za-z]{2,}(?:\s+[A-Za-z]{2,})*)\s+(\d+)\s*mg\b',
+        ]
+        
+        # Common medication name patterns (to improve recognition)
+        common_drug_endings = [
+            r'\w+pril\b',  # ACE inhibitors (lisinopril, enalapril)
+            r'\w+sartan\b',  # ARBs (losartan, valsartan)
+            r'\w+statin\b',  # Statins (atorvastatin, simvastatin)
+            r'\w+metformin\b',  # Diabetes (metformin)
+            r'\w+lol\b',  # Beta blockers (metoprolol, atenolol)
+            r'\w+dipine\b',  # Calcium channel blockers (amlodipine)
         ]
         
         for pattern in patterns:
             matches = re.finditer(pattern, text, re.IGNORECASE)
             for match in matches:
+                drug_name = match.group(1).strip()
+                dosage_amount = match.group(2)
+                dosage_unit = match.group(3) if len(match.groups()) >= 3 else 'mg'
+                
+                # Clean up drug name
+                drug_name = re.sub(r'^[^\w]+|[^\w]+$', '', drug_name)  # Remove leading/trailing non-word chars
+                drug_name = re.sub(r'\s+', ' ', drug_name)  # Normalize spaces
+                
+                # Skip if name is too short or contains numbers
+                if len(drug_name) < 3 or re.search(r'\d', drug_name):
+                    continue
+                
+                # Skip common false positives
+                false_positives = ['mg', 'tab', 'tablet', 'capsule', 'daily', 'twice', 'once', 'take', 'dose']
+                if drug_name.lower() in false_positives:
+                    continue
+                
                 medication = {
-                    'name': match.group(1).strip(),
-                    'dosage': f"{match.group(2)} {match.group(3)}",
-                    'strength': match.group(2),
-                    'unit': match.group(3)
+                    'name': drug_name.title(),  # Proper case
+                    'dosage': f"{dosage_amount} {dosage_unit}",
+                    'strength': dosage_amount,
+                    'unit': dosage_unit,
+                    'source': 'text_extraction'
                 }
                 
-                # Avoid duplicates
+                # Avoid duplicates (case-insensitive)
                 if not any(med['name'].lower() == medication['name'].lower() for med in medications):
                     medications.append(medication)
+        
+        # Additional pattern for common drug endings (even without clear dosage)
+        for ending_pattern in common_drug_endings:
+            matches = re.finditer(ending_pattern, text, re.IGNORECASE)
+            for match in matches:
+                drug_name = match.group(0).strip().title()
+                
+                # Check if we already found this medication
+                if not any(med['name'].lower() == drug_name.lower() for med in medications):
+                    # Try to find dosage nearby
+                    context_start = max(0, match.start() - 50)
+                    context_end = min(len(text), match.end() + 50)
+                    context = text[context_start:context_end]
+                    
+                    dose_match = re.search(r'(\d+(?:\.\d+)?)\s*(mg|mcg|g|mL|units?)', context, re.IGNORECASE)
+                    if dose_match:
+                        medications.append({
+                            'name': drug_name,
+                            'dosage': f"{dose_match.group(1)} {dose_match.group(2)}",
+                            'strength': dose_match.group(1),
+                            'unit': dose_match.group(2),
+                            'source': 'pattern_recognition'
+                        })
+                    else:
+                        medications.append({
+                            'name': drug_name,
+                            'dosage': 'Dosage not specified',
+                            'strength': '',
+                            'unit': '',
+                            'source': 'pattern_recognition'
+                        })
         
         return medications
     
