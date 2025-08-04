@@ -9,18 +9,21 @@
     <meta name="theme-color" content="#2196F3">
     <style>
         :root {
-            --primary-color: #2196F3;
-            --primary-dark: #1976D2;
-            --success-color: #4CAF50;
-            --warning-color: #FF9800;
-            --error-color: #f44336;
-            --text-primary: #333;
-            --text-secondary: #666;
-            --background: #f5f7fa;
+            --primary-color: #5EB97D;     /* Leaf green */
+            --primary-dark: #4A9B68;      /* Darker leaf green */
+            --accent-color: #264653;      /* Navy */
+            --button-color: #577590;      /* Indigo */
+            --highlight-color: #F9C846;   /* Gold */
+            --success-color: #5EB97D;     /* Using primary green for success */
+            --warning-color: #F9C846;     /* Gold for warnings */
+            --error-color: #D32F2F;       /* Standard error red */
+            --text-primary: #22223B;      /* Deep gray */
+            --text-secondary: #577590;    /* Indigo for secondary text */
+            --background: #F6F4EF;        /* Cream */
             --card-background: white;
             --border-radius: 12px;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+            --shadow: 0 4px 6px rgba(38, 70, 83, 0.1);
+            --shadow-hover: 0 8px 25px rgba(38, 70, 83, 0.15);
         }
 
         * {
@@ -128,12 +131,12 @@
 
         .upload-area:hover {
             border-color: var(--primary-dark);
-            background: rgba(33, 150, 243, 0.05);
+            background: rgba(94, 185, 125, 0.05);
         }
 
         .upload-area.dragover {
             border-color: var(--success-color);
-            background: rgba(76, 175, 80, 0.1);
+            background: rgba(94, 185, 125, 0.1);
             transform: scale(1.02);
         }
 
@@ -199,12 +202,12 @@
 
         .method-option:hover {
             border-color: var(--primary-color);
-            background: rgba(33, 150, 243, 0.05);
+            background: rgba(94, 185, 125, 0.05);
         }
 
         .method-option.selected {
             border-color: var(--primary-color);
-            background: rgba(33, 150, 243, 0.1);
+            background: rgba(94, 185, 125, 0.1);
         }
 
         .results-section {
