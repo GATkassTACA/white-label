@@ -267,140 +267,274 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🏥 PharmAssist</h1>
-        <p>Pharmacy PDF Document Processing & CareTend Conversion</p>
-    </div>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 PharmAssist</h1>
+            <p>Professional Pharmacy PDF Processing & CareTend Conversion System</p>
+        </div>
 
-    <div class="upload-area" id="uploadArea">
-        <h3>📄 Upload Medication List PDF</h3>
-        <p>Drag and drop your PDF file here or click to browse</p>
-        <input type="file" id="fileInput" class="file-input" accept=".pdf">
-        <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
-            Choose PDF File
-        </button>
-        <button class="upload-btn" onclick="processFile()" id="processBtn" style="display: none;">
-            Process Document
-        </button>
-    </div>
+        <div class="main-content">
+            <div class="upload-section">
+                <h2>📄 Document Upload</h2>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">
+                        <strong>Drag & drop your PDF file here</strong><br>
+                        or click to browse
+                    </div>
+                    <input type="file" id="fileInput" class="file-input" accept=".pdf" multiple>
+                    <button class="btn" onclick="document.getElementById('fileInput').click()">
+                        📂 Choose Files
+                    </button>
+                </div>
+                
+                <div id="filePreview" class="file-preview" style="display: none;">
+                    <h4>Selected File:</h4>
+                    <div id="fileDetails"></div>
+                    <button class="btn btn-success" id="processBtn" onclick="processFiles()">
+                        ⚡ Process Document
+                    </button>
+                </div>
+            </div>
 
-    <div class="loading" id="loading">
-        <div class="spinner"></div>
-        <p>Processing your medication list...</p>
-    </div>
+            <div class="processing-methods">
+                <h2>🔧 Processing Method</h2>
+                <p>Select the best method for your document type:</p>
+                
+                <div class="method-option selected" data-method="auto">
+                    <h4>🤖 Auto-Detect (Recommended)</h4>
+                    <p>Automatically chooses the best processing method</p>
+                </div>
+                
+                <div class="method-option" data-method="pypdf2">
+                    <h4>📖 Text Extraction</h4>
+                    <p>Best for digital PDFs with selectable text</p>
+                </div>
+                
+                <div class="method-option" data-method="pdfplumber">
+                    <h4>📊 Table Extraction</h4>
+                    <p>Ideal for structured medication lists and tables</p>
+                </div>
+                
+                <div class="method-option" data-method="ocr">
+                    <h4>👁️ OCR Scanning</h4>
+                    <p>For scanned documents and images</p>
+                </div>
+            </div>
+        </div>
 
-    <div class="result" id="result">
-        <h3>Processing Results</h3>
-        <div id="resultContent"></div>
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <h3>Processing your medication list...</h3>
+            <p>Extracting data and converting to CareTend format</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="results-section" id="results">
+            <h2>✅ Processing Complete</h2>
+            <div id="resultsContent"></div>
+        </div>
     </div>
 
     <script>
+        // Global variables
+        let selectedFiles = [];
+        let selectedMethod = 'auto';
+        
+        // DOM elements
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
-        const processBtn = document.getElementById('processBtn');
+        const filePreview = document.getElementById('filePreview');
+        const fileDetails = document.getElementById('fileDetails');
         const loading = document.getElementById('loading');
-        const result = document.getElementById('result');
-        const resultContent = document.getElementById('resultContent');
+        const results = document.getElementById('results');
+        const resultsContent = document.getElementById('resultsContent');
+        const progressFill = document.getElementById('progressFill');
 
-        let selectedFile = null;
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            checkApiStatus();
+        });
 
-        // Drag and drop functionality
-        uploadArea.addEventListener('dragover', (e) => {
+        function setupEventListeners() {
+            // File upload listeners
+            uploadArea.addEventListener('dragover', handleDragOver);
+            uploadArea.addEventListener('dragleave', handleDragLeave);
+            uploadArea.addEventListener('drop', handleDrop);
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // Processing method selection
+            document.querySelectorAll('.method-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.method-option').forEach(opt => 
+                        opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedMethod = this.dataset.method;
+                });
+            });
+        }
+
+        function handleDragOver(e) {
             e.preventDefault();
             uploadArea.classList.add('dragover');
-        });
+        }
 
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
-
-        uploadArea.addEventListener('drop', (e) => {
+        function handleDragLeave(e) {
             e.preventDefault();
             uploadArea.classList.remove('dragover');
-            const files = e.dataTransfer.files;
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files).filter(file => 
+                file.type === 'application/pdf');
             if (files.length > 0) {
-                handleFileSelect(files[0]);
-            }
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                handleFileSelect(e.target.files[0]);
-            }
-        });
-
-        function handleFileSelect(file) {
-            if (file.type === 'application/pdf') {
-                selectedFile = file;
-                uploadArea.innerHTML = `
-                    <h3>✅ File Selected</h3>
-                    <p><strong>${file.name}</strong></p>
-                    <p>Size: ${(file.size / 1024 / 1024).toFixed(2)} MB</p>
-                    <button class="upload-btn" onclick="processFile()">Process Document</button>
-                    <button class="upload-btn" onclick="resetUpload()">Choose Different File</button>
-                `;
+                selectedFiles = files;
+                displayFilePreview();
             } else {
-                alert('Please select a PDF file.');
+                showError('Please select only PDF files.');
             }
         }
 
-        function resetUpload() {
-            selectedFile = null;
-            location.reload();
+        function handleFileSelect(e) {
+            const files = Array.from(e.target.files).filter(file => 
+                file.type === 'application/pdf');
+            if (files.length > 0) {
+                selectedFiles = files;
+                displayFilePreview();
+            } else {
+                showError('Please select only PDF files.');
+            }
         }
 
-        async function processFile() {
-            if (!selectedFile) {
-                alert('Please select a PDF file first.');
+        function displayFilePreview() {
+            let html = '';
+            selectedFiles.forEach((file, index) => {
+                html += `
+                    <div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 8px;">
+                        <strong>${file.name}</strong><br>
+                        <small>Size: ${(file.size / 1024 / 1024).toFixed(2)} MB | 
+                        Type: PDF Document</small>
+                    </div>
+                `;
+            });
+            fileDetails.innerHTML = html;
+            filePreview.style.display = 'block';
+        }
+
+        async function processFiles() {
+            if (selectedFiles.length === 0) {
+                showError('Please select files to process.');
                 return;
             }
 
-            loading.style.display = 'block';
-            result.style.display = 'none';
+            showLoading();
+            
+            for (let i = 0; i < selectedFiles.length; i++) {
+                const file = selectedFiles[i];
+                await processFile(file, i + 1, selectedFiles.length);
+            }
+        }
 
+        async function processFile(file, current, total) {
             const formData = new FormData();
-            formData.append('file', selectedFile);
+            formData.append('file', file);
+            formData.append('method', selectedMethod);
 
             try {
-                const response = await fetch('/upload', {
+                updateProgress((current - 1) / total * 100);
+                
+                const response = await fetch('/api/process', {
                     method: 'POST',
                     body: formData
                 });
 
-                const data = await response.json();
-                loading.style.display = 'none';
-                
+                const result = await response.json();
+                updateProgress(current / total * 100);
+
                 if (response.ok) {
-                    showResult(data, 'success');
+                    showResults(result, file.name);
                 } else {
-                    showResult(data, 'error');
+                    showError(`Error processing ${file.name}: ${result.error}`);
                 }
             } catch (error) {
-                loading.style.display = 'none';
-                showResult({error: 'Upload failed. Please try again.'}, 'error');
+                showError(`Network error processing ${file.name}: ${error.message}`);
             }
         }
 
-        function showResult(data, type) {
-            result.className = `result ${type}`;
-            
-            if (type === 'success') {
-                resultContent.innerHTML = `
-                    <h4>✅ Processing Complete!</h4>
-                    <p><strong>File:</strong> ${data.filename}</p>
-                    <p><strong>Status:</strong> ${data.message}</p>
-                    <p><strong>CareTend Format:</strong> ${data.caretend_format}</p>
-                    <button class="upload-btn" onclick="resetUpload()">Process Another Document</button>
-                `;
-            } else {
-                resultContent.innerHTML = `
-                    <h4>❌ Processing Failed</h4>
-                    <p><strong>Error:</strong> ${data.error}</p>
-                    <button class="upload-btn" onclick="resetUpload()">Try Again</button>
-                `;
+        function showLoading() {
+            loading.style.display = 'block';
+            results.classList.remove('show');
+            updateProgress(0);
+        }
+
+        function hideLoading() {
+            loading.style.display = 'none';
+        }
+
+        function updateProgress(percent) {
+            progressFill.style.width = percent + '%';
+        }
+
+        function showResults(data, filename) {
+            hideLoading();
+            const html = `
+                <div class="success-message">
+                    <h4>✅ Successfully processed: ${filename}</h4>
+                    <p><strong>Method used:</strong> ${data.method_used}</p>
+                    <p><strong>Pages processed:</strong> ${data.pages_processed || 'N/A'}</p>
+                    <p><strong>Medications found:</strong> ${data.medications_count || 'N/A'}</p>
+                    ${data.caretend_output ? `
+                        <div style="margin-top: 20px;">
+                            <h4>📋 CareTend Format Output:</h4>
+                            <textarea readonly style="width: 100%; height: 200px; font-family: monospace; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">${data.caretend_output}</textarea>
+                        </div>
+                    ` : ''}
+                    ${data.download_url ? `
+                        <div style="margin-top: 20px;">
+                            <a href="${data.download_url}" class="btn" download>
+                                💾 Download Processed File
+                            </a>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            resultsContent.innerHTML = html;
+            results.classList.add('show');
+        }
+
+        function showError(message) {
+            hideLoading();
+            const html = `
+                <div class="error-message">
+                    <h4>❌ Processing Error</h4>
+                    <p>${message}</p>
+                    <button class="btn" onclick="resetUpload()">Try Again</button>
+                </div>
+            `;
+            resultsContent.innerHTML = html;
+            results.classList.add('show');
+        }
+
+        function resetUpload() {
+            selectedFiles = [];
+            filePreview.style.display = 'none';
+            results.classList.remove('show');
+            fileInput.value = '';
+        }
+
+        async function checkApiStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const status = await response.json();
+                console.log('API Status:', status);
+            } catch (error) {
+                console.warn('Could not check API status:', error);
             }
-            
-            result.style.display = 'block';
         }
     </script>
 </body>
