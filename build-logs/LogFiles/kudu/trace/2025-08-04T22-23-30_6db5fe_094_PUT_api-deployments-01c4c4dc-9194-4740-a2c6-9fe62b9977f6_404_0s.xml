@@ -1,0 +1,7 @@
+<step title="Incoming Request" date="2025-08-04T22:23:30.765" instance="6db5fe" url="/api/deployments/01c4c4dc-9194-4740-a2c6-9fe62b9977f6" method="PUT" type="request" pid="780,1,16" Accept="*/*" Host="pharmassist-enterprise.scm.azurewebsites.net" User-Agent="curl/8.14.1" Authorization="Bas..." Content-Length="0" X-ARR-LOG-ID="1644e0a1-e2d1-4ef6-a332-c655c0ceecdb" CLIENT-IP="167.248.114.72:54843" X-SITE-DEPLOYMENT-ID="pharmassist-enterprise" WAS-DEFAULT-HOSTNAME="pharmassist-enterprise.scm.azurewebsites.net" X-Forwarded-Proto="https" X-AppService-Proto="https" X-Forwarded-TlsVersion="1.3" X-WAWS-Unencoded-URL="/api/deployments/01c4c4dc-9194-4740-a2c6-9fe62b9977f6" X-Client-IP="167.248.114.72" X-Client-Port="54843" >
+  <step title="Cleanup Xml Logs" date="2025-08-04T22:23:30.768" >
+    <step title="Cleanup Infos" date="2025-08-04T22:23:30.780" totalFiles="217" totalCleanup="57" /><!-- duration: 3ms -->
+  </step><!-- duration: 17ms -->
+  <step title="DeploymentService.Deploy(id)" date="2025-08-04T22:23:30.861" /><!-- duration: 23ms -->
+  <step title="Outgoing response" date="2025-08-04T22:23:30.898" type="response" statusCode="404" statusText="NotFound" /><!-- duration: 8ms -->
+</step><!-- duration: 235ms -->

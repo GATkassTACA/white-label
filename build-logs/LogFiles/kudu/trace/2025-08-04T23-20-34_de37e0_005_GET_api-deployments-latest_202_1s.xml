@@ -1,0 +1,11 @@
+<step title="Incoming Request" date="2025-08-04T23:20:34.765" instance="de37e0" url="/api/deployments/latest" method="GET" type="request" pid="768,1,19" Accept="*/*" Host="pharmassist-enterprise.scm.azurewebsites.net" User-Agent="AZURECLI/2.75.0 (MSI)" Accept-Encoding="gzip, deflate" Authorization="Bas..." x-ms-client-request-id="96ca65fb-7189-11f0-a9e7-9c67d682987a" X-ARR-LOG-ID="96ca65fb-7189-11f0-a9e7-9c67d682987a" CLIENT-IP="167.248.114.72:60389" X-SITE-DEPLOYMENT-ID="pharmassist-enterprise" WAS-DEFAULT-HOSTNAME="pharmassist-enterprise.scm.azurewebsites.net" X-Forwarded-Proto="https" X-AppService-Proto="https" X-Forwarded-TlsVersion="1.3" X-WAWS-Unencoded-URL="/api/deployments/latest" X-Client-IP="167.248.114.72" X-Client-Port="60389" >
+  <step title="Cleanup Xml Logs" date="2025-08-04T23:20:34.772" >
+    <step title="Cleanup Infos" date="2025-08-04T23:20:34.795" totalFiles="299" totalCleanup="139" /><!-- duration: 3ms -->
+  </step><!-- duration: 27ms -->
+  <step title="DeploymentService.GetResult" date="2025-08-04T23:20:34.821" >
+    <step title="DeploymentService.GetLatestDeployment" date="2025-08-04T23:20:34.823" >
+      <step title="DeploymentManager.GetResults" date="2025-08-04T23:20:34.825" /><!-- duration: 500ms -->
+    </step><!-- duration: 507ms -->
+  </step><!-- duration: 511ms -->
+  <step title="Outgoing response" date="2025-08-04T23:20:35.334" type="response" statusCode="202" statusText="Accepted" /><!-- duration: 8ms -->
+</step><!-- duration: 580ms -->

@@ -1,0 +1,71 @@
+2025-08-04T18:06:33  Fetching changes.
+2025-08-04T18:06:33    Starting  LocalZipHandler
+2025-08-04T18:06:33    Cleaning up temp folders from previous zip deployments and extracting pushed zip file /tmp/zipdeploy/b951ee1b-ad6f-493c-b3ad-836894b99784.zip (0.02 MB) to /tmp/zipdeploy/extracted
+2025-08-04T18:06:37  Updating submodules.
+2025-08-04T18:06:37  Preparing deployment for commit id 'd8e551ce-4'.
+2025-08-04T18:06:37  PreDeployment: context.CleanOutputPath False
+2025-08-04T18:06:37  PreDeployment: context.OutputPath /home/site/wwwroot
+2025-08-04T18:06:38  Repository path is /tmp/zipdeploy/extracted
+2025-08-04T18:06:38  Running oryx build...
+2025-08-04T18:06:38    Command: oryx build /tmp/zipdeploy/extracted -o /home/site/wwwroot --platform python --platform-version 3.11 -p virtualenv_name=antenv --log-file /tmp/build-debug.log  -i /tmp/8ddd381a7cbd015 --compress-destination-dir | tee /tmp/oryx-build.log
+2025-08-04T18:06:43    Operation performed by Microsoft Oryx, https://github.com/Microsoft/Oryx
+2025-08-04T18:06:43    You can report issues at https://github.com/Microsoft/Oryx/issues
+2025-08-04T18:06:43    
+2025-08-04T18:06:43    Oryx Version: 0.2.20250611.1+0649de32f1279969c9023dd41b389cce4bb94493, Commit: 0649de32f1279969c9023dd41b389cce4bb94493, ReleaseTagName: 20250611.1
+2025-08-04T18:06:43    
+2025-08-04T18:06:43    Build Operation ID: 71e2ec41777b874b
+2025-08-04T18:06:43    Repository Commit : d8e551ce-4c50-4b32-ae1a-a9ac8a999df4
+2025-08-04T18:06:43    OS Type           : bullseye
+2025-08-04T18:06:43    Image Type        : githubactions
+2025-08-04T18:06:43    
+2025-08-04T18:06:43    Primary SDK Storage URL: https://oryx-cdn.microsoft.io
+2025-08-04T18:06:43    Backup SDK Storage URL: https://oryxsdks-cdn.azureedge.net
+2025-08-04T18:06:44    Detecting platforms...
+2025-08-04T18:06:44    External SDK provider is enabled.
+2025-08-04T18:06:44    Requesting metadata for platform python from external SDK provider
+2025-08-04T18:06:45    Requesting metadata for platform python from external SDK provider
+2025-08-04T18:06:45    Detected following platforms:
+2025-08-04T18:06:45      python: 3.11.13
+2025-08-04T18:06:46    
+2025-08-04T18:06:46    Using intermediate directory '/tmp/8ddd381a7cbd015'.
+2025-08-04T18:06:46    
+2025-08-04T18:06:46    Copying files to the intermediate directory...
+2025-08-04T18:06:46    Done in 0 sec(s).
+2025-08-04T18:06:46    
+2025-08-04T18:06:47    Source directory     : /tmp/8ddd381a7cbd015
+2025-08-04T18:06:47    Destination directory: /home/site/wwwroot
+2025-08-04T18:06:47    
+2025-08-04T18:06:48    Python Version: /tmp/oryx/platforms/python/3.11.13/bin/python3.11
+2025-08-04T18:06:48    Creating directory for command manifest file if it does not exist
+2025-08-04T18:06:48    Removing existing manifest file
+2025-08-04T18:06:48    Python Virtual Environment: antenv
+2025-08-04T18:06:49    Creating virtual environment...
+2025-08-04T18:08:07    Activating virtual environment...
+2025-08-04T18:08:08    Could not find setup.py or requirements.txt; Not running pip install. More information: https://aka.ms/requirements-not-found
+2025-08-04T18:08:08    Not a vso image, so not writing build commands
+2025-08-04T18:08:08    Preparing output...
+2025-08-04T18:08:09    
+2025-08-04T18:08:09    Copying files to destination directory '/tmp/_preCompressedDestinationDir'...
+2025-08-04T18:08:15    Done in 6 sec(s).
+2025-08-04T18:08:15    Compressing content of directory '/tmp/_preCompressedDestinationDir'...
+2025-08-04T18:08:29    Copied the compressed output to '/home/site/wwwroot'
+2025-08-04T18:08:29    
+2025-08-04T18:08:29    Removing existing manifest file
+2025-08-04T18:08:29    Creating a manifest file...
+2025-08-04T18:08:29    Manifest file created.
+2025-08-04T18:08:29    Copying .ostype to manifest output directory.
+2025-08-04T18:08:29    
+2025-08-04T18:08:29    Done in 103 sec(s).
+2025-08-04T18:08:30  Running post deployment command(s)...
+2025-08-04T18:08:30  
+2025-08-04T18:08:30  Generating summary of Oryx build
+2025-08-04T18:08:30  Parsing the build logs
+2025-08-04T18:08:30  Found 0 issue(s)
+2025-08-04T18:08:30  
+2025-08-04T18:08:31  Build Summary :
+2025-08-04T18:08:31  ===============
+2025-08-04T18:08:31  Errors (0)
+2025-08-04T18:08:31  Warnings (0)
+2025-08-04T18:08:31  
+2025-08-04T18:08:32  Triggering container recycle for OneDeploy by adding/updating restartTrigger.txt to the site root path
+2025-08-04T18:08:32  Deployment successful. deployer = OneDeploy deploymentPath = OneDeploy

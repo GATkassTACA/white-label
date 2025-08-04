@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<deployment>
+  <id>f8235d4e-6e21-42d7-9ebf-aac149f4211d</id>
+  <author>N/A</author>
+  <deployer>Push-Deployer</deployer>
+  <authorEmail>N/A</authorEmail>
+  <message>Created via a push deployment</message>
+  <progress></progress>
+  <status>Failed</status>
+  <statusText></statusText>
+  <lastSuccessEndTime />
+  <receivedTime>2025-08-04T23:26:45.5754959Z</receivedTime>
+  <startTime>2025-08-04T23:26:47.3957688Z</startTime>
+  <endTime>2025-08-04T23:26:55.2345831Z</endTime>
+  <complete>True</complete>
+  <is_temp>False</is_temp>
+  <is_readonly>True</is_readonly>
+  <buildSummary>
+    <error>
+      <message>[23:26:52+0000] Collecting Flask==3.1.1 (from -r requirements.txt (line 1))
+[23:26:52+0000]   Downloading flask-3.1.1-py3-none-any.whl.metadata (3.0 kB)
+[23:26:52+0000] Collecting gunicorn==23.0.0 (from -r requirements.txt (line 2))
+[23:26:52+0000]   Downloading gunicorn-23.0.0-py3-none-any.whl.metadata (4.4 kB)
+[23:26:52+0000] Collecting psycopg2-binary==2.9.9 (from -r requirements.txt (line 3))
+[23:26:52+0000]   Downloading psycopg2_binary-2.9.9-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.4 kB)
+[23:26:52+0000] Collecting python-dotenv==1.0.0 (from -r requirements.txt (line 4))
+[23:26:52+0000]   Downloading python_dotenv-1.0.0-py3-none-any.whl.metadata (21 kB)
+[23:26:52+0000] Collecting PyPDF2==3.0.1 (from -r requirements.txt (line 5))
+[23:26:52+0000]   Downloading pypdf2-3.0.1-py3-none-any.whl.metadata (6.8 kB)
+[23:26:52+0000] Collecting Werkzeug==3.1.3 (from -r requirements.txt (line 6))
+[23:26:52+0000]   Using cached werkzeug-3.1.3-py3-none-any.whl.metadata (3.7 kB)
+[23:26:53+0000] Collecting itsdangerous==2.1.2 (from -r requirements.txt (line 7))
+[23:26:53+0000]   Downloading itsdangerous-2.1.2-py3-none-any.whl.metadata (2.9 kB)
+[23:26:53+0000] Collecting click==8.1.3 (from -r requirements.txt (line 8))
+[23:26:53+0000]   Downloading click-8.1.3-py3-none-any.whl.metadata (3.2 kB)
+[23:26:53+0000] Collecting Jinja2==3.1.4 (from -r requirements.txt (line 9))
+[23:26:53+0000]   Downloading jinja2-3.1.4-py3-none-any.whl.metadata (2.6 kB)
+[23:26:53+0000] Collecting MarkupSafe==2.1.3 (from -r requirements.txt (line 10))
+[23:26:53+0000]   Downloading MarkupSafe-2.1.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (3.0 kB)
+[23:26:53+0000] Collecting blinker==1.6.2 (from -r requirements.txt (line 11))
+[23:26:53+0000]   Downloading blinker-1.6.2-py3-none-any.whl.metadata (2.0 kB)
+[23:26:53+0000] INFO: pip is looking at multiple versions of flask to determine which version is compatible with other requirements. This could take a while.
+ERROR: Cannot install -r requirements.txt (line 1) and blinker==1.6.2 because these package versions have conflicting dependencies.
+[23:26:53+0000] 
+[23:26:53+0000] The conflict is caused by:
+[23:26:53+0000]     The user requested blinker==1.6.2
+[23:26:53+0000]     flask 3.1.1 depends on blinker&gt;=1.9.0
+[23:26:53+0000] 
+[23:26:53+0000] To fix this you could try to:
+[23:26:53+0000]ERROR: ResolutionImpossible: for help visit https://pip.pypa.io/en/latest/topics/dependency-resolution/#dealing-with-dependency-conflicts
+ 1. loosen the range of package versions you've specified
+[23:26:53+0000] 2. remove package versions to allow pip attempt to solve the dependency conflict
+[23:26:53+0000] 
+
+[notice] A new release of pip is available: 24.0 -&gt; 25.2
+[notice] To update, run: pip install --upgrade pip </message>
+      <timestamp>2025-08-04 23:26:53</timestamp>
+      <exitCode>1</exitCode>
+      <recommendation>Please review your requirements.txt</recommendation>
+      <urlToGetMoreInformation>https://aka.ms/troubleshoot-python</urlToGetMoreInformation>
+    </error>
+  </buildSummary>
+</deployment>

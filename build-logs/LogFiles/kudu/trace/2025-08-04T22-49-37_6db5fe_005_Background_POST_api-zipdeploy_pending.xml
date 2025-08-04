@@ -1,0 +1,38 @@
+<step title="BackgroundTrace" date="2025-08-04T22:49:37.115" instance="6db5fe" url="/api/zipdeploy" method="POST" >
+  <step title="Creating temporary deployment - FetchDeploymentManager" date="2025-08-04T22:49:37.485" /><!-- duration: 31ms -->
+  <step title="Creating temporary deployment" date="2025-08-04T22:49:37.566" /><!-- duration: 184ms -->
+  <step title="Performing fetch based deployment" date="2025-08-04T22:49:37.940" >
+    <step title="Cleaning up temp folders from previous zip deployments and extracting pushed zip file /tmp/zipdeploy/f4f421f8-30d6-4fe2-9250-8fd5667a4298.zip (0.00 MB) to /tmp/zipdeploy/extracted" date="2025-08-04T22:49:39.352" >
+      <step title="ChmodRecursive Process exited with total time taken in ms: 284" date="2025-08-04T22:49:39.827" /><!-- duration: 10ms -->
+    </step><!-- duration: 503ms -->
+    <step title="Deployment timer started" date="2025-08-04T22:49:41.922" >
+      <step title="DeploymentManager.Deploy(id:9d73ca4b-dda8-462d-864e-b367b8fe69f3)" date="2025-08-04T22:49:41.939" >
+        <step title="Collecting changeset information" date="2025-08-04T22:49:42.013" /><!-- duration: 111ms -->
+        <step title="Updating submodules" date="2025-08-04T22:49:42.132" /><!-- duration: 1138ms -->
+        <step title="Determining deployment builder" date="2025-08-04T22:49:43.535" >
+          <step title="Builder is OryxBuilder" date="2025-08-04T22:49:43.603" /><!-- duration: 10ms -->
+        </step><!-- duration: 99ms -->
+        <step title="PreDeployment: context.CleanOutputPath False" date="2025-08-04T22:49:43.985" >
+          <step title="PreDeployment: context.OutputPath /home/site/wwwroot" date="2025-08-04T22:49:44.115" >
+            <step title="Building" date="2025-08-04T22:49:44.278" >
+              <step title="Executing external process" date="2025-08-04T22:49:44.747" type="process" path="bash" arguments="-c &quot;oryx build /tmp/zipdeploy/extracted -o /home/site/wwwroot --platform python --platform-version 3.11 -p virtualenv_name=antenv --log-file /tmp/build-debug.log  -i /tmp/8ddd3a93449e42e --compress-destination-dir | tee /tmp/oryx-build.log ; exit $PIPESTATUS &quot;" >
+                <step title="Cpu: gzip(891,15.260s)+tar(890,4.880s)+build.sh(879,0.010s)+oryx(856,8.890s)+tee(857,0.010s)+bash(855,0.010s)=total(29.030s)" date="2025-08-04T22:51:00.442" /><!-- duration: 19ms -->
+                <step title="bash: no io activity for 61s, prev-cpu=-1.000s, current-cpu=29.030s" date="2025-08-04T22:51:00.491" /><!-- duration: 63ms -->
+              </step><!-- duration: 137795ms -->
+              <step title="Using PythonDeploymentLogParser" date="2025-08-04T22:52:03.840" /><!-- duration: 50ms -->
+              <step title="Triggering recycle (preview mode disabled)." date="2025-08-04T22:52:07.106" /><!-- duration: 40ms -->
+              <step title="Modified file to trigger a restart of the app container." date="2025-08-04T22:52:07.277" /><!-- duration: 9ms -->
+              <step title="Skip function trigger and logicapp sync because function is not enabled." date="2025-08-04T22:52:07.389" /><!-- duration: 10ms -->
+              <step title="Purge deployment items" date="2025-08-04T22:52:09.398" >
+                <step title="Remove 31581c3c-, Success, received at 08/04/2025 21:26:24" date="2025-08-04T22:52:09.491" /><!-- duration: 10ms -->
+              </step><!-- duration: 119ms -->
+            </step><!-- duration: 145373ms -->
+          </step><!-- duration: 145545ms -->
+          <step title="Cleaning up temp files" date="2025-08-04T22:52:09.671" /><!-- duration: 6733ms -->
+          <step title="Cleaning up temp files" date="2025-08-04T22:52:16.598" /><!-- duration: 703ms -->
+          <step title="Reloading status file with latest updates" date="2025-08-04T22:52:17.651" >
+            <step title="WebHooksManager.PublishEventAsync: PostDeployment" date="2025-08-04T22:52:17.862" /><!-- duration: 2121ms -->
+          </step><!-- duration: 2355ms -->
+          <step title="Cleaning up temporary deployment - fetch deployment was successful" date="2025-08-04T22:52:20.056" /><!-- duration: 17ms -->
+        </step><!-- duration: 156259ms -->
+      </step><!-- duration: 158388ms -->

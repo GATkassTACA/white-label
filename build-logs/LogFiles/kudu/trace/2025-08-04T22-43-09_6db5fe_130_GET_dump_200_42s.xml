@@ -1,0 +1,6 @@
+<step title="Incoming Request" date="2025-08-04T22:43:09.249" instance="6db5fe" url="/dump" method="GET" type="request" pid="780,1,32" Host="pharmassist-enterprise.scm.azurewebsites.net" User-Agent="AZURECLI/2.75.0 (MSI)" Accept-Encoding="identity" Authorization="Bas..." x-ms-client-request-id="624aac57-7184-11f0-9159-9c67d682987a" X-ARR-LOG-ID="624aac57-7184-11f0-9159-9c67d682987a" CLIENT-IP="167.248.114.72:55626" X-SITE-DEPLOYMENT-ID="pharmassist-enterprise" WAS-DEFAULT-HOSTNAME="pharmassist-enterprise.scm.azurewebsites.net" X-Forwarded-Proto="https" X-AppService-Proto="https" X-Forwarded-TlsVersion="1.3" X-WAWS-Unencoded-URL="/dump" X-Client-IP="167.248.114.72" X-Client-Port="55626" >
+  <step title="Cleanup Xml Logs" date="2025-08-04T22:43:09.359" >
+    <step title="Cleanup Infos" date="2025-08-04T22:43:09.771" totalFiles="251" totalCleanup="91" /><!-- duration: 313ms -->
+  </step><!-- duration: 1049ms -->
+  <step title="Outgoing response" date="2025-08-04T22:43:51.197" type="response" statusCode="200" statusText="OK" /><!-- duration: 91ms -->
+</step><!-- duration: 42111ms -->
