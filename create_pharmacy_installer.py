@@ -36,7 +36,7 @@ werkzeug>=2.3.0
 python-dotenv>=1.0.0
 """
     
-    with open(installer_dir / "app" / "requirements.txt", "w") as f:
+    with open(installer_dir / "app" / "requirements.txt", "w", encoding="utf-8") as f:
         f.write(requirements)
     
     # Create Windows installer script
@@ -135,7 +135,7 @@ echo.
 pause
 """
     
-    with open(installer_dir / "install_windows.bat", "w") as f:
+    with open(installer_dir / "install_windows.bat", "w", encoding="utf-8") as f:
         f.write(windows_installer)
     
     # Create pharmacy configuration template
