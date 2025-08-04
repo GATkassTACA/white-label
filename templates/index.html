@@ -561,6 +561,7 @@
 
         async function downloadFile(content, filename) {
             try {
+                // Method 1: Try the API download (preferred)
                 const response = await fetch('/api/download', {
                     method: 'POST',
                     headers: {
@@ -574,22 +575,35 @@
 
                 if (response.ok) {
                     const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.style.display = 'none';
-                    a.href = url;
-                    a.download = filename;
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
+                    downloadBlob(blob, filename);
                 } else {
-                    alert('Download failed. Please try again.');
+                    // Method 2: Fallback to client-side download
+                    console.warn('API download failed, using fallback method');
+                    downloadTextAsFallback(content, filename);
                 }
             } catch (error) {
                 console.error('Download error:', error);
-                alert('Download failed. Please try again.');
+                // Method 2: Fallback to client-side download
+                downloadTextAsFallback(content, filename);
             }
+        }
+
+        function downloadBlob(blob, filename) {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        function downloadTextAsFallback(content, filename) {
+            // Create blob directly from content
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            downloadBlob(blob, filename);
         }
 
         async function checkApiStatus() {
