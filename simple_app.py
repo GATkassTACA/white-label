@@ -30,6 +30,10 @@ def health():
         "all_env": dict(os.environ)
     })
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static', 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
 # This is the WSGI application object that Gunicorn will use
 application = app
 
