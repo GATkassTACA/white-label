@@ -50,6 +50,41 @@
             margin-bottom: 40px;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .user-info {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .user-info .username {
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .header h1 {
@@ -271,6 +306,12 @@
 <body>
     <div class="container">
         <div class="header">
+            {% if user %}
+            <div class="user-info">
+                <span class="username">👤 {{ user }}</span>
+                <a href="/logout" class="logout-btn">Logout</a>
+            </div>
+            {% endif %}
             <h1>🏥 PharmAssist</h1>
             <p>Professional Pharmacy PDF Processing & CareTend Conversion System</p>
         </div>
