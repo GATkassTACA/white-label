@@ -1,0 +1,15 @@
+<step title="Incoming Request" date="2025-08-04T21:35:37.031" instance="6db5fe" url="/api/zipdeploy?isAsync=true" method="POST" type="request" pid="776,1,51" Accept="*/*" Host="pharmassist-enterprise.scm.azurewebsites.net" User-Agent="AZURECLI/2.75.0 (MSI)" Accept-Encoding="gzip, deflate" Authorization="Bas..." Cache-Control="no-cache" Content-Type="application/octet-stream" Cookie="ARRAffinity=6db5fe3709d4444b9c04907ca05f920ef31de709c6d20b04e0a56f99d39a3800; ARRAffinitySameSite=6db5fe3709d4444b9c04907ca05f920ef31de709c6d20b04e0a56f99d39a3800" Content-Length="54602" x-ms-client-request-id="f10bffa8-717a-11f0-bc76-9c67d682987a" x-ms-artifact-checksum="b220b300ffbf0c1963e92199bb3233a8a2b4dfb45714df556174f35e3a18a144" X-ARR-LOG-ID="f10bffa8-717a-11f0-bc76-9c67d682987a" CLIENT-IP="167.248.114.72:52365" X-SITE-DEPLOYMENT-ID="pharmassist-enterprise" WAS-DEFAULT-HOSTNAME="pharmassist-enterprise.scm.azurewebsites.net" X-Forwarded-Proto="https" X-AppService-Proto="https" X-Forwarded-TlsVersion="1.3" X-WAWS-Unencoded-URL="/api/zipdeploy?isAsync=true" X-Client-IP="167.248.114.72" X-Client-Port="52365" >
+  <step title="ZipPushDeploy" date="2025-08-04T21:35:37.053" >
+    <step title="ZipDeploy. Extract zip. Remote build." date="2025-08-04T21:35:37.062" /><!-- duration: 2ms -->
+    <step title="Starting PushDeployAsync" date="2025-08-04T21:35:37.070" /><!-- duration: 3ms -->
+    <step title="Writing artifact to /tmp/zipdeploy/7d825e26-2b91-4558-bd95-76f9c01a2d10.zip" date="2025-08-04T21:35:37.102" >
+      <step title="Writing multipart request body to /tmp/zipdeploy/7d825e26-2b91-4558-bd95-76f9c01a2d10.zip" date="2025-08-04T21:35:37.104" /><!-- duration: 49ms -->
+    </step><!-- duration: 154ms -->
+    <step title="Removing previous build artifact&apos;s manifest file" date="2025-08-04T21:35:37.270" >
+      <step title="Start deployment in the background" date="2025-08-04T21:35:37.298" >
+        <step title="Acquiring Deployment Lock" date="2025-08-04T21:35:37.332" /><!-- duration: 3ms -->
+        <step title="Acquired Deployment Lock" date="2025-08-04T21:35:37.374" /><!-- duration: 3ms -->
+      </step><!-- duration: 198ms -->
+    </step><!-- duration: 232ms -->
+    <step title="Outgoing response" date="2025-08-04T21:35:37.506" type="response" statusCode="202" statusText="Accepted" /><!-- duration: 3ms -->
+  </step><!-- duration: 459ms -->

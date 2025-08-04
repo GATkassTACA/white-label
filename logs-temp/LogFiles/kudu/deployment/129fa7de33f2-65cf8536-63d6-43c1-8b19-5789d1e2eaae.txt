@@ -1,0 +1,130 @@
+2025-08-04T19:27:01  Fetching changes.
+2025-08-04T19:27:01    Starting  LocalZipHandler
+2025-08-04T19:27:01    Cleaning up temp folders from previous zip deployments and extracting pushed zip file /tmp/zipdeploy/b2e5baa1-2875-49ff-9acd-cd354e9e1dd2.zip (0.04 MB) to /tmp/zipdeploy/extracted
+2025-08-04T19:27:05  Updating submodules.
+2025-08-04T19:27:06  Preparing deployment for commit id '6125f597-d'.
+2025-08-04T19:27:06  PreDeployment: context.CleanOutputPath False
+2025-08-04T19:27:06  PreDeployment: context.OutputPath /home/site/wwwroot
+2025-08-04T19:27:07  Repository path is /tmp/zipdeploy/extracted
+2025-08-04T19:27:07  Running oryx build...
+2025-08-04T19:27:07    Command: oryx build /tmp/zipdeploy/extracted -o /home/site/wwwroot --platform python --platform-version 3.11 -p virtualenv_name=antenv --log-file /tmp/build-debug.log  -i /tmp/8ddd38ce60747de --compress-destination-dir | tee /tmp/oryx-build.log
+2025-08-04T19:27:13    Operation performed by Microsoft Oryx, https://github.com/Microsoft/Oryx
+2025-08-04T19:27:13    You can report issues at https://github.com/Microsoft/Oryx/issues
+2025-08-04T19:27:13    
+2025-08-04T19:27:13    Oryx Version: 0.2.20250611.1+0649de32f1279969c9023dd41b389cce4bb94493, Commit: 0649de32f1279969c9023dd41b389cce4bb94493, ReleaseTagName: 20250611.1
+2025-08-04T19:27:13    
+2025-08-04T19:27:13    Build Operation ID: 6b22bd7501f6827d
+2025-08-04T19:27:13    Repository Commit : 6125f597-df55-4ede-8e3c-459f34bc88f0
+2025-08-04T19:27:14    OS Type           : bullseye
+2025-08-04T19:27:14    Image Type        : githubactions
+2025-08-04T19:27:14    
+2025-08-04T19:27:14    Primary SDK Storage URL: https://oryx-cdn.microsoft.io
+2025-08-04T19:27:14    Backup SDK Storage URL: https://oryxsdks-cdn.azureedge.net
+2025-08-04T19:27:14    Detecting platforms...
+2025-08-04T19:27:14    External SDK provider is enabled.
+2025-08-04T19:27:14    Requesting metadata for platform python from external SDK provider
+2025-08-04T19:27:15    Requesting metadata for platform python from external SDK provider
+2025-08-04T19:27:16    Detected following platforms:
+2025-08-04T19:27:16      python: 3.11.13
+2025-08-04T19:27:19    
+2025-08-04T19:27:19    Using intermediate directory '/tmp/8ddd38ce60747de'.
+2025-08-04T19:27:19    
+2025-08-04T19:27:19    Copying files to the intermediate directory...
+2025-08-04T19:27:19    Done in 0 sec(s).
+2025-08-04T19:27:20    
+2025-08-04T19:27:20    Source directory     : /tmp/8ddd38ce60747de
+2025-08-04T19:27:20    Destination directory: /home/site/wwwroot
+2025-08-04T19:27:20    
+2025-08-04T19:27:22    Python Version: /tmp/oryx/platforms/python/3.11.13/bin/python3.11
+2025-08-04T19:27:22    Creating directory for command manifest file if it does not exist
+2025-08-04T19:27:22    Removing existing manifest file
+2025-08-04T19:27:22    Python Virtual Environment: antenv
+2025-08-04T19:27:22    Creating virtual environment...
+2025-08-04T19:28:21    Activating virtual environment...
+2025-08-04T19:28:21    Running pip install...
+2025-08-04T19:28:56    [19:28:25+0000] Collecting Flask==2.3.3 (from -r requirements.txt (line 2))
+2025-08-04T19:28:56    [19:28:25+0000]   Using cached flask-2.3.3-py3-none-any.whl.metadata (3.6 kB)
+2025-08-04T19:28:56    [19:28:25+0000] Collecting gunicorn==21.2.0 (from -r requirements.txt (line 3))
+2025-08-04T19:28:56    [19:28:25+0000]   Using cached gunicorn-21.2.0-py3-none-any.whl.metadata (4.1 kB)
+2025-08-04T19:28:56    [19:28:25+0000] Collecting PyPDF2==3.0.1 (from -r requirements.txt (line 6))
+2025-08-04T19:28:57    [19:28:25+0000]   Using cached pypdf2-3.0.1-py3-none-any.whl.metadata (6.8 kB)
+2025-08-04T19:28:57    [19:28:25+0000] Collecting pdfplumber==0.9.0 (from -r requirements.txt (line 7))
+2025-08-04T19:28:57    [19:28:25+0000]   Using cached pdfplumber-0.9.0-py3-none-any.whl.metadata (35 kB)
+2025-08-04T19:28:57    [19:28:26+0000] Collecting Werkzeug>=2.3.7 (from Flask==2.3.3->-r requirements.txt (line 2))
+2025-08-04T19:28:57    [19:28:26+0000]   Using cached werkzeug-3.1.3-py3-none-any.whl.metadata (3.7 kB)
+2025-08-04T19:28:57    [19:28:26+0000] Collecting Jinja2>=3.1.2 (from Flask==2.3.3->-r requirements.txt (line 2))
+2025-08-04T19:28:57    [19:28:26+0000]   Using cached jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+2025-08-04T19:28:57    [19:28:26+0000] Collecting itsdangerous>=2.1.2 (from Flask==2.3.3->-r requirements.txt (line 2))
+2025-08-04T19:28:57    [19:28:26+0000]   Using cached itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+2025-08-04T19:28:57    [19:28:26+0000] Collecting click>=8.1.3 (from Flask==2.3.3->-r requirements.txt (line 2))
+2025-08-04T19:28:57    [19:28:26+0000]   Using cached click-8.2.1-py3-none-any.whl.metadata (2.5 kB)
+2025-08-04T19:28:57    [19:28:27+0000] Collecting blinker>=1.6.2 (from Flask==2.3.3->-r requirements.txt (line 2))
+2025-08-04T19:28:57    [19:28:27+0000]   Using cached blinker-1.9.0-py3-none-any.whl.metadata (1.6 kB)
+2025-08-04T19:28:57    [19:28:27+0000] Collecting packaging (from gunicorn==21.2.0->-r requirements.txt (line 3))
+2025-08-04T19:28:58    [19:28:27+0000]   Using cached packaging-25.0-py3-none-any.whl.metadata (3.3 kB)
+2025-08-04T19:28:58    [19:28:27+0000] Collecting pdfminer.six==20221105 (from pdfplumber==0.9.0->-r requirements.txt (line 7))
+2025-08-04T19:28:58    [19:28:27+0000]   Using cached pdfminer.six-20221105-py3-none-any.whl.metadata (4.0 kB)
+2025-08-04T19:28:58    [19:28:29+0000] Collecting Pillow>=9.1 (from pdfplumber==0.9.0->-r requirements.txt (line 7))
+2025-08-04T19:28:58    [19:28:29+0000]   Using cached pillow-11.3.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.0 kB)
+2025-08-04T19:28:58    [19:28:29+0000] Collecting Wand>=0.6.10 (from pdfplumber==0.9.0->-r requirements.txt (line 7))
+2025-08-04T19:28:58    [19:28:29+0000]   Using cached Wand-0.6.13-py2.py3-none-any.whl.metadata (4.0 kB)
+2025-08-04T19:28:58    [19:28:31+0000] Collecting charset-normalizer>=2.0.0 (from pdfminer.six==20221105->pdfplumber==0.9.0->-r requirements.txt (line 7))
+2025-08-04T19:28:58    [19:28:31+0000]   Using cached charset_normalizer-3.4.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (35 kB)
+2025-08-04T19:28:58    [19:28:33+0000] Collecting cryptography>=36.0.0 (from pdfminer.six==20221105->pdfplumber==0.9.0->-r requirements.txt (line 7))
+2025-08-04T19:28:58    [19:28:33+0000]   Using cached cryptography-45.0.5-cp311-abi3-manylinux_2_28_x86_64.whl.metadata (5.7 kB)
+2025-08-04T19:28:59    [19:28:34+0000] Collecting MarkupSafe>=2.0 (from Jinja2>=3.1.2->Flask==2.3.3->-r requirements.txt (line 2))
+2025-08-04T19:28:59    [19:28:34+0000]   Using cached MarkupSafe-3.0.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.0 kB)
+2025-08-04T19:28:59    [19:28:35+0000] Collecting cffi>=1.14 (from cryptography>=36.0.0->pdfminer.six==20221105->pdfplumber==0.9.0->-r requirements.txt (line 7))
+2025-08-04T19:28:59    [19:28:35+0000]   Using cached cffi-1.17.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (1.5 kB)
+2025-08-04T19:28:59    [19:28:35+0000] Collecting pycparser (from cffi>=1.14->cryptography>=36.0.0->pdfminer.six==20221105->pdfplumber==0.9.0->-r requirements.txt (line 7))
+2025-08-04T19:28:59    [19:28:35+0000]   Using cached pycparser-2.22-py3-none-any.whl.metadata (943 bytes)
+2025-08-04T19:28:59    [19:28:35+0000] Using cached flask-2.3.3-py3-none-any.whl (96 kB)
+2025-08-04T19:28:59    [19:28:35+0000] Using cached gunicorn-21.2.0-py3-none-any.whl (80 kB)
+2025-08-04T19:29:00    [19:28:35+0000] Using cached pypdf2-3.0.1-py3-none-any.whl (232 kB)
+2025-08-04T19:29:00    [19:28:35+0000] Using cached pdfplumber-0.9.0-py3-none-any.whl (46 kB)
+2025-08-04T19:29:00    [19:28:35+0000] Using cached pdfminer.six-20221105-py3-none-any.whl (5.6 MB)
+2025-08-04T19:29:00    [19:28:35+0000] Using cached blinker-1.9.0-py3-none-any.whl (8.5 kB)
+2025-08-04T19:29:00    [19:28:35+0000] Using cached click-8.2.1-py3-none-any.whl (102 kB)
+2025-08-04T19:29:00    [19:28:35+0000] Using cached itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+2025-08-04T19:29:00    [19:28:35+0000] Using cached jinja2-3.1.6-py3-none-any.whl (134 kB)
+2025-08-04T19:29:00    [19:28:35+0000] Using cached pillow-11.3.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (6.6 MB)
+2025-08-04T19:29:01    [19:28:36+0000] Using cached Wand-0.6.13-py2.py3-none-any.whl (143 kB)
+2025-08-04T19:29:01    [19:28:36+0000] Using cached werkzeug-3.1.3-py3-none-any.whl (224 kB)
+2025-08-04T19:29:01    [19:28:36+0000] Using cached packaging-25.0-py3-none-any.whl (66 kB)
+2025-08-04T19:29:01    [19:28:36+0000] Using cached charset_normalizer-3.4.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (147 kB)
+2025-08-04T19:29:01    [19:28:36+0000] Using cached cryptography-45.0.5-cp311-abi3-manylinux_2_28_x86_64.whl (4.5 MB)
+2025-08-04T19:29:01    [19:28:36+0000] Using cached MarkupSafe-3.0.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (23 kB)
+2025-08-04T19:29:01    [19:28:36+0000] Using cached cffi-1.17.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (467 kB)
+2025-08-04T19:29:01    [19:28:36+0000] Using cached pycparser-2.22-py3-none-any.whl (117 kB)
+2025-08-04T19:29:01    [19:28:38+0000] Installing collected packages: Wand, PyPDF2, pycparser, Pillow, packaging, MarkupSafe, itsdangerous, click, charset-normalizer, blinker, Werkzeug, Jinja2, gunicorn, cffi, Flask, cryptography, pdfminer.six, pdfplumber
+2025-08-04T19:29:02    [19:28:54+0000] Successfully installed Flask-2.3.3 Jinja2-3.1.6 MarkupSafe-3.0.2 Pillow-11.3.0 PyPDF2-3.0.1 Wand-0.6.13 Werkzeug-3.1.3 blinker-1.9.0 cffi-1.17.1 charset-normalizer-3.4.2 click-8.2.1 cryptography-45.0.5 gunicorn-21.2.0 itsdangerous-2.2.0 packaging-25.0 pdfminer.six-20221105 pdfplumber-0.9.0 pycparser-2.22
+2025-08-04T19:29:02    
+2025-08-04T19:29:02    [notice] A new release of pip is available: 24.0 -> 25.2
+2025-08-04T19:29:02    [notice] To update, run: pip install --upgrade pip
+2025-08-04T19:29:02    Not a vso image, so not writing build commands
+2025-08-04T19:29:02    Preparing output...
+2025-08-04T19:29:02    
+2025-08-04T19:29:02    Copying files to destination directory '/tmp/_preCompressedDestinationDir'...
+2025-08-04T19:29:09    Done in 11 sec(s).
+2025-08-04T19:29:10    Compressing content of directory '/tmp/_preCompressedDestinationDir'...
+2025-08-04T19:29:53    Copied the compressed output to '/home/site/wwwroot'
+2025-08-04T19:29:53    
+2025-08-04T19:29:53    Removing existing manifest file
+2025-08-04T19:29:54    Creating a manifest file...
+2025-08-04T19:29:54    Manifest file created.
+2025-08-04T19:29:54    Copying .ostype to manifest output directory.
+2025-08-04T19:29:54    
+2025-08-04T19:29:54    Done in 154 sec(s).
+2025-08-04T19:29:54  Running post deployment command(s)...
+2025-08-04T19:29:55  
+2025-08-04T19:29:55  Generating summary of Oryx build
+2025-08-04T19:29:55  Parsing the build logs
+2025-08-04T19:29:55  Found 0 issue(s)
+2025-08-04T19:29:55  
+2025-08-04T19:29:55  Build Summary :
+2025-08-04T19:29:55  ===============
+2025-08-04T19:29:56  Errors (0)
+2025-08-04T19:29:56  Warnings (0)
+2025-08-04T19:29:56  
+2025-08-04T19:29:56  Triggering container recycle for OneDeploy by adding/updating restartTrigger.txt to the site root path
+2025-08-04T19:29:56  Deployment successful. deployer = OneDeploy deploymentPath = OneDeploy

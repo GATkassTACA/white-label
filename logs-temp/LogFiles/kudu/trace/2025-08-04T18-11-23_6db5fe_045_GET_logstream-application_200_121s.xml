@@ -1,0 +1,6 @@
+<step title="Incoming Request" date="2025-08-04T18:11:23.991" instance="6db5fe" url="/logstream/application" method="GET" type="request" pid="774,1,31" Host="pharmassist-enterprise.scm.azurewebsites.net" User-Agent="AZURECLI/2.75.0 (MSI)" Accept-Encoding="identity" Authorization="Bas..." x-ms-client-request-id="6a6c80a3-715e-11f0-9763-9c67d682987a" X-ARR-LOG-ID="6a6c80a3-715e-11f0-9763-9c67d682987a" CLIENT-IP="167.248.114.72:62136" X-SITE-DEPLOYMENT-ID="pharmassist-enterprise" WAS-DEFAULT-HOSTNAME="pharmassist-enterprise.scm.azurewebsites.net" X-Forwarded-Proto="https" X-AppService-Proto="https" X-Forwarded-TlsVersion="1.3" X-WAWS-Unencoded-URL="/logstream/application" X-Client-IP="167.248.114.72" X-Client-Port="62136" >
+  <step title="Cleanup Xml Logs" date="2025-08-04T18:11:24.001" /><!-- duration: 52ms -->
+  <step title="LogStreamHandlerMiddleware.Invoke" date="2025-08-04T18:11:24.143" /><!-- duration: 411ms -->
+  <step title="Error occurred" date="2025-08-04T18:13:24.573" type="error" text="LogStreamManager: ProcessRequest end" /><!-- duration: 23ms -->
+  <step title="Outgoing response" date="2025-08-04T18:13:24.646" type="response" statusCode="200" statusText="OK" /><!-- duration: 9ms -->
+</step><!-- duration: 120693ms -->

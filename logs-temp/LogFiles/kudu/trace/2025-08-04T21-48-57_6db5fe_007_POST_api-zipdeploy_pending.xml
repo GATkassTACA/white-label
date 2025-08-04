@@ -1,0 +1,18 @@
+<step title="Incoming Request" date="2025-08-04T21:48:57.348" instance="6db5fe" url="/api/zipdeploy?isAsync=true" method="POST" type="request" pid="780,1,18" Accept="*/*" Host="pharmassist-enterprise.scm.azurewebsites.net" User-Agent="AZURECLI/2.75.0 (MSI)" Accept-Encoding="gzip, deflate" Authorization="Bas..." Cache-Control="no-cache" Content-Type="application/octet-stream" Cookie="ARRAffinity=6db5fe3709d4444b9c04907ca05f920ef31de709c6d20b04e0a56f99d39a3800; ARRAffinitySameSite=6db5fe3709d4444b9c04907ca05f920ef31de709c6d20b04e0a56f99d39a3800" Content-Length="33519" x-ms-client-request-id="ce227672-717c-11f0-90db-9c67d682987a" x-ms-artifact-checksum="a52fe1ce58a3a89d71c3e0a6262140d1ece6a96f7e711aa6dca203b8cd8d1062" X-ARR-LOG-ID="ce227672-717c-11f0-90db-9c67d682987a" CLIENT-IP="167.248.114.72:53167" X-SITE-DEPLOYMENT-ID="pharmassist-enterprise" WAS-DEFAULT-HOSTNAME="pharmassist-enterprise.scm.azurewebsites.net" X-Forwarded-Proto="https" X-AppService-Proto="https" X-Forwarded-TlsVersion="1.3" X-WAWS-Unencoded-URL="/api/zipdeploy?isAsync=true" X-Client-IP="167.248.114.72" X-Client-Port="53167" >
+  <step title="ZipPushDeploy" date="2025-08-04T21:48:57.457" >
+    <step title="ZipDeploy. Extract zip. Remote build." date="2025-08-04T21:48:57.467" /><!-- duration: 2ms -->
+    <step title="None repository commit" date="2025-08-04T21:48:57.478" >
+      <step title="Commit id: d26295e7-dd64-40f1-8f72-4de32a94b97d" date="2025-08-04T21:48:57.481" Message="N/A" AuthorName="N/A" AuthorEmail="N/A" /><!-- duration: 2ms -->
+    </step><!-- duration: 9ms -->
+    <step title="Starting PushDeployAsync" date="2025-08-04T21:48:57.495" /><!-- duration: 12ms -->
+    <step title="Writing artifact to /tmp/zipdeploy/f9988cf7-328d-4dd9-b6e9-14ca11203daf.zip" date="2025-08-04T21:48:57.555" >
+      <step title="Writing multipart request body to /tmp/zipdeploy/f9988cf7-328d-4dd9-b6e9-14ca11203daf.zip" date="2025-08-04T21:48:57.569" /><!-- duration: 3ms -->
+    </step><!-- duration: 181ms -->
+    <step title="Removing previous build artifact&apos;s manifest file" date="2025-08-04T21:48:57.744" >
+      <step title="Start deployment in the background" date="2025-08-04T21:48:57.774" >
+        <step title="Acquiring Deployment Lock" date="2025-08-04T21:48:57.842" /><!-- duration: 9ms -->
+        <step title="Acquired Deployment Lock" date="2025-08-04T21:48:57.945" /><!-- duration: 3ms -->
+      </step><!-- duration: 337ms -->
+    </step><!-- duration: 382ms -->
+    <step title="Outgoing response" date="2025-08-04T21:48:58.146" type="response" statusCode="202" statusText="Accepted" /><!-- duration: 3ms -->
+  </step><!-- duration: 695ms -->
