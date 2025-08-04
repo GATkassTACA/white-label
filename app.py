@@ -145,6 +145,29 @@ class DatabaseManager:
             print(f"Error getting history: {e}")
             return []
 
+def log_processing(connection, session, filename, method, status, processing_time, file_size, result_data):
+    """Log processing activity to database"""
+    try:
+        cursor = connection.cursor()
+        cursor.execute("""
+            INSERT INTO processing_history 
+            (session_id, original_filename, processing_method, status, 
+             created_at, processing_time_seconds, file_size_bytes, result_data)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            session.get('session_id', 'unknown'),
+            filename,
+            method,
+            status,
+            datetime.datetime.now(),
+            processing_time,
+            file_size,
+            str(result_data)
+        ))
+        connection.commit()
+    except Exception as e:
+        print(f"Error logging processing: {e}")
+
 # Create Flask application
 app = Flask(__name__, static_folder='static')
 app.secret_key = os.getenv('SECRET_KEY', 'pharmassist-secure-key-2025')
@@ -226,7 +249,70 @@ def api_process():
         # Get processing method from request
         method = request.form.get('method', 'auto')
         
-        # Demo mode - return mock data (since PDF libraries aren't installed)
+        # Real PDF processing
+        if PDF_PROCESSING_AVAILABLE:
+            try:
+                # Read file content
+                with open(filepath, 'rb') as f:
+                    file_content = f.read()
+                
+                # Process with PDFProcessor
+                processor = PDFProcessor()
+                result = processor.process_pdf(file_content, method, original_filename)
+                
+                # Clean up uploaded file
+                os.remove(filepath)
+                
+                processing_time = (datetime.datetime.now() - start_time).total_seconds()
+                
+                if result['success']:
+                    # Log processing
+                    if db.connection:
+                        log_processing(db.connection, session, original_filename, method, 
+                                     'success', processing_time, file_size, result)
+                    
+                    return jsonify({
+                        'success': True,
+                        'method_used': result.get('method_used', method),
+                        'pages_processed': result.get('pages_processed', 0),
+                        'medications_count': len(result.get('medications', [])),
+                        'caretend_output': result.get('caretend_format', ''),
+                        'extracted_text': result.get('raw_text', ''),
+                        'processing_time': processing_time,
+                        'file_size': file_size,
+                        'medications': result.get('medications', [])
+                    })
+                else:
+                    # Processing failed, log error
+                    if db.connection:
+                        log_processing(db.connection, session, original_filename, method, 
+                                     'error', processing_time, file_size, {'error': result.get('error')})
+                    
+                    return jsonify({
+                        'success': False,
+                        'error': result.get('error', 'PDF processing failed'),
+                        'processing_time': processing_time
+                    }), 500
+                    
+            except Exception as e:
+                # Clean up file if it exists
+                if os.path.exists(filepath):
+                    os.remove(filepath)
+                
+                processing_time = (datetime.datetime.now() - start_time).total_seconds()
+                
+                # Log error
+                if db.connection:
+                    log_processing(db.connection, session, original_filename, method, 
+                                 'error', processing_time, file_size, {'error': str(e)})
+                
+                return jsonify({
+                    'success': False,
+                    'error': f'PDF processing error: {str(e)}',
+                    'processing_time': processing_time
+                }), 500
+        
+        # Fallback demo mode
         processing_time = (datetime.datetime.now() - start_time).total_seconds()
         
         demo_result = {
