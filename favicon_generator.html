@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PharmAssist Favicon Generator</title>
+</head>
+<body>
+    <canvas id="canvas" width="32" height="32" style="border: 1px solid black; image-rendering: pixelated; width: 128px; height: 128px;"></canvas>
+    <br><br>
+    <button onclick="generateFavicon()">Generate Favicon</button>
+    <button onclick="downloadFavicon()">Download Favicon</button>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        function generateFavicon() {
+            // Clear canvas
+            ctx.clearRect(0, 0, 32, 32);
+            
+            // Background - medical blue
+            ctx.fillStyle = '#2196F3';
+            ctx.fillRect(0, 0, 32, 32);
+            
+            // Medical cross - white
+            ctx.fillStyle = '#FFFFFF';
+            
+            // Vertical bar of cross
+            ctx.fillRect(14, 6, 4, 20);
+            
+            // Horizontal bar of cross
+            ctx.fillRect(6, 14, 20, 4);
+            
+            // Add small pills/pharmacy symbols
+            ctx.fillStyle = '#FFD700'; // Gold for pills
+            
+            // Top left pill
+            ctx.beginPath();
+            ctx.arc(8, 8, 2, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Top right pill  
+            ctx.beginPath();
+            ctx.arc(24, 8, 2, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Bottom left pill
+            ctx.beginPath();
+            ctx.arc(8, 24, 2, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Bottom right pill
+            ctx.beginPath();
+            ctx.arc(24, 24, 2, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+        
+        function downloadFavicon() {
+            const link = document.createElement('a');
+            link.download = 'favicon.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        // Generate on load
+        generateFavicon();
+    </script>
+</body>
+</html>
