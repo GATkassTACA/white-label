@@ -255,7 +255,10 @@ def analyze_caretend_conversion(processing_result):
         found_meds = []
         
         for med in medications:
-            med_name = med.lower()
+            if isinstance(med, dict):
+                med_name = med.get('name', str(med)).lower()
+            else:
+                med_name = str(med).lower()
             for expected in expected_meds:
                 if expected in med_name:
                     found_meds.append(expected)

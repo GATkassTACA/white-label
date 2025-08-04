@@ -1,0 +1,73 @@
+{
+  "document_type": "prescription_conversion",
+  "source_format": "EPIC_EHR",
+  "conversion_date": "2025-08-04T18:45:41.987241",
+  "patient": {
+    "name": "MARTINEZ, ELENA SOFIA",
+    "dob": "1967-03-15",
+    "mrn": "EMR-4429851",
+    "insurance": "BlueCross BlueShield"
+  },
+  "prescriber": {
+    "name": "Dr. Michael Chen, MD",
+    "npi": "1234567890",
+    "dea": "BC1234567",
+    "clinic": "Sacramento Medical Center"
+  },
+  "medications": [
+    {
+      "name": "Lisinopril",
+      "strength": "10 mg",
+      "form": "tablet",
+      "ndc": "68180-518-06",
+      "quantity": 90,
+      "days_supply": 90,
+      "directions": "Take 1 tablet daily",
+      "refills": 5,
+      "indication": "Hypertension",
+      "caretend_code": "CT-ACE-001"
+    },
+    {
+      "name": "Metformin HCl",
+      "strength": "500 mg",
+      "form": "tablet",
+      "ndc": "93132-159-01",
+      "quantity": 180,
+      "days_supply": 90,
+      "directions": "Take 1 tablet twice daily with meals",
+      "refills": 3,
+      "indication": "Type 2 Diabetes",
+      "caretend_code": "CT-DM2-003"
+    },
+    {
+      "name": "Atorvastatin",
+      "strength": "20 mg",
+      "form": "tablet",
+      "ndc": "0071-0155-23",
+      "quantity": 90,
+      "days_supply": 90,
+      "directions": "Take 1 tablet daily at bedtime",
+      "refills": 5,
+      "indication": "Hyperlipidemia",
+      "caretend_code": "CT-STAT-002"
+    },
+    {
+      "name": "Amlodipine",
+      "strength": "5 mg",
+      "form": "tablet",
+      "ndc": "68180-372-09",
+      "quantity": 90,
+      "days_supply": 90,
+      "directions": "Take 1 tablet daily",
+      "refills": 5,
+      "indication": "Hypertension",
+      "caretend_code": "CT-CCB-001"
+    }
+  ],
+  "pharmacy": {
+    "name": "Caretend Pharmacy Solutions",
+    "ncpdp": "1234567",
+    "npi": "9876543210"
+  },
+  "processing_notes": "Converted from EPIC format for Caretend system compatibility"
+}
