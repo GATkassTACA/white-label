@@ -342,6 +342,7 @@ if __name__ == '__main__':
     print("🌐 CLIENT DEMO URLS:")
     print("   Login Page: http://localhost:5000")
     print("   Admin Dashboard: http://localhost:5000/admin")
+    print("   Document Scanner: http://localhost:5000/documents")
     print("   Health Check: http://localhost:5000/health")
     print("=" * 50)
     print("🔐 DEMO CREDENTIALS:")
