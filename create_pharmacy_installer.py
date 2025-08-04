@@ -165,7 +165,7 @@ pause
     }
 }"""
     
-    with open(installer_dir / "config" / "pharmacy_config.json", "w") as f:
+    with open(installer_dir / "config" / "pharmacy_config.json", "w", encoding="utf-8") as f:
         f.write(config_template)
     
     # Create setup documentation
@@ -228,7 +228,7 @@ Your HIPAA-compliant pharmacy communication system has been installed successful
 **Your pharmacy communication system is now ready for secure, HIPAA-compliant operation!**
 """
     
-    with open(installer_dir / "docs" / "QUICK_SETUP.md", "w") as f:
+    with open(installer_dir / "docs" / "QUICK_SETUP.md", "w", encoding="utf-8") as f:
         f.write(setup_guide)
     
     # Create uninstaller
