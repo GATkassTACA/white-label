@@ -1,1 +1,1 @@
-\"Trigger deployment\"  
+fix: revert azure login to creds
