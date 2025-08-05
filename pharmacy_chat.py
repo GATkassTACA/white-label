@@ -89,12 +89,21 @@ def index():
                 </form>
 
                 <div class="mt-6 text-center">
-                    <div class="text-white opacity-60 text-sm">
+                    <div class="text-white text-sm">
                         <strong>Demo Accounts:</strong><br/>
-                        <div class="mt-2 space-y-1">
-                            <div>👨‍⚕️ Pharmacist: pharmacist@yourpharmacy.com / PharmSecure123!</div>
-                            <div>👩‍💼 Technician: tech@yourpharmacy.com / TechSecure123!</div>
-                            <div>👨‍💼 Manager: manager@yourpharmacy.com / ManagerSecure123!</div>
+                        <div class="mt-2 space-y-2">
+                            <button onclick="fillDemoAccount('pharmacist@yourpharmacy.com', 'PharmSecure123!')" 
+                                    class="w-full bg-white bg-opacity-10 hover:bg-opacity-20 text-white py-2 px-4 rounded transition-all">
+                                �‍⚕️ Login as Pharmacist
+                            </button>
+                            <button onclick="fillDemoAccount('tech@yourpharmacy.com', 'TechSecure123!')"
+                                    class="w-full bg-white bg-opacity-10 hover:bg-opacity-20 text-white py-2 px-4 rounded transition-all">
+                                �‍💼 Login as Technician
+                            </button>
+                            <button onclick="fillDemoAccount('manager@yourpharmacy.com', 'ManagerSecure123!')"
+                                    class="w-full bg-white bg-opacity-10 hover:bg-opacity-20 text-white py-2 px-4 rounded transition-all">
+                                👨‍💼 Login as Manager
+                            </button>
                         </div>
                     </div>
                 </div>
