@@ -5,7 +5,7 @@ from flask_jwt_extended import JWTManager
 import os
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder='templates', static_folder='static')
     
     # Enable CORS for all routes
     CORS(app, origins=["http://localhost:3000", "http://127.0.0.1:3000"])

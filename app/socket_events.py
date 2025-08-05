@@ -24,11 +24,8 @@ def register_socket_events(socketio):
         
         # Create guest user in database
         user = User(
-            id=user_id,
-            username=username,
-            is_guest=True,
-            is_active=True,
-            last_seen=datetime.now(timezone.utc)
+            user_id=user_id,
+            username=username
         )
         
         try:
