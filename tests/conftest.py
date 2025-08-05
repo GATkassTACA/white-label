@@ -4,37 +4,22 @@ import os
 from app import create_app
 
 @pytest.fixture(scope='module')
-def app_instance():
+def app():
     """Create application for testing"""
     # Set testing environment
     os.environ['FLASK_ENV'] = 'testing'
     
-    app, socketio = create_app()
+    app = create_app()
     app.config['TESTING'] = True
     app.config['WTF_CSRF_ENABLED'] = False
     
     with app.app_context():
-        yield app, socketio
-
-@pytest.fixture
-def app(app_instance):
-    app, _ = app_instance
-    return app
-
-@pytest.fixture
-def socketio(app_instance):
-    _, socketio = app_instance
-    return socketio
+        yield app
 
 @pytest.fixture
 def client(app):
     """Create test client"""
     return app.test_client()
-
-@pytest.fixture
-def socketio_client(app, socketio):
-    """Create SocketIO test client"""
-    return socketio.test_client(app)
 
 @pytest.fixture
 def sample_branding():
