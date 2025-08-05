@@ -117,6 +117,12 @@ def index():
         </div>
 
         <script>
+            function fillDemoAccount(email, password) {
+                document.getElementById('email').value = email;
+                document.getElementById('password').value = password;
+                document.getElementById('loginBtn').click();
+            }
+            
             document.getElementById('loginForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
