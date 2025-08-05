@@ -1,22 +1,20 @@
 @echo off
 setlocal enabledelayedexpansion
 
-REM Azure Deployment Script for White Label Chat SaaS (Windows)
-REM This script automates the deployment to Azure App Service
+REM Azure Deployment Script for PharmAssist Enterprise PDF Extraction Tool (Windows)
+REM This script automates the deployment to Azure App Service for PDF extraction only
 
-echo 🚀 Starting Azure deployment for White Label Chat SaaS...
+echo 🚀 Starting Azure deployment for PharmAssist Enterprise PDF Extraction Tool...
 
 REM Configuration
-set RESOURCE_GROUP=white-label-rg
+set RESOURCE_GROUP=pharmassist-rg
 set LOCATION=East US
-set APP_NAME=white-label-chat-app
-set PLAN_NAME=white-label-plan
-set DB_SERVER_NAME=white-label-db-server
-set REDIS_NAME=white-label-redis
-set ACR_NAME=whitelabelacr
+set APP_NAME=pharmassist-pdf-extract
+set PLAN_NAME=pharmassist-plan
+set DB_SERVER_NAME=pharmassist-db-server
 set DB_ADMIN_USER=dbadmin
-set DB_NAME=whitelabel_chat
-set INSIGHTS_NAME=white-label-insights
+set DB_NAME=pharmassist_pdf
+set INSIGHTS_NAME=pharmassist-insights
 
 REM Check if Azure CLI is installed
 where az >nul 2>nul
@@ -93,15 +91,7 @@ if %errorlevel% neq 0 (
 )
 echo SUCCESS: Database firewall configured
 
-REM Create Redis cache
-echo INFO: Creating Redis cache: %REDIS_NAME%
-az redis create --resource-group %RESOURCE_GROUP% --name %REDIS_NAME% --location "%LOCATION%" --sku Basic --vm-size c0 --output none
-if %errorlevel% neq 0 (
-    echo ERROR: Failed to create Redis cache
-    pause
-    exit /b 1
-)
-echo SUCCESS: Redis cache created
+REM Skipping Redis cache creation (not needed for PDF extraction)
 
 REM Create App Service plan
 echo INFO: Creating App Service plan: %PLAN_NAME%
@@ -134,11 +124,7 @@ if %errorlevel% neq 0 (
 echo SUCCESS: Application Insights created
 
 REM Get connection strings and keys
-echo INFO: Retrieving connection strings and keys...
-
 for /f "tokens=*" %%i in ('az postgres flexible-server show --resource-group %RESOURCE_GROUP% --name %DB_SERVER_NAME% --query "fullyQualifiedDomainName" -o tsv') do set DB_HOST=%%i
-for /f "tokens=*" %%i in ('az redis show --resource-group %RESOURCE_GROUP% --name %REDIS_NAME% --query "hostName" -o tsv') do set REDIS_HOST=%%i
-for /f "tokens=*" %%i in ('az redis list-keys --resource-group %RESOURCE_GROUP% --name %REDIS_NAME% --query "primaryKey" -o tsv') do set REDIS_KEY=%%i
 for /f "tokens=*" %%i in ('az monitor app-insights component show --resource-group %RESOURCE_GROUP% --app %INSIGHTS_NAME% --query "instrumentationKey" -o tsv') do set INSIGHTS_KEY=%%i
 
 echo SUCCESS: Retrieved connection details
@@ -147,9 +133,8 @@ REM Configure app settings
 echo INFO: Configuring application settings...
 
 set DATABASE_URL=postgresql://%DB_ADMIN_USER%:!DB_PASSWORD!@!DB_HOST!:5432/%DB_NAME%?sslmode=require
-set REDIS_URL=redis://:!REDIS_KEY!@!REDIS_HOST!:6380/0?ssl_cert_reqs=required
 
-az webapp config appsettings set --resource-group %RESOURCE_GROUP% --name %APP_NAME% --settings FLASK_ENV=production SECRET_KEY="!SECRET_KEY!" DATABASE_URL="!DATABASE_URL!" REDIS_URL="!REDIS_URL!" APPINSIGHTS_INSTRUMENTATIONKEY="!INSIGHTS_KEY!" WEBSITES_PORT=5000 SCM_DO_BUILD_DURING_DEPLOYMENT=true MAIL_SERVER="smtp.sendgrid.net" MAIL_PORT=587 MAIL_USE_TLS=True WTF_CSRF_ENABLED=True SESSION_COOKIE_SECURE=True SESSION_COOKIE_HTTPONLY=True FORCE_HTTPS=True --output none
+az webapp config appsettings set --resource-group %RESOURCE_GROUP% --name %APP_NAME% --settings FLASK_ENV=production SECRET_KEY="!SECRET_KEY!" DATABASE_URL="!DATABASE_URL!" APPINSIGHTS_INSTRUMENTATIONKEY="!INSIGHTS_KEY!" WEBSITES_PORT=5000 SCM_DO_BUILD_DURING_DEPLOYMENT=true WTF_CSRF_ENABLED=True SESSION_COOKIE_SECURE=True SESSION_COOKIE_HTTPONLY=True FORCE_HTTPS=True --output none
 
 if %errorlevel% neq 0 (
     echo ERROR: Failed to configure application settings
@@ -191,7 +176,6 @@ echo # Azure Environment Configuration
 echo FLASK_ENV=production
 echo SECRET_KEY=!SECRET_KEY!
 echo DATABASE_URL=!DATABASE_URL!
-echo REDIS_URL=!REDIS_URL!
 echo APPINSIGHTS_INSTRUMENTATIONKEY=!INSIGHTS_KEY!
 echo.
 echo # Database Admin Credentials ^(for backup purposes^)
@@ -199,10 +183,6 @@ echo DB_ADMIN_USER=%DB_ADMIN_USER%
 echo DB_ADMIN_PASSWORD=!DB_PASSWORD!
 echo DB_HOST=!DB_HOST!
 echo DB_NAME=%DB_NAME%
-echo.
-echo # Redis Details
-echo REDIS_HOST=!REDIS_HOST!
-echo REDIS_KEY=!REDIS_KEY!
 echo.
 echo # Azure Resource Details
 echo RESOURCE_GROUP=%RESOURCE_GROUP%
@@ -250,7 +230,6 @@ echo ====================
 echo Resource Group: %RESOURCE_GROUP%
 echo App Service: %APP_NAME%
 echo Database Server: %DB_SERVER_NAME%
-echo Redis Cache: %REDIS_NAME%
 echo Application URL: !APP_URL!
 echo Health Check: !APP_URL!/api/health
 echo.
@@ -260,7 +239,6 @@ echo.
 echo 🔑 Important Security Notes:
 echo - Database password: !DB_PASSWORD! ^(saved in .env.azure^)
 echo - Secret key generated and configured
-echo - Redis access key configured
 echo - HTTPS is enforced
 echo.
 echo 📊 Monitoring:
