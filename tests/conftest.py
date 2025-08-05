@@ -3,8 +3,8 @@ import json
 import os
 from app import create_app
 
-@pytest.fixture
-def app():
+@pytest.fixture(scope='module')
+def app_instance():
     """Create application for testing"""
     # Set testing environment
     os.environ['FLASK_ENV'] = 'testing'
@@ -17,15 +17,23 @@ def app():
         yield app, socketio
 
 @pytest.fixture
+def app(app_instance):
+    app, _ = app_instance
+    return app
+
+@pytest.fixture
+def socketio(app_instance):
+    _, socketio = app_instance
+    return socketio
+
+@pytest.fixture
 def client(app):
     """Create test client"""
-    app, _ = app
     return app.test_client()
 
 @pytest.fixture
-def socketio_client(app):
+def socketio_client(app, socketio):
     """Create SocketIO test client"""
-    app, socketio = app
     return socketio.test_client(app)
 
 @pytest.fixture
