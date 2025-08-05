@@ -44,6 +44,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     permissions:
       id-token: write
+      contents: read
     
     steps:
     - uses: actions/checkout@v3
