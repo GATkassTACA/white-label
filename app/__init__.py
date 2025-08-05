@@ -52,28 +52,4 @@ def create_app():
     with app.app_context():
         db.create_all()
     
-    socketio = SocketIO(app, cors_allowed_origins="*")
-    
-    # Register blueprints
-    from app.routes.chat import chat_bp
-    app.register_blueprint(chat_bp, url_prefix='/api')
-    
-    
-    
-    from app.routes.documents import documents_bp
-    app.register_blueprint(documents_bp, url_prefix='/api')
-    
-    from app.routes.auth import auth_bp
-    app.register_blueprint(auth_bp)
-    
-    from app.routes.frontend import frontend_bp
-    app.register_blueprint(frontend_bp)
-    
-    from app.routes.health import health_bp
-    app.register_blueprint(health_bp)
-    
-    # Register socket events
-    from app.socket_events import register_socket_events
-    register_socket_events(socketio)
-    
-    return app, socketio
+    return app
