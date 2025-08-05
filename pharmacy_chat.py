@@ -280,10 +280,10 @@ def dashboard():
                     </div>
                     <div class="px-6 py-5">
                         <div class="space-y-3">
-                            <button class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg">
+                            <button onclick="window.open('/chat', '_blank')" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg">
                                 💬 Open Staff Chat
                             </button>
-                            <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg">
+                            <button onclick="window.open('/alerts', '_blank')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg">
                                 📞 Emergency Alerts
                             </button>
                         </div>
@@ -300,7 +300,7 @@ def dashboard():
                             <button class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg" onclick="window.open('/documents', '_blank')">
                                 📄 Document Scanner
                             </button>
-                            <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg">
+                            <button onclick="window.open('/reports', '_blank')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg">
                                 📊 Reports & Analytics
                             </button>
                         </div>
