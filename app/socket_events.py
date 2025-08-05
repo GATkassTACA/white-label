@@ -18,47 +18,6 @@ def register_socket_events(socketio):
             print(f"Connection authenticated: {auth}")
         else:
             print("Anonymous connection")
-        # Create or get guest user
-        user_id = str(uuid.uuid4())
-        username = f"User_{user_id[:8]}"
-        
-        # Create guest user in database
-        user = User(
-            user_id=user_id,
-            username=username
-        )
-        
-        try:
-            db.session.add(user)
-            db.session.commit()
-            
-            # Store in memory for session
-            active_users[request.sid] = {
-                'user_id': user_id,
-                'username': username,
-                'connected_at': datetime.now(timezone.utc)
-            }
-            
-            emit('user_connected', {
-                'user_id': user_id,
-                'username': username,
-                'message': f'{username} connected to the chat'
-            })
-            
-            # Track analytics
-            analytics = Analytics(
-                metric_type='user_connected',
-                user_id=user_id,
-                extra_data={'session_id': request.sid}
-            )
-            db.session.add(analytics)
-            db.session.commit()
-            
-            print(f"User {username} connected with session {request.sid}")
-            
-        except Exception as e:
-            print(f"Error creating user: {e}")
-            db.session.rollback()
     
     @socketio.on('disconnect')
     def on_disconnect():
