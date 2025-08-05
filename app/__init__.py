@@ -58,8 +58,7 @@ def create_app():
     from app.routes.chat import chat_bp
     app.register_blueprint(chat_bp, url_prefix='/api')
     
-    from app.routes.wizard import bp as wizard_bp
-    app.register_blueprint(wizard_bp, url_prefix='/api')
+    
     
     from app.routes.documents import documents_bp
     app.register_blueprint(documents_bp, url_prefix='/api')
