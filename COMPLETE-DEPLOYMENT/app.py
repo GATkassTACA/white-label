@@ -517,7 +517,7 @@ if __name__ == '__main__':
     
     # Run the application
     port = int(os.getenv('PORT', 5000))
-    debug = os.getenv('FLASK_ENV') == 'development'
+    debug = os.getenv('FLASK_ENV') == 'PRODUCTION'
     
     print("🏥 PharmAssist Enterprise PDF Processing System")
     print(f"📊 Database Support: {'✓ Available' if DATABASE_AVAILABLE else '✗ Demo Mode'}")
