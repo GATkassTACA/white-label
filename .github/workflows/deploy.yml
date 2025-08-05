@@ -61,15 +61,6 @@ jobs:
         source venv/bin/activate
         pip install -r requirements.txt
     
-    - name: Check for Azure Credentials Secret
-      run: |
-        if [ -z "${{ secrets.AZURE_CREDENTIALS }}" ]; then
-          echo "::error::AZURE_CREDENTIALS secret is not set or empty."
-          exit 1
-        else
-          echo "AZURE_CREDENTIALS secret is present."
-        fi
-
     - name: Login to Azure
       uses: azure/login@v1
       with:
