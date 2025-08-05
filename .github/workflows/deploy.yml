@@ -66,7 +66,8 @@ jobs:
       with:
         client-id: 1ef984b4-0592-4a34-b09f-9e149ec80a4a
         tenant-id: 1369334b-91f0-494c-b026-e46396531f4f
-        secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+        subscription-id: 3df1b182-e672-4701-a901-f1a00b79232c
+        creds: ${{ secrets.AZURE_CLIENT_SECRET }}
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
