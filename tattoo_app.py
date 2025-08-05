@@ -24,10 +24,12 @@ app.secret_key = os.environ.get('SECRET_KEY', secrets.token_hex(32))
 
 # Industry-specific configuration
 INDUSTRY_CONFIG = {
-    'name': 'TattooAssist Enterprise',
+    'name': 'InktelliAssist Pro',
+    'tagline': 'Professional Intelligence for Ink Artists',
     'industry': 'tattoo',
-    'brand_color': '#8B4513',  # Saddle brown
-    'accent_color': '#FF6B35',  # Vermillion
+    'brand_color': '#000000',  # Deep black (classic tattoo)
+    'accent_color': '#DC143C',  # Crimson red
+    'highlight_color': '#00BFFF',  # Electric blue
     'document_types': [
         'consent_forms',
         'aftercare_instructions', 
