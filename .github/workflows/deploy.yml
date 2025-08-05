@@ -1,4 +1,4 @@
-name: Deploy InktelliAssist Pro
+name: Deploy PharmAssist Enterprise
 
 on:
   push:
