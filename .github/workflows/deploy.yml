@@ -31,11 +31,12 @@ jobs:
       run: |
         source venv/bin/activate
         pip install -r requirements.txt
+        pip install pytest pytest-azurepipelines
     
     - name: Run tests
       run: |
         source venv/bin/activate
-        python -m pytest tests/ -v
+        python -m pytest tests/ -v --junitxml=test-results.xml
 
   deploy:
     runs-on: ubuntu-latest
