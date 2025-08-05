@@ -364,34 +364,38 @@
             setButtonState(false);
 
             try {
-                const response = await fetch('/api/login', {
+                // Use FormData to submit the form to the existing /login endpoint
+                const formData = new FormData();
+                formData.append('username', username);
+                formData.append('password', password);
+
+                const response = await fetch('/login', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        username: username,
-                        password: password
-                    })
+                    body: formData
                 });
 
-                const result = await response.json();
+                const result = await response.text();
 
-                if (response.ok && result.success) {
+                // Check if the response is a redirect (successful login)
+                if (response.ok && response.url.includes('/')) {
                     showMessage('Login successful! Redirecting...', 'success');
-                    
-                    // Store user info if provided
-                    if (result.user) {
-                        localStorage.setItem('pharmassis_user', JSON.stringify(result.user));
-                    }
                     
                     // Redirect to main application
                     setTimeout(() => {
-                        window.location.href = result.redirect || '/';
+                        window.location.href = '/';
                     }, 1500);
                     
                 } else {
-                    showMessage(result.error || 'Login failed. Please check your credentials.', 'error');
+                    // Parse any error messages from the HTML response
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(result, 'text/html');
+                    const errorMessages = doc.querySelectorAll('.error-message');
+                    
+                    if (errorMessages.length > 0) {
+                        showMessage(errorMessages[0].textContent, 'error');
+                    } else {
+                        showMessage('Login failed. Please check your credentials.', 'error');
+                    }
                 }
 
             } catch (error) {

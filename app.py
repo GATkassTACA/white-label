@@ -116,11 +116,28 @@ class DatabaseManager:
             
             if user_count == 0:
                 admin_password = generate_password_hash('admin123')
+                pharmacist_password = generate_password_hash('demo123')
+                tech_password = generate_password_hash('demo123')
+                manager_password = generate_password_hash('demo123')
+                
                 cursor.execute("""
                     INSERT INTO users (username, email, password_hash, role)
-                    VALUES (%s, %s, %s, %s)
-                """, ('admin', 'admin@pharmassist.com', admin_password, 'admin'))
-                print("✓ Default admin user created (username: admin, password: admin123)")
+                    VALUES 
+                        (%s, %s, %s, %s),
+                        (%s, %s, %s, %s),
+                        (%s, %s, %s, %s),
+                        (%s, %s, %s, %s)
+                """, (
+                    'admin', 'admin@pharmassist.com', admin_password, 'admin',
+                    'pharmacist', 'pharmacist@pharmassist.com', pharmacist_password, 'pharmacist',
+                    'tech', 'tech@pharmassist.com', tech_password, 'user',
+                    'manager', 'manager@pharmassist.com', manager_password, 'manager'
+                ))
+                print("✓ Default demo users created:")
+                print("  - admin/admin123 (admin role)")
+                print("  - pharmacist/demo123 (pharmacist role)")
+                print("  - tech/demo123 (user role)")
+                print("  - manager/demo123 (manager role)")
             
             # Insert some sample medications
             cursor.execute("""
@@ -208,7 +225,36 @@ def login_required(f):
 
 def get_user_by_credentials(username, password):
     """Verify user credentials and return user info"""
+    
+    # Fallback demo users when database is not available
     if not db.connection:
+        demo_users = {
+            'admin': {'id': 1, 'username': 'admin', 'email': 'admin@pharmassist.com', 'role': 'admin', 'password': 'admin123'},
+            'pharmacist': {'id': 2, 'username': 'pharmacist', 'email': 'pharmacist@pharmassist.com', 'role': 'pharmacist', 'password': 'demo123'},
+            'tech': {'id': 3, 'username': 'tech', 'email': 'tech@pharmassist.com', 'role': 'user', 'password': 'demo123'},
+            'manager': {'id': 4, 'username': 'manager', 'email': 'manager@pharmassist.com', 'role': 'manager', 'password': 'demo123'}
+        }
+        
+        # Check if username exists and password matches
+        if username in demo_users and demo_users[username]['password'] == password:
+            user = demo_users[username]
+            return {
+                'id': user['id'],
+                'username': user['username'],
+                'email': user['email'],
+                'role': user['role']
+            }
+        
+        # Also check by email
+        for user_data in demo_users.values():
+            if user_data['email'] == username and user_data['password'] == password:
+                return {
+                    'id': user_data['id'],
+                    'username': user_data['username'],
+                    'email': user_data['email'],
+                    'role': user_data['role']
+                }
+        
         return None
     
     try:
