@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  AZURE_WEBAPP_NAME: inktelliassist-pro
+  AZURE_WEBAPP_NAME: pharmassist-enterprise
   PYTHON_VERSION: '3.11'
 
 jobs:
