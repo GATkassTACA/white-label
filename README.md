@@ -120,7 +120,7 @@ pytest --cov=app --cov=models --cov=services --cov-report=html
 pytest tests/test_routes.py
 
 # Run specific test function
-pytest tests/test_routes.py::TestChatRoutes::test_health_check
+pytest tests/test_routes.py::TestChatRoutes::test_health_.check
 ```
 
 ### Test Coverage
@@ -256,3 +256,5 @@ For support and questions:
 - Create an issue on GitHub
 - Check the documentation
 - Review the test suite for examples
+
+<!-- Trigger deployment -->
