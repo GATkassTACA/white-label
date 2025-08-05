@@ -14,16 +14,18 @@ def app():
     app.config['WTF_CSRF_ENABLED'] = False
     
     with app.app_context():
-        yield app
+        yield app, socketio
 
 @pytest.fixture
 def client(app):
     """Create test client"""
+    app, _ = app
     return app.test_client()
 
 @pytest.fixture
-def socketio_client(app, socketio):
+def socketio_client(app):
     """Create SocketIO test client"""
+    app, socketio = app
     return socketio.test_client(app)
 
 @pytest.fixture
