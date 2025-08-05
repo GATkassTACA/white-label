@@ -5,7 +5,7 @@ from flask_jwt_extended import JWTManager
 import os
 
 def create_app():
-    app = Flask(__name__, template_folder='templates', static_folder='static')
+    app = Flask(__name__, instance_relative_config=True, template_folder='templates', static_folder='static')
     print(f"Template folder: {os.path.abspath(app.template_folder)}")
     
     # Enable CORS for all routes
