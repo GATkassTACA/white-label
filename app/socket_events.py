@@ -12,8 +12,12 @@ def register_socket_events(socketio):
     """Register all socket event handlers"""
     
     @socketio.on('connect')
-    def on_connect():
+    def on_connect(auth):
         """Handle user connection"""
+        if auth:
+            print(f"Connection authenticated: {auth}")
+        else:
+            print("Anonymous connection")
         # Create or get guest user
         user_id = str(uuid.uuid4())
         username = f"User_{user_id[:8]}"
