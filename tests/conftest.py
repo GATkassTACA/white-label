@@ -22,10 +22,8 @@ def client(app):
     return app.test_client()
 
 @pytest.fixture
-def socketio_client(app):
+def socketio_client(app, socketio):
     """Create SocketIO test client"""
-    from app import create_app
-    app, socketio = create_app()
     return socketio.test_client(app)
 
 @pytest.fixture
