@@ -116,8 +116,11 @@ class AdminManager:
         def admin_api_customers():
             """API endpoint for customer management"""
             if request.method == 'POST':
-                # Create new customer
+                # Accept both JSON and form data
                 data = request.get_json()
+                if data is None:
+                    # Fallback to form data
+                    data = request.form.to_dict()
                 result = self.create_customer(data)
                 return jsonify(result)
             else:
